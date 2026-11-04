@@ -1,0 +1,116 @@
+import { Link } from 'react-router-dom';
+import { Button } from '@fluid-design/fluid-ui';
+import { components } from '../data/components';
+import { foundations } from '../data/foundations';
+import { usePageTitle } from './usePageTitle';
+
+const principles = [
+  { title: 'Perceivable', body: 'Information shows up in more than one way: text alternatives, enough contrast, and never color alone.' },
+  { title: 'Operable', body: 'Every control works with a keyboard, focus is always visible, and nothing moves faster than people can follow.' },
+  { title: 'Understandable', body: 'Labels are clear, behavior is predictable, and errors explain how to fix them.' },
+  { title: 'Robust', body: 'Components expose the right role, name and state, so they work with today’s and tomorrow’s assistive tech.' },
+];
+
+const features = [
+  { title: 'Live, keyboard-ready examples', body: 'Every component runs on Fluid UI and can be tried with a keyboard right on the page.' },
+  { title: 'Screen reader inspector', body: 'See the role, name, states and live announcements of whatever you focus, as you go.' },
+  { title: 'Vision simulations', body: 'Preview each example with protanopia, deuteranopia, tritanopia, no color or blur.' },
+  { title: 'Saved testing checklists', body: 'Work through manual checks per component. Your progress stays in this browser.' },
+];
+
+export function Home() {
+  usePageTitle('');
+  return (
+    <div className="max-w-6xl">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-700 via-primary-800 to-gray-900 px-6 py-14 text-white sm:px-12">
+        <div className="bg-grid-white/[0.06] absolute inset-0" aria-hidden="true" />
+        <div className="relative max-w-2xl space-y-5">
+          <p className="chip bg-white/15 text-white">Accessibility specs for web components</p>
+          <h1 className="text-4xl font-bold tracking-tight outline-none sm:text-5xl">Build components everyone can use.</h1>
+          <p className="text-lg leading-8 text-primary-50">
+            A11y Hub documents the keyboard behavior, ARIA, focus handling and WCAG requirements for common UI components, with live examples built
+            on Fluid UI.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <Button as={Link} to="/components" className="btn-bold-[#ffffff] !text-primary-800" size="lg">
+              Browse components
+            </Button>
+            <Button as={Link} to="/foundations/keyboard" weight="clear" size="lg" className="!text-white ring-1 ring-inset ring-white/80 hover:!bg-white/10">
+              Read the foundations
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="principles" className="mt-16">
+        <h2 id="principles" className="text-2xl font-bold tracking-tight">
+          The four principles
+        </h2>
+        <p className="mt-2 max-w-3xl text-muted">WCAG groups its success criteria under four principles. Every page on this site maps back to them.</p>
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {principles.map((p, i) => (
+            <li key={p.title} className="surface p-5">
+              <span className="font-mono text-sm text-primary-700 dark:text-primary-300" aria-hidden="true">
+                0{i + 1}
+              </span>
+              <h3 className="mt-1 font-semibold">{p.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted">{p.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="features" className="mt-16">
+        <h2 id="features" className="text-2xl font-bold tracking-tight">
+          What’s on every component page
+        </h2>
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+          {features.map((f) => (
+            <li key={f.title} className="surface flex gap-4 p-5">
+              <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-5 w-5 flex-none text-primary-600 dark:text-primary-300">
+                <path fillRule="evenodd" d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.58l7.3-7.3a1 1 0 0 1 1.4 0Z" clipRule="evenodd" />
+              </svg>
+              <div>
+                <h3 className="font-semibold">{f.title}</h3>
+                <p className="mt-1 text-sm leading-6 text-muted">{f.body}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="start" className="mt-16 grid gap-8 lg:grid-cols-2">
+        <div>
+          <h2 id="start" className="text-2xl font-bold tracking-tight">
+            Foundations
+          </h2>
+          <ul className="mt-4 divide-y divide-gray-200/80 dark:divide-gray-800">
+            {foundations.map((f) => (
+              <li key={f.slug}>
+                <Link to={`/foundations/${f.slug}`} className="flex items-center justify-between rounded-md px-2 py-3 font-medium hover:bg-gray-100 focus-ring dark:hover:bg-gray-800">
+                  {f.name}
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Components</h2>
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {components.map((c) => (
+              <li key={c.slug}>
+                <Link
+                  to={`/components/${c.slug}`}
+                  className="inline-block rounded-full bg-white px-3 py-1.5 text-sm font-medium ring-1 ring-gray-200 hover:ring-primary-500 focus-ring dark:bg-gray-900 dark:ring-gray-700"
+                >
+                  {c.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </div>
+  );
+}

@@ -1,0 +1,50 @@
+import type { ComponentCategory, ComponentSpec } from '../types';
+import { accordion } from './accordion';
+import { alert } from './alert';
+import { button } from './button';
+import { checkbox } from './checkbox';
+import { combobox } from './combobox';
+import { dialog } from './dialog';
+import { image } from './image';
+import { link } from './link';
+import { menu } from './menu';
+import { progress } from './progress';
+import { radioGroup } from './radio-group';
+import { select } from './select';
+import { switchSpec } from './switch';
+import { table } from './table';
+import { tabs } from './tabs';
+import { textInput } from './text-input';
+import { toast } from './toast';
+import { tooltip } from './tooltip';
+
+export const components: ComponentSpec[] = [
+  button,
+  menu,
+  link,
+  tabs,
+  accordion,
+  textInput,
+  checkbox,
+  radioGroup,
+  switchSpec,
+  select,
+  combobox,
+  dialog,
+  tooltip,
+  toast,
+  alert,
+  progress,
+  image,
+  table,
+];
+
+export const categories: ComponentCategory[] = ['Actions', 'Navigation', 'Forms', 'Overlays', 'Feedback', 'Content'];
+
+export function byCategory(cat: ComponentCategory) {
+  return components.filter((c) => c.category === cat).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export function findComponent(slug: string) {
+  return components.find((c) => c.slug === slug);
+}
