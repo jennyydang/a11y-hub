@@ -56,6 +56,8 @@ export interface ComponentSpec {
   testing: string[];
   Demo: ComponentType;
   code: string;
+  /** Optional decision tool shown under Guidance. */
+  tool?: { title: string; intro: string; Tool: ComponentType };
   /** Optional variations. When present, the first one is shown by default. */
   variants?: Variant[];
   /** How this site implements the component with Fluid UI, and any gaps we patched. */

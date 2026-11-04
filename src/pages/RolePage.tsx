@@ -10,6 +10,7 @@ import type { ComponentSpec } from '../data/types';
 import { loadWorksheet } from '../lib/worksheetStore';
 import { cx } from '../ui';
 import { NotFound } from './NotFound';
+import { AltDecision } from '../tools/AltDecision';
 import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
 
@@ -65,6 +66,12 @@ export function RolePage() {
         <Section title="Review checklist" intro={<p>Use this when reviewing a feature or screen. Progress is saved in this browser.</p>}>
           <Checklist scope={`role-${guide.id}`} items={guide.checklist} title={`${guide.name} review checklist`} />
         </Section>
+
+        {guide.id === 'content' && (
+          <Section title="Decorative or informative?" intro={<p>Not sure whether an image needs alt text? Answer a few yes or no questions to find out what to write.</p>}>
+            <AltDecision />
+          </Section>
+        )}
 
         <Section title="Handoff notes" intro={<p>What to include when passing work to the other roles.</p>}>
           <div className="surface p-5">

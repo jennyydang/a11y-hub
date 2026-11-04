@@ -7,7 +7,7 @@ import { DoDont } from '../components/DoDont';
 import { RoleNotes } from '../components/RoleNotes';
 import { Worksheet } from '../components/Worksheet';
 import { VariantPicker } from '../components/VariantPicker';
-import { Section, slugify } from '../components/Section';
+import { Part, Section, slugify } from '../components/Section';
 import { AriaTable, KeyboardTable, WcagList } from '../components/Tables';
 import { components, findComponent } from '../data/components';
 import { htmlExamples } from '../data/html';
@@ -15,7 +15,12 @@ import { NotFound } from './NotFound';
 import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
 
-const TOC = ['Live example', 'Usage', 'Keyboard interactions', 'ARIA', 'Focus & screen readers', 'Best practices', 'Who owns what', 'Handoff worksheet', 'Fluid UI notes', 'WCAG criteria', 'Testing checklist'];
+const toc = (tool?: string): [string, string[]][] => [
+  ['Try it', ['Live example']],
+  ['How it works', ['Usage', 'Keyboard interactions', 'ARIA', 'Focus & screen readers']],
+  ['Guidance', ['Best practices', ...(tool ? [tool] : []), 'WCAG criteria', 'Fluid UI notes']],
+  ['Team handoff', ['Who owns what', 'Handoff worksheet', 'Testing checklist']],
+];
 
 function Bullets({ items }: { items: string[] }) {
   return (
@@ -71,91 +76,107 @@ export function ComponentPage() {
           <p>{spec.summary}</p>
         </PageHeader>
 
-        <div className="space-y-14">
-          <Section title="Live example" intro={<p>Use the keyboard to try it. The inspector shows roughly what a screen reader would announce.{variants ? ' Switch variations to see how the markup changes.' : ''}</p>}>
-            {variants && variant && <VariantPicker variants={variants} value={variant.id} onChange={setVariant} />}
-            <DemoStage key={spec.slug}>
-              <Demo key={variant?.id} />
-            </DemoStage>
-            <Tab
-              className="mt-2"
-              tabs={[
-                {
-                  title: 'HTML',
-                  content: (
-                    <div className="space-y-2 pt-3">
-                      <p className="text-sm text-muted">
-                        Plain HTML with the ARIA it needs, plus the minimum JavaScript where behavior requires it. No framework needed.
-                      </p>
-                      <CodeBlock code={html} language="html" title={variant ? `HTML · ${variant.label}` : 'HTML'} />
-                    </div>
-                  ),
-                },
-                {
-                  title: 'React + Fluid UI',
-                  content: (
-                    <div className="pt-3">
-                      <CodeBlock code={code} title={variant ? `React · ${variant.label}` : 'React (tsx)'} />
-                    </div>
-                  ),
-                },
-              ]}
-            />
-          </Section>
+        <div className="space-y-16">
+          <Part n={1} title="Try it" description="Interact with the component using a keyboard, and see what assistive technology gets.">
+            <Section title="Live example" intro={<p>The inspector shows roughly what a screen reader would announce.{variants ? ' Switch variations to see how the markup changes.' : ''}</p>}>
+              {variants && variant && <VariantPicker variants={variants} value={variant.id} onChange={setVariant} />}
+              <DemoStage key={spec.slug}>
+                <Demo key={variant?.id} />
+              </DemoStage>
+              <Tab
+                className="mt-2"
+                tabs={[
+                  {
+                    title: 'HTML',
+                    content: (
+                      <div className="space-y-2 pt-3">
+                        <p className="text-sm text-muted">
+                          Plain HTML with the ARIA it needs, plus the minimum JavaScript where behavior requires it. No framework needed.
+                        </p>
+                        <CodeBlock code={html} language="html" title={variant ? `HTML · ${variant.label}` : 'HTML'} />
+                      </div>
+                    ),
+                  },
+                  {
+                    title: 'React + Fluid UI',
+                    content: (
+                      <div className="pt-3">
+                        <CodeBlock code={code} title={variant ? `React · ${variant.label}` : 'React (tsx)'} />
+                      </div>
+                    ),
+                  },
+                ]}
+              />
+            </Section>
+          </Part>
 
-          <Section title="Usage">
-            <Bullets items={spec.whenToUse} />
-          </Section>
-
-          <Section title="Keyboard interactions">
-            <KeyboardTable rows={spec.keyboard} name={spec.name} />
-          </Section>
-
-          <Section title="ARIA" intro={<p>Roles, states and properties to apply. Native elements already provide many of these.</p>}>
-            <AriaTable rows={spec.aria} name={spec.name} />
-          </Section>
-
-          <Section title="Focus & screen readers">
-            <div className="grid gap-4 md:grid-cols-2">
+          <Part n={2} title="How it works" description="When to use it, and the keyboard, ARIA and focus behavior it needs.">
+            <Section title="Usage">
               <div className="surface p-5">
-                <h3 className="mb-3 font-semibold">Focus</h3>
-                <Bullets items={spec.focus} />
+                <Bullets items={spec.whenToUse} />
               </div>
+            </Section>
+
+            <Section title="Keyboard interactions">
+              <KeyboardTable rows={spec.keyboard} name={spec.name} />
+            </Section>
+
+            <Section title="ARIA" intro={<p>Roles, states and properties to apply. Native elements already provide many of these.</p>}>
+              <AriaTable rows={spec.aria} name={spec.name} />
+            </Section>
+
+            <Section title="Focus & screen readers">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="surface p-5">
+                  <h3 className="mb-3 font-semibold">Focus</h3>
+                  <Bullets items={spec.focus} />
+                </div>
+                <div className="surface p-5">
+                  <h3 className="mb-3 font-semibold">Screen readers</h3>
+                  <Bullets items={spec.screenReader} />
+                </div>
+              </div>
+            </Section>
+          </Part>
+
+          <Part n={3} title="Guidance" description="What good looks like, the standards it must meet, and how it’s built with Fluid UI.">
+            <Section title="Best practices">
+              <DoDont dos={spec.dos} donts={spec.donts} />
+            </Section>
+
+            {spec.tool && (
+              <Section title={spec.tool.title} intro={<p>{spec.tool.intro}</p>}>
+                <spec.tool.Tool />
+              </Section>
+            )}
+
+            <Section title="WCAG criteria">
+              <WcagList refs={spec.wcag} />
+            </Section>
+
+            <Section title="Fluid UI notes" intro={<p>How this component is built with Fluid UI, and any accessibility gaps we patched.</p>}>
               <div className="surface p-5">
-                <h3 className="mb-3 font-semibold">Screen readers</h3>
-                <Bullets items={spec.screenReader} />
+                <Bullets items={spec.fluid.notes} />
               </div>
-            </div>
-          </Section>
+            </Section>
+          </Part>
 
-          <Section title="Best practices">
-            <DoDont dos={spec.dos} donts={spec.donts} />
-          </Section>
+          <Part n={4} title="Team handoff" description="What each role owns, a shared worksheet to fill in, and the final tests.">
+            <Section title="Who owns what" intro={<p>What your content, design, frontend and QA specialists each need to get right.</p>}>
+              <RoleNotes slug={spec.slug} />
+            </Section>
 
-          <Section title="Who owns what" intro={<p>What your content, design and frontend specialists each need to get right.</p>}>
-            <RoleNotes slug={spec.slug} />
-          </Section>
+            <Section
+              title="Handoff worksheet"
+              intro={<p>One shared worksheet per component. Content writes the words it needs, design checks its requirements, frontend builds from both, and QA tests the result. Copy the whole handoff into your ticket.</p>}
+            >
+              <Worksheet spec={spec} variant={variant} />
+            </Section>
 
-          <Section
-            title="Handoff worksheet"
-            intro={<p>One shared worksheet per component. Content writes the words it needs, design checks its requirements, frontend builds from both, and QA tests the result. Copy the whole handoff into your ticket.</p>}
-          >
-            <Worksheet spec={spec} variant={variant} />
-          </Section>
-
-          <Section title="Fluid UI notes" intro={<p>How this component is built with Fluid UI, and any accessibility gaps we patched.</p>}>
-            <div className="surface p-5">
-              <Bullets items={spec.fluid.notes} />
-            </div>
-          </Section>
-
-          <Section title="WCAG criteria">
-            <WcagList refs={spec.wcag} />
-          </Section>
-
-          <Section title="Testing checklist" intro={<p>Your progress is saved in this browser.</p>}>
-            <Checklist scope={spec.slug} items={spec.testing} title={`${spec.name} testing checklist`} />
-          </Section>
+            <Section title="Testing checklist" intro={<p>Your progress is saved in this browser.</p>}>
+              <Checklist scope={spec.slug} items={spec.testing} title={`${spec.name} testing checklist`} />
+            </Section>
+          </Part>
         </div>
 
         <nav aria-label="Previous and next component" className="mt-16 grid gap-4 border-t border-gray-200/80 pt-8 sm:grid-cols-2 dark:border-gray-800">
@@ -179,25 +200,32 @@ export function ComponentPage() {
       <aside className="sticky top-24 hidden h-fit w-52 flex-none xl:block">
         <nav aria-label="On this page">
           <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300">On this page</h2>
-          <ul className="space-y-1 text-sm">
-            {TOC.map((t) => (
-              <li key={t}>
-                <a
-                  href={`#${slugify(t)}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const el = document.getElementById(slugify(t));
-                    el?.scrollIntoView();
-                    el?.setAttribute('tabindex', '-1');
-                    el?.focus({ preventScroll: true });
-                  }}
-                  className="block rounded px-2 py-1 text-gray-700 hover:text-gray-900 focus-ring dark:text-gray-200 dark:hover:text-white"
-                >
-                  {t}
-                </a>
-              </li>
+          <div className="space-y-4 text-sm">
+            {toc(spec.tool?.title).map(([part, items]) => (
+              <div key={part}>
+                <p className="mb-1 px-2 text-xs font-semibold text-primary-800 dark:text-primary-200">{part}</p>
+                <ul className="space-y-0.5 border-l border-gray-200 dark:border-gray-700">
+                  {items.map((t) => (
+                    <li key={t}>
+                      <a
+                        href={`#${slugify(t)}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const el = document.getElementById(slugify(t));
+                          el?.scrollIntoView();
+                          el?.setAttribute('tabindex', '-1');
+                          el?.focus({ preventScroll: true });
+                        }}
+                        className="-ml-px block border-l border-transparent py-1 pl-3 pr-2 text-gray-700 hover:border-gray-500 hover:text-gray-900 focus-ring dark:text-gray-200 dark:hover:text-white"
+                      >
+                        {t}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         </nav>
       </aside>
     </div>

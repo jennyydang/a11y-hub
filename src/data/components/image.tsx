@@ -1,5 +1,6 @@
 import type { ComponentSpec } from '../types';
 import { WCAG } from '../wcag';
+import { AltDecision } from '../../tools/AltDecision';
 
 function Demo() {
   return (
@@ -75,6 +76,11 @@ export const image: ComponentSpec = {
 </svg>
 
 <StarIcon aria-hidden="true" /> Favorite projects`,
+  tool: {
+    title: 'Decorative or informative?',
+    intro: 'Not sure whether an image needs alt text? Answer a few yes or no questions to find out what to write.',
+    Tool: AltDecision,
+  },
   fluid: {
     source: 'Native HTML + Fluid styles',
     notes: ['Fluid UI’s components mark their internal icons aria-hidden. Do the same for icons you pass in.'],
