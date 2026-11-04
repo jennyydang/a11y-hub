@@ -8,6 +8,7 @@ import { RoleNotes } from '../components/RoleNotes';
 import { Section, slugify } from '../components/Section';
 import { AriaTable, KeyboardTable, WcagList } from '../components/Tables';
 import { components, findComponent } from '../data/components';
+import { htmlExamples } from '../data/html';
 import { NotFound } from './NotFound';
 import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
@@ -64,12 +65,22 @@ export function ComponentPage() {
             <Tab
               className="mt-2"
               tabs={[
-                { title: 'Code', content: <div className="pt-3"><CodeBlock code={spec.code} /></div> },
                 {
-                  title: 'Semantics',
+                  title: 'HTML',
                   content: (
-                    <div className="surface mt-3 p-4 text-sm leading-6">
-                      Built on <code className="font-mono">{spec.semantics}</code>. {spec.fluid.notes[0]}
+                    <div className="space-y-2 pt-3">
+                      <p className="text-sm text-muted">
+                        Plain HTML with the ARIA it needs, plus the minimum JavaScript where behavior requires it. No framework needed.
+                      </p>
+                      <CodeBlock code={htmlExamples[spec.slug] ?? ''} language="html" title="HTML" />
+                    </div>
+                  ),
+                },
+                {
+                  title: 'React + Fluid UI',
+                  content: (
+                    <div className="pt-3">
+                      <CodeBlock code={spec.code} title="React (tsx)" />
                     </div>
                   ),
                 },

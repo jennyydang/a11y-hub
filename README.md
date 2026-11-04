@@ -2,6 +2,7 @@
 
 A documentation site and interactive component library focused on the accessibility of common web components. Each component page covers:
 
+- **HTML code** for every component: semantic markup, ARIA and minimal vanilla JavaScript, so you don't need React or Fluid UI to use it. React + Fluid UI code is in a second tab.
 - **Live example** built with [Fluid UI](https://fluid-design.io/), with a vision simulator (protanopia, deuteranopia, tritanopia, achromatopsia, blur) and a **screen reader inspector**. The inspector shows the focused element's role, accessible name, states and approximate live-region announcements.
 - **Usage**: when to use it and when to use something else
 - **Keyboard interactions** and **ARIA** reference tables
@@ -41,6 +42,7 @@ src/
   data/
     components/ one spec file per component (content + live demo)
     foundations.ts
+    html.ts       framework-free HTML examples
     roles.ts      role guides and per-component role notes
     wcag.ts     WCAG 2.2 success criteria used across the site
   lib/          simplified accessibility-tree inspector
@@ -53,6 +55,7 @@ src/
 
 1. Create `src/data/components/<slug>.tsx` that exports a `ComponentSpec` (see `src/data/types.ts`).
 2. Add it to the `components` array in `src/data/components/index.ts`.
-3. Add its content, design and frontend notes to `componentRoles` in `src/data/roles.ts`.
+3. Add its plain HTML example to `htmlExamples` in `src/data/html.ts`.
+4. Add its content, design and frontend notes to `componentRoles` in `src/data/roles.ts`.
 
 It will show up in the navigation, the components index and the testing checklist automatically.
