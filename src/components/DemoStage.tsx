@@ -1,4 +1,6 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { Button } from '@fluid-design/fluid-ui';
+import { focusStops } from '../lib/focusOrder';
 import { announce, inspect, type InspectResult } from '../lib/a11yInspect';
 import { cx } from '../ui';
 
@@ -36,6 +38,14 @@ interface LogEntry {
   text: string;
 }
 
+interface Stop {
+  el: HTMLElement;
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
+
 const LIVE_SELECTOR = '[aria-live]:not([aria-live="off"]), [role="status"], [role="alert"], [role="log"]';
 
 export function DemoStage({ children, title = 'Live example' }: { children: ReactNode; title?: string }) {
@@ -46,6 +56,60 @@ export function DemoStage({ children, title = 'Live example' }: { children: Reac
   const [log, setLog] = useState<LogEntry[]>([]);
   const counter = useRef(0);
   const ids = useId();
+  const [showOrder, setShowOrder] = useState(false);
+  const [stops, setStops] = useState<Stop[]>([]);
+  const [step, setStep] = useState(-1);
+  const stopsRef = useRef<Stop[]>([]);
+
+  // Work out the tab stops inside the example and where they sit.
+  const measure = useCallback(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const box = stage.getBoundingClientRect();
+    const next = focusStops(stage).map((el) => {
+      const r = el.getBoundingClientRect();
+      return { el, top: r.top - box.top, left: r.left - box.left, width: r.width, height: r.height };
+    });
+    stopsRef.current = next;
+    setStops(next);
+  }, []);
+
+  // Re-measure when the example changes (variation switch, opening a panel) or resizes.
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    let frame = 0;
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(measure);
+    };
+    schedule();
+    const mo = new MutationObserver((records) => {
+      // Ignore changes to the focus-order overlay itself.
+      if (records.every((r) => (r.target instanceof Element ? r.target : r.target.parentElement)?.closest('[data-focus-order]'))) return;
+      schedule();
+    });
+    mo.observe(stage, { subtree: true, childList: true, attributes: true, attributeFilter: ['tabindex', 'disabled', 'hidden', 'open', 'class', 'style', 'aria-expanded', 'checked'] });
+    const ro = new ResizeObserver(schedule);
+    ro.observe(stage);
+    window.addEventListener('resize', schedule);
+    stage.addEventListener('change', schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      mo.disconnect();
+      ro.disconnect();
+      window.removeEventListener('resize', schedule);
+      stage.removeEventListener('change', schedule);
+    };
+  }, [measure]);
+
+  const goTo = (i: number) => {
+    const target = stopsRef.current[i];
+    if (!target) return;
+    setStep(i);
+    target.el.focus();
+    target.el.scrollIntoView({ block: 'nearest' });
+  };
 
   const push = (kind: LogEntry['kind'], text: string) => {
     counter.current += 1;
@@ -61,6 +125,8 @@ export function DemoStage({ children, title = 'Live example' }: { children: Reac
       const target = e.target as Element;
       const r = inspect(target);
       setCurrent(r);
+      const i = stopsRef.current.findIndex((st) => st.el === target);
+      if (i >= 0) setStep(i);
       push('focus', announce(r));
     };
     // Refresh the panel (without logging) when the focused element's state changes.
@@ -139,6 +205,22 @@ export function DemoStage({ children, title = 'Live example' }: { children: Reac
               </option>
             ))}
           </select>
+          {stops.length > 0 && (
+            <Button
+              size="sm"
+              weight="light"
+              color="gray"
+              aria-pressed={showOrder}
+              className="aria-pressed:!bg-primary-700 aria-pressed:!text-white dark:aria-pressed:!bg-primary-300 dark:aria-pressed:!text-gray-900"
+              onClick={() => {
+                setShowOrder((v) => !v);
+                setStep(-1);
+                measure();
+              }}
+            >
+              Show focus order
+            </Button>
+          )}
           <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-muted">
             <input
               type="checkbox"
@@ -152,6 +234,42 @@ export function DemoStage({ children, title = 'Live example' }: { children: Reac
         </div>
       </div>
 
+      {showOrder && stops.length > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 bg-primary-50/60 px-4 py-3 text-sm dark:border-gray-800 dark:bg-primary-900/20">
+          <p className="min-w-0">
+            {step < 0 ? (
+              <>
+                <strong>{stops.length} focus {stops.length === 1 ? 'stop' : 'stops'}.</strong> Numbers show the order <kbd className="kbd">Tab</kbd>{' '}
+                should follow. Groups like tabs and radio buttons are one stop; arrow keys move inside them. Press the buttons to move focus stop by stop.
+              </>
+            ) : (
+              <>
+                <strong>
+                  Stop {step + 1} of {stops.length}:
+                </strong>{' '}
+                {(() => {
+                  const r = stops[step] && inspect(stops[step].el);
+                  return r ? `${r.name || 'no accessible name'} (${r.role})` : '';
+                })()}
+              </>
+            )}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" weight="light" color="gray" onClick={() => goTo(step - 1)} disabled={step <= 0}>
+              Previous stop
+            </Button>
+            <Button size="sm" className="btn-bold-primary" onClick={() => goTo(step + 1)} disabled={step >= stops.length - 1}>
+              {step < 0 ? 'Go to first stop' : 'Next stop'}
+            </Button>
+            {step >= 0 && (
+              <Button size="sm" weight="clear" color="gray" onClick={() => goTo(0)}>
+                Start over
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+
       <div
         ref={stageRef}
         className={cx(
@@ -160,6 +278,31 @@ export function DemoStage({ children, title = 'Live example' }: { children: Reac
         )}
       >
         {children}
+        {showOrder && (
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-10" data-focus-order>
+            {stops.map((st, i) => (
+              <div key={i}>
+                {i === step && (
+                  <div
+                    className="absolute rounded-md outline-dashed outline-2 outline-offset-4 outline-primary-700 dark:outline-primary-300"
+                    style={{ top: st.top, left: st.left, width: st.width, height: st.height }}
+                  />
+                )}
+                <span
+                  className={cx(
+                    'absolute flex h-6 min-w-[1.5rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full px-1 text-xs font-bold shadow ring-2',
+                    i === step
+                      ? 'bg-primary-700 text-white ring-white dark:bg-primary-300 dark:text-gray-900 dark:ring-gray-900'
+                      : 'bg-white text-primary-800 ring-primary-700 dark:bg-gray-900 dark:text-primary-200 dark:ring-primary-300',
+                  )}
+                  style={{ top: st.top, left: st.left }}
+                >
+                  {i + 1}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {showInspector && (
