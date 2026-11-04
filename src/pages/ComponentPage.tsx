@@ -6,6 +6,7 @@ import { DemoStage } from '../components/DemoStage';
 import { DoDont } from '../components/DoDont';
 import { RoleNotes } from '../components/RoleNotes';
 import { Worksheet } from '../components/Worksheet';
+import { AtAGlance } from '../components/AtAGlance';
 import { VariantPicker } from '../components/VariantPicker';
 import { Part, Section, slugify } from '../components/Section';
 import { useScrollSpy } from '../components/useScrollSpy';
@@ -18,6 +19,7 @@ import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
 
 const toc = (tool?: string): [string, string[]][] => [
+  ['Overview', ['At a glance']],
   ['Try it', ['Live example']],
   ['How it works', ['Usage', 'Keyboard interactions', 'ARIA', 'Focus & screen readers']],
   ['Guidance', ['Best practices', ...(tool ? [tool] : []), 'WCAG criteria', 'Fluid UI notes']],
@@ -79,6 +81,8 @@ export function ComponentPage() {
         >
           <p>{spec.summary}</p>
         </PageHeader>
+
+        <AtAGlance spec={spec} />
 
         <div className="space-y-16">
           <Part n={1} title="Try it" description="Interact with the component using a keyboard, and see what assistive technology gets.">

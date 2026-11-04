@@ -11,6 +11,13 @@ export function ComponentsIndex() {
         <p>
           {components.length} components, each with a live example, keyboard map, ARIA reference, WCAG criteria and a testing checklist.
         </p>
+        <p className="mt-2 text-base">
+          Not sure which one you need?{' '}
+          <Link to="/choose" className="link">
+            Answer a few questions to find out
+          </Link>
+          .
+        </p>
       </PageHeader>
       <div className="space-y-12">
         {categories.map((cat) => (

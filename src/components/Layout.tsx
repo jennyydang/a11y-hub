@@ -67,6 +67,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
       <ul className="space-y-0.5">
         {match('Overview') && item('/', 'Overview')}
         {match('Testing checklist') && item('/checklist', 'Testing checklist')}
+        {match('Which component?') && item('/choose', 'Which component?')}
       </ul>
       {roleItems.length > 0 && (
         <div>

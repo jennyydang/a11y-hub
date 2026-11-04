@@ -7,6 +7,8 @@ import { lintField, type ContentField } from '../data/requirements';
 import { useWorksheet, type QaResult, type WorksheetEntry } from '../lib/worksheetStore';
 import { QA_ENV, SHEETS, contentFields, designRequirements, frontendChecks, groupBy, qaCases, type Check } from '../lib/worksheetItems';
 import { Checkbox, TextField, cx } from '../ui';
+import { BugReport } from './BugReport';
+import { findComponent } from '../data/components';
 
 const QA_LABELS: Record<QaResult, string> = { pass: 'Pass', fail: 'Fail', na: 'N/A' };
 
@@ -111,7 +113,7 @@ function FrontendCheck({ check, checked, onToggle }: { check: Check; checked: bo
   );
 }
 
-function QaCase({ check, result, note, onResult, onNote }: { check: Check; result?: QaResult; note?: string; onResult: (r: QaResult) => void; onNote: (n: string) => void }) {
+function QaCase({ check, result, note, onResult, onNote, report }: { check: Check; result?: QaResult; note?: string; onResult: (r: QaResult) => void; onNote: (n: string) => void; report: ReactNode }) {
   const id = useId();
   return (
     <li className="py-3">
@@ -148,7 +150,8 @@ function QaCase({ check, result, note, onResult, onNote }: { check: Check; resul
       </fieldset>
       {result === 'fail' && (
         <div className="mt-2">
-          <TextField label="What happened?" hint="Steps, what you heard or saw, and what you expected." value={note ?? ''} onChange={(e) => onNote(e.target.value)} />
+          <TextField label="What happened?" hint="What you heard or saw instead." value={note ?? ''} onChange={(e) => onNote(e.target.value)} />
+          {report}
         </div>
       )}
     </li>
@@ -272,6 +275,35 @@ export function Worksheet({ spec, variant }: { spec: ComponentSpec; variant?: Va
     a.click();
     URL.revokeObjectURL(url);
     flash('Handoff downloaded.');
+  };
+  const fileRef = useRef<HTMLInputElement>(null);
+  const exportJson = () => {
+    const data = { app: 'a11y-hub', version: 1, component: spec.slug, exported: new Date().toISOString(), worksheet: entry };
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${spec.slug}-worksheet.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    flash('Worksheet file downloaded. Send it to a teammate to import.');
+  };
+  const importJson = async (file: File | undefined) => {
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (data?.app !== 'a11y-hub' || !data.worksheet) throw new Error('not ours');
+      if (data.component !== spec.slug) {
+        const other = findComponent(String(data.component))?.name ?? String(data.component);
+        flash(`That file is for the ${other} worksheet, not ${spec.name}. Open the ${other} page to import it.`);
+        return;
+      }
+      ws.merge(data.worksheet);
+      flash('Teammate’s worksheet imported and combined with yours.');
+    } catch {
+      flash('Couldn’t read that file. Choose a worksheet .json exported from A11y Hub.');
+    } finally {
+      if (fileRef.current) fileRef.current.value = '';
+    }
   };
   const reset = () => {
     if (window.confirm(`Clear everything entered in the ${spec.name} worksheet, for all roles?`)) {
@@ -412,6 +444,7 @@ export function Worksheet({ spec, variant }: { spec: ComponentSpec; variant?: Va
                         note={entry.qa[c.id]?.note}
                         onResult={(r) => ws.setQa(c.id, r)}
                         onNote={(n) => ws.setQaNote(c.id, n)}
+                        report={<BugReport spec={spec} variant={variant} check={c} note={entry.qa[c.id]?.note} entry={entry} />}
                       />
                     ))}
                   </ul>
@@ -429,6 +462,13 @@ export function Worksheet({ spec, variant }: { spec: ComponentSpec; variant?: Va
         <Button size="sm" weight="light" color="gray" onClick={download}>
           Download .md
         </Button>
+        <Button size="sm" weight="light" color="gray" onClick={exportJson}>
+          Export for team
+        </Button>
+        <Button size="sm" weight="light" color="gray" onClick={() => fileRef.current?.click()}>
+          Import teammate’s file
+        </Button>
+        <input ref={fileRef} type="file" accept="application/json,.json" className="sr-only" tabIndex={-1} aria-hidden="true" onChange={(e) => importJson(e.target.files?.[0])} />
         <Button size="sm" weight="clear" color="gray" onClick={reset}>
           Clear worksheet
         </Button>
@@ -437,7 +477,8 @@ export function Worksheet({ spec, variant }: { spec: ComponentSpec; variant?: Va
         </span>
       </div>
       <p className="text-xs text-muted">
-        Saved in this browser only. The copied handoff includes all four roles, so pass it along with the ticket.
+        Saved in this browser only. To work together, export your worksheet and have the next person import it: their answers are
+        combined with yours, nothing is overwritten with blanks. The copied Markdown handoff includes all four roles for your ticket.
       </p>
     </div>
   );

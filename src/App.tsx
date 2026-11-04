@@ -1,6 +1,7 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ChecklistPage } from './pages/ChecklistPage';
+import { ChoosePage } from './pages/ChoosePage';
 import { ComponentPage } from './pages/ComponentPage';
 import { ComponentsIndex } from './pages/ComponentsIndex';
 import { FoundationPage } from './pages/FoundationPage';
@@ -19,6 +20,7 @@ export function App() {
           <Route path="foundations/:slug" element={<FoundationPage />} />
           <Route path="roles/:role" element={<RolePage />} />
           <Route path="checklist" element={<ChecklistPage />} />
+          <Route path="choose" element={<ChoosePage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

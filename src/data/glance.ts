@@ -1,0 +1,37 @@
+/** Short, scannable summaries shown at the top of each component page. */
+export interface Glance {
+  /** What it does, in one plain sentence. */
+  does: string;
+  /** Things people often confuse it with, and when to pick those instead. */
+  instead: { slug: string; when: string }[];
+}
+
+export const glance: Record<string, Glance> = {
+  button: { does: 'Triggers an action on the current page, like saving, opening or deleting.', instead: [{ slug: 'link', when: 'it takes people to another page' }, { slug: 'switch', when: 'it turns a setting on or off immediately' }] },
+  menu: { does: 'Opens a short list of actions from one button.', instead: [{ slug: 'site-navigation', when: 'the items are pages to go to' }, { slug: 'select', when: 'people are choosing a value for a form' }] },
+  link: { does: 'Takes people to another page, file or place on the page.', instead: [{ slug: 'button', when: 'it does something without changing the URL' }] },
+  'site-navigation': { does: 'Lets people move between the main sections of the site.', instead: [{ slug: 'menu', when: 'the items are actions, not pages' }, { slug: 'tabs', when: 'it switches views inside one page' }] },
+  breadcrumbs: { does: 'Shows where the current page sits in the site, with links back up.', instead: [{ slug: 'site-navigation', when: 'people need to reach any section, not just parents' }] },
+  pagination: { does: 'Splits a long list of results across numbered pages.', instead: [{ slug: 'button', when: 'a single “Load more” button is enough' }] },
+  'skip-link': { does: 'Lets keyboard users jump past repeated content to the main content.', instead: [] },
+  tabs: { does: 'Switches between related views of the same content, one at a time.', instead: [{ slug: 'accordion', when: 'people may want several sections open at once' }, { slug: 'site-navigation', when: 'each view is a separate page' }] },
+  accordion: { does: 'Shows and hides sections of content under headings.', instead: [{ slug: 'tabs', when: 'only one view should show at a time' }, { slug: 'dialog', when: 'the content needs a response before continuing' }] },
+  'text-input': { does: 'Lets people type a short, single-line answer.', instead: [{ slug: 'textarea', when: 'answers may be longer than a sentence' }, { slug: 'select', when: 'there’s a fixed list of answers' }] },
+  textarea: { does: 'Lets people type a longer, multi-line answer.', instead: [{ slug: 'text-input', when: 'the answer fits on one line' }] },
+  checkbox: { does: 'Lets people pick any number of options, or confirm one thing.', instead: [{ slug: 'radio-group', when: 'only one option can be chosen' }, { slug: 'switch', when: 'it applies a setting immediately' }] },
+  'radio-group': { does: 'Lets people pick exactly one option from a short visible list.', instead: [{ slug: 'checkbox', when: 'more than one option can be chosen' }, { slug: 'select', when: 'there are more than about 6 options' }] },
+  switch: { does: 'Turns a single setting on or off, taking effect immediately.', instead: [{ slug: 'checkbox', when: 'the choice is only saved when a form is submitted' }] },
+  select: { does: 'Lets people pick one option from a list that’s hidden until opened.', instead: [{ slug: 'radio-group', when: 'there are 5 or fewer options' }, { slug: 'combobox', when: 'the list is long and people know what to type' }] },
+  combobox: { does: 'Lets people type to filter a long list and pick a match.', instead: [{ slug: 'select', when: 'the list is short enough to scan' }, { slug: 'text-input', when: 'any answer is allowed' }] },
+  slider: { does: 'Lets people choose a value in a range by dragging or using arrow keys.', instead: [{ slug: 'text-input', when: 'people need to enter an exact number' }] },
+  'date-picker': { does: 'Lets people enter a date by typing, with an optional calendar.', instead: [{ slug: 'text-input', when: 'it’s a date people know well, like a birthday (use three fields)' }] },
+  'file-upload': { does: 'Lets people choose files from their device to send.', instead: [] },
+  'error-summary': { does: 'Lists every problem in a form after a failed submit, with links to each field.', instead: [{ slug: 'alert', when: 'the message isn’t tied to specific fields' }] },
+  dialog: { does: 'Interrupts the page to ask for a decision or focused task.', instead: [{ slug: 'alert', when: 'people need to know something but don’t have to respond' }, { slug: 'accordion', when: 'the content can sit in the page' }] },
+  tooltip: { does: 'Shows a short label or hint when a control is hovered or focused.', instead: [{ slug: 'dialog', when: 'the content is interactive or long' }, { slug: 'text-input', when: 'it’s a field hint, which should always be visible' }] },
+  toast: { does: 'Briefly confirms that something happened, without interrupting.', instead: [{ slug: 'alert', when: 'the message must stay on the page' }, { slug: 'dialog', when: 'people must respond' }] },
+  alert: { does: 'Shows an important message in the page, and announces it if it appears later.', instead: [{ slug: 'toast', when: 'it’s a brief confirmation' }, { slug: 'error-summary', when: 'it’s a list of form errors' }] },
+  progress: { does: 'Shows that something is loading or how far along a task is.', instead: [{ slug: 'toast', when: 'you only need to confirm it finished' }] },
+  image: { does: 'Shows a picture, icon or chart, with a text alternative or hidden if decorative.', instead: [{ slug: 'table', when: 'a chart’s data would be clearer as a table' }] },
+  table: { does: 'Shows data in rows and columns so people can compare values.', instead: [{ slug: 'image', when: 'the point is a trend, not exact values (use a chart with a description)' }] },
+};
