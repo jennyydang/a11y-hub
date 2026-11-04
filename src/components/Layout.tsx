@@ -4,6 +4,7 @@ import { categories, byCategory } from '../data/components';
 import { foundations } from '../data/foundations';
 import { roles } from '../data/roles';
 import { cx } from '../ui';
+import { Search } from './Search';
 import { ThemeToggle } from './ThemeToggle';
 
 function Logo() {
@@ -189,7 +190,8 @@ export function Layout() {
               );
             })}
           </nav>
-          <div className="ml-auto md:ml-2">
+          <div className="ml-auto flex items-center gap-2 md:ml-2">
+            <Search />
             <ThemeToggle />
           </div>
         </div>

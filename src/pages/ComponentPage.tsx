@@ -14,14 +14,16 @@ import { cx } from '../ui';
 import { AriaTable, KeyboardTable, WcagList } from '../components/Tables';
 import { components, findComponent } from '../data/components';
 import { htmlExamples } from '../data/html';
+import { anatomy } from '../data/anatomy';
+import { AnatomyTables } from '../components/AnatomyTables';
 import { NotFound } from './NotFound';
 import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
 
-const toc = (tool?: string): [string, string[]][] => [
+const toc = (tool?: string, hasAnatomy?: boolean): [string, string[]][] => [
   ['Overview', ['At a glance']],
   ['Try it', ['Live example']],
-  ['How it works', ['Usage', 'Keyboard interactions', 'ARIA', 'Focus & screen readers']],
+  ['How it works', ['Usage', ...(hasAnatomy ? ['Anatomy & states'] : []), 'Keyboard interactions', 'ARIA', 'Focus & screen readers']],
   ['Guidance', ['Best practices', ...(tool ? [tool] : []), 'WCAG criteria', 'Fluid UI notes']],
   ['Team handoff', ['Who owns what', 'Handoff worksheet', 'Testing checklist']],
 ];
@@ -41,7 +43,7 @@ export function ComponentPage() {
   const [params, setParams] = useSearchParams();
   const spec = findComponent(slug);
   usePageTitle(spec ? spec.name : 'Not found');
-  const sections = toc(spec?.tool?.title);
+  const sections = toc(spec?.tool?.title, Boolean(spec && anatomy[spec.slug]));
   const active = useScrollSpy(sections.flatMap(([, items]) => items.map(slugify)));
   if (!spec) return <NotFound />;
 
@@ -124,6 +126,12 @@ export function ComponentPage() {
                 <Bullets items={spec.whenToUse} />
               </div>
             </Section>
+
+            {anatomy[spec.slug] && (
+              <Section title="Anatomy & states" intro={<p>The parts that make up the component, and how each state looks and sounds.</p>}>
+                <AnatomyTables name={spec.name} data={anatomy[spec.slug]} />
+              </Section>
+            )}
 
             <Section title="Keyboard interactions">
               <KeyboardTable rows={spec.keyboard} name={spec.name} />

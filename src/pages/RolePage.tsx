@@ -11,6 +11,9 @@ import { loadWorksheet } from '../lib/worksheetStore';
 import { cx } from '../ui';
 import { NotFound } from './NotFound';
 import { AltDecision } from '../tools/AltDecision';
+import { AnnotationKit } from '../tools/AnnotationKit';
+import { CopyPatterns } from '../tools/CopyPatterns';
+import { ScreenReaderCheatSheet } from '../tools/ScreenReaderCheatSheet';
 import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
 
@@ -70,6 +73,24 @@ export function RolePage() {
         {guide.id === 'content' && (
           <Section title="Decorative or informative?" intro={<p>Not sure whether an image needs alt text? Answer a few yes or no questions to find out what to write.</p>}>
             <AltDecision />
+          </Section>
+        )}
+
+        {guide.id === 'content' && (
+          <Section title="Copy patterns" intro={<p>Reusable wording for buttons, links, labels, errors and messages. Copy an example, or follow the pattern.</p>}>
+            <CopyPatterns />
+          </Section>
+        )}
+
+        {guide.id === 'design' && (
+          <Section title="Annotation kit" intro={<p>Standard markers for accessibility notes on design files, so frontend knows exactly what to build.</p>}>
+            <AnnotationKit />
+          </Section>
+        )}
+
+        {(guide.id === 'qa' || guide.id === 'frontend') && (
+          <Section title="Screen reader cheat sheet" intro={<p>The commands you need to test a page, side by side for each screen reader.</p>}>
+            <ScreenReaderCheatSheet />
           </Section>
         )}
 
