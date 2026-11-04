@@ -3,6 +3,7 @@
 A documentation site and interactive component library focused on the accessibility of common web components. Each component page covers:
 
 - **HTML code** for every component: semantic markup, ARIA and minimal vanilla JavaScript, so you don't need React or Fluid UI to use it. React + Fluid UI code is in a second tab.
+- **HTML code** with the ARIA it needs and minimal vanilla JavaScript, so readers don't need React or Fluid UI. React + Fluid UI code is in a second tab.
 - **Live example** built with [Fluid UI](https://fluid-design.io/), with a vision simulator (protanopia, deuteranopia, tritanopia, achromatopsia, blur) and a **screen reader inspector**. The inspector shows the focused element's role, accessible name, states and approximate live-region announcements.
 - **Usage**: when to use it and when to use something else
 - **Keyboard interactions** and **ARIA** reference tables
