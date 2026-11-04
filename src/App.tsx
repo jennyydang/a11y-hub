@@ -2,6 +2,9 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ChecklistPage } from './pages/ChecklistPage';
 import { ChoosePage } from './pages/ChoosePage';
+import { ProgressPage } from './pages/ProgressPage';
+import { GlossaryPage } from './pages/GlossaryPage';
+import { CheckerPage } from './pages/CheckerPage';
 import { ComponentPage } from './pages/ComponentPage';
 import { ComponentsIndex } from './pages/ComponentsIndex';
 import { FoundationPage } from './pages/FoundationPage';
@@ -21,6 +24,9 @@ export function App() {
           <Route path="roles/:role" element={<RolePage />} />
           <Route path="checklist" element={<ChecklistPage />} />
           <Route path="choose" element={<ChoosePage />} />
+          <Route path="progress" element={<ProgressPage />} />
+          <Route path="glossary" element={<GlossaryPage />} />
+          <Route path="checker" element={<CheckerPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

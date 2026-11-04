@@ -49,6 +49,9 @@ function buildIndex(): Entry[] {
   entries.push(
     { title: 'Which component should I use?', kind: 'Tool', to: '/choose', fields: [{ label: 'Tool', text: 'Pick the right component: button or link, select or radio, dialog or toast' }] },
     { title: 'Decorative or informative?', kind: 'Tool', to: '/components/image', fields: [{ label: 'Tool', text: 'Alt text decision: decorative images, informative images, alt=""' }] },
+    { title: 'Team progress', kind: 'Page', to: '/progress', fields: [{ label: 'Page', text: 'Dashboard of worksheet progress for every role, export and import all worksheets' }] },
+    { title: 'Markup checker', kind: 'Tool', to: '/checker', fields: [{ label: 'Tool', text: 'Paste HTML and check it with axe-core for WCAG issues' }] },
+    { title: 'Glossary', kind: 'Page', to: '/glossary', fields: [{ label: 'Page', text: 'Definitions: accessible name, landmark, live region, focus trap, alt text, ARIA, WCAG' }] },
     { title: 'Testing checklist', kind: 'Page', to: '/checklist', fields: [{ label: 'Page', text: 'Every testing checklist in one place' }] },
   );
   return entries;

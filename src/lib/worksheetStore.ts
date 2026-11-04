@@ -41,7 +41,7 @@ export function loadWorksheet(slug: string): WorksheetEntry {
   return { ...emptyWorksheet(), ...loadAll()[slug] };
 }
 
-function saveWorksheet(slug: string, entry: WorksheetEntry) {
+export function saveWorksheet(slug: string, entry: WorksheetEntry) {
   try {
     const all = loadAll();
     all[slug] = entry;

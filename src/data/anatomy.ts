@@ -183,4 +183,205 @@ export const anatomy: Record<string, Anatomy> = {
       { state: 'Closed', looks: 'Gone', announced: 'Focus is back on the trigger, which is announced' },
     ],
   },
+  menu: {
+    parts: [
+      { name: 'Menu button', required: true, note: 'aria-haspopup and aria-expanded; named for the group of actions.' },
+      { name: 'Menu', required: true, note: 'role="menu", labelled by the button.' },
+      { name: 'Menu item', required: true, note: 'role="menuitem"; starts with a verb.' },
+      { name: 'Separator', required: false, note: 'role="separator" between groups.' },
+    ],
+    states: [
+      { state: 'Closed', looks: 'Button with a chevron or ⋯', announced: '“Actions, menu button, collapsed”' },
+      { state: 'Open', looks: 'Popover list below the button', announced: '“expanded”, then the first item' },
+      { state: 'Item highlighted', looks: 'Filled background', announced: '“Duplicate, menu item, 2 of 4”' },
+      { state: 'Item unavailable', looks: 'Muted text', announced: '“dimmed” or “unavailable”' },
+    ],
+  },
+  'site-navigation': {
+    parts: [
+      { name: 'Nav landmark', required: true, note: '<nav> with a name if there are several.' },
+      { name: 'Top-level link', required: true, note: 'Goes straight to a page.' },
+      { name: 'Disclosure button', required: false, note: 'Opens a submenu; aria-expanded.' },
+      { name: 'Submenu', required: false, note: 'A list of links shown on click.' },
+      { name: 'Current page marker', required: true, note: 'aria-current="page" plus a visual cue.' },
+    ],
+    states: [
+      { state: 'Default', looks: 'Row of links', announced: '“Main, navigation, list, 4 items”' },
+      { state: 'Section open', looks: 'Submenu visible, chevron rotated', announced: '“Products, button, expanded”' },
+      { state: 'Current page', looks: 'Underline or bold, not just color', announced: '“current page”' },
+    ],
+  },
+  breadcrumbs: {
+    parts: [
+      { name: 'Nav landmark', required: true, note: 'aria-label="Breadcrumb".' },
+      { name: 'Ordered list', required: true, note: 'Gives the count and order.' },
+      { name: 'Crumb link', required: true, note: 'Matches the page title.' },
+      { name: 'Separator', required: true, note: 'Decorative, drawn with CSS.' },
+      { name: 'Current page', required: true, note: 'Last item, aria-current="page".' },
+    ],
+    states: [
+      { state: 'Default', looks: 'Links with separators', announced: '“Breadcrumb, navigation, list, 3 items”' },
+      { state: 'Current page', looks: 'Plain text or bold', announced: '“Billing, current page”' },
+    ],
+  },
+  pagination: {
+    parts: [
+      { name: 'Nav landmark', required: true, note: 'Named, like “Search results pages”.' },
+      { name: 'Previous and Next', required: true, note: 'Text labels, not arrows alone.' },
+      { name: 'Page link', required: true, note: 'Hidden “Page” text before the number.' },
+      { name: 'Current page', required: true, note: 'aria-current="page" plus a fill or border.' },
+      { name: 'Range text', required: false, note: 'Like “Showing 21–30 of 80”.' },
+    ],
+    states: [
+      { state: 'Default page', looks: 'Number in a box', announced: '“Page 4, link”' },
+      { state: 'Current page', looks: 'Filled box', announced: '“Page 3, current page”' },
+      { state: 'First or last page', looks: 'Previous or Next hidden or muted', announced: 'Not reachable, or “unavailable”' },
+    ],
+  },
+  'skip-link': {
+    parts: [
+      { name: 'Link', required: true, note: 'First focusable element on the page.' },
+      { name: 'Target', required: true, note: '<main id="main" tabindex="-1">.' },
+    ],
+    states: [
+      { state: 'Hidden', looks: 'Off screen until focused', announced: 'Nothing until reached' },
+      { state: 'Focused', looks: 'Visible at the top left, high contrast', announced: '“Skip to main content, link”' },
+      { state: 'Activated', looks: 'Page scrolls to main content', announced: 'Focus moves to the main content' },
+    ],
+  },
+  slider: {
+    parts: [
+      { name: 'Label', required: true, note: 'Visible, linked to the input.' },
+      { name: 'Track', required: true, note: '3:1 contrast against the background.' },
+      { name: 'Thumb', required: true, note: 'At least 24px, with a focus ring.' },
+      { name: 'Value text', required: true, note: 'Visible, with units; also in aria-valuetext.' },
+      { name: 'Min and max labels', required: false, note: 'At each end of the track.' },
+    ],
+    states: [
+      { state: 'Default', looks: 'Thumb at the current value', announced: '“Temperature, 21 degrees Celsius, comfortable, slider”' },
+      { state: 'Focus', looks: 'Ring around the thumb', announced: 'Label and value' },
+      { state: 'Changing', looks: 'Thumb and value text move', announced: 'New value on each arrow press' },
+    ],
+  },
+  'date-picker': {
+    parts: [
+      { name: 'Label', required: true, note: 'Visible.' },
+      { name: 'Format hint', required: true, note: 'With a real example.' },
+      { name: 'Date field', required: true, note: 'Native date input or day, month, year fields.' },
+      { name: 'Calendar button', required: false, note: 'Opens a calendar dialog; named “Choose date”.' },
+      { name: 'Error message', required: false, note: 'Linked with aria-describedby.' },
+    ],
+    states: [
+      { state: 'Empty', looks: 'Field with format hint', announced: 'Label, hint and “edit text” or “date”' },
+      { state: 'Filled', looks: 'Date shown', announced: 'Label and date' },
+      { state: 'Error', looks: 'Icon, message and red border', announced: '“invalid entry” and the error' },
+    ],
+  },
+  'file-upload': {
+    parts: [
+      { name: 'Label', required: true, note: 'Visible.' },
+      { name: 'Rules hint', required: true, note: 'Allowed types and sizes.' },
+      { name: 'Choose files button', required: true, note: 'The native file input.' },
+      { name: 'Drop zone', required: false, note: 'Bonus only, never the only way.' },
+      { name: 'File list', required: false, note: 'Each file with a named Remove button.' },
+      { name: 'Status message', required: true, note: 'Announces added and removed files.' },
+    ],
+    states: [
+      { state: 'Empty', looks: 'Button and hint', announced: '“Upload documents, button, no file selected”' },
+      { state: 'Dragging over', looks: 'Drop zone border thickens, text changes', announced: 'Nothing' },
+      { state: 'Files added', looks: 'List of files', announced: '“2 files added”' },
+      { state: 'Error', looks: 'Message naming the file', announced: 'The error, like “report.docx is not a PDF”' },
+    ],
+  },
+  'error-summary': {
+    parts: [
+      { name: 'Container', required: true, note: 'Strong border and icon; tabindex="-1" so it can take focus.' },
+      { name: 'Heading', required: true, note: '“There is a problem”.' },
+      { name: 'Error links', required: true, note: 'One per error, linking to the field.' },
+    ],
+    states: [
+      { state: 'Hidden', looks: 'Not shown before submit', announced: 'Nothing' },
+      { state: 'Shown after submit', looks: 'Box at the top of the form', announced: 'Focus moves here: heading, then the list' },
+      { state: 'Link followed', looks: 'Field focused and scrolled into view', announced: 'Field label and its error' },
+    ],
+  },
+  tooltip: {
+    parts: [
+      { name: 'Trigger', required: true, note: 'A focusable control.' },
+      { name: 'Tooltip', required: true, note: 'role="tooltip", referenced by the trigger.' },
+    ],
+    states: [
+      { state: 'Hidden', looks: 'Not shown', announced: 'Trigger name only' },
+      { state: 'Shown', looks: 'Bubble beside the trigger', announced: 'As the name or description of the trigger' },
+      { state: 'Dismissed', looks: 'Hidden by Escape', announced: 'Nothing' },
+    ],
+  },
+  toast: {
+    parts: [
+      { name: 'Live region', required: true, note: 'Exists before any toast appears.' },
+      { name: 'Message', required: true, note: 'Short and specific.' },
+      { name: 'Icon', required: false, note: 'Decorative, paired with text.' },
+      { name: 'Action', required: false, note: 'Also available elsewhere.' },
+      { name: 'Dismiss button', required: false, note: 'Named “Dismiss”.' },
+    ],
+    states: [
+      { state: 'Success', looks: 'Icon and message', announced: 'Politely, like “Changes saved”' },
+      { state: 'Error', looks: 'Error icon, stays until dismissed', announced: 'Assertively, interrupting' },
+      { state: 'Dismissed', looks: 'Gone', announced: 'Nothing; focus never moved' },
+    ],
+  },
+  alert: {
+    parts: [
+      { name: 'Container', required: true, note: 'role="alert" only if it appears after load.' },
+      { name: 'Icon', required: false, note: 'Decorative.' },
+      { name: 'Type prefix', required: true, note: 'Like “Warning:”, visible or visually hidden.' },
+      { name: 'Message', required: true, note: 'What happened and what to do.' },
+    ],
+    states: [
+      { state: 'Info', looks: 'Blue with info icon', announced: '“Info: …”' },
+      { state: 'Success', looks: 'Green with tick', announced: '“Success: …”' },
+      { state: 'Warning', looks: 'Amber with warning icon', announced: '“Warning: …”' },
+      { state: 'Error', looks: 'Red with error icon', announced: '“Error: …”' },
+    ],
+  },
+  progress: {
+    parts: [
+      { name: 'Label', required: true, note: 'Names the task.' },
+      { name: 'Bar or spinner', required: true, note: 'role="progressbar".' },
+      { name: 'Value text', required: false, note: 'Percentage or steps, visible.' },
+      { name: 'Status message', required: true, note: 'Announces start and finish.' },
+    ],
+    states: [
+      { state: 'Determinate', looks: 'Bar fills to the value', announced: '“Uploading report.pdf, progress bar, 40%”' },
+      { state: 'Indeterminate', looks: 'Moving bar or spinner, slower with reduced motion', announced: '“busy” or the label only' },
+      { state: 'Complete', looks: 'Full bar or tick', announced: '“Upload complete”' },
+    ],
+  },
+  image: {
+    parts: [
+      { name: 'Image', required: true, note: '<img> or <svg role="img">.' },
+      { name: 'Alt text', required: true, note: 'Empty alt="" when decorative.' },
+      { name: 'Caption', required: false, note: '<figcaption>, visible to everyone.' },
+      { name: 'Long description', required: false, note: 'For charts and diagrams.' },
+    ],
+    states: [
+      { state: 'Informative', looks: 'Image shown', announced: 'The alt text, then “image”' },
+      { state: 'Decorative', looks: 'Image shown', announced: 'Skipped' },
+      { state: 'Inside a link', looks: 'Image shown', announced: 'The alt text, then “link”' },
+    ],
+  },
+  table: {
+    parts: [
+      { name: 'Caption', required: true, note: 'Names the table.' },
+      { name: 'Column headers', required: true, note: '<th scope="col">.' },
+      { name: 'Row headers', required: false, note: '<th scope="row"> for the first column.' },
+      { name: 'Data cells', required: true, note: 'No merged cells.' },
+      { name: 'Sort button', required: false, note: 'Inside the header, with aria-sort on the <th>.' },
+    ],
+    states: [
+      { state: 'Default', looks: 'Rows and columns', announced: '“Invoices due in March, table, 4 columns, 5 rows”' },
+      { state: 'Sorted', looks: 'Arrow icon on the sorted column', announced: '“sorted ascending”' },
+      { state: 'Scrolling', looks: 'Table scrolls inside its box', announced: 'Nothing; the region is focusable and named' },
+    ],
+  },
 };
