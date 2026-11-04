@@ -4,6 +4,8 @@ import { Section } from '../components/Section';
 import { WcagList } from '../components/Tables';
 import { byCategory, categories } from '../data/components';
 import { componentRoles, findRole, roles } from '../data/roles';
+import { worksheets } from '../data/requirements';
+import { loadWorksheet } from '../lib/worksheetStore';
 import { cx } from '../ui';
 import { NotFound } from './NotFound';
 import { PageHeader } from './PageHeader';
@@ -14,6 +16,7 @@ export function RolePage() {
   const guide = findRole(role);
   usePageTitle(guide ? `${guide.name} guide` : 'Not found');
   if (!guide) return <NotFound />;
+  const sheet = guide.id === 'content' || guide.id === 'design' ? guide.id : null;
 
   return (
     <article className="max-w-4xl">
@@ -71,7 +74,16 @@ export function RolePage() {
           </div>
         </Section>
 
-        <Section title="Your part in each component">
+        <Section
+          title="Your part in each component"
+          intro={
+            sheet ? (
+              <p>
+                Each component has a handoff worksheet listing exactly what you need to {sheet === 'content' ? 'write, like labels, alt text and error messages' : 'decide and check, like contrast, focus and target size'}. Open one when you use that component.
+              </p>
+            ) : undefined
+          }
+        >
           <div className="space-y-8">
             {categories.map((cat) => (
               <div key={cat}>
@@ -82,7 +94,12 @@ export function RolePage() {
                       <Link to={`/components/${c.slug}`} className="link h-fit text-sm">
                         {c.name}
                       </Link>
-                      <p className="text-sm leading-6">{componentRoles[c.slug]?.[guide.id].join(' ')}</p>
+                      <div className="space-y-1">
+                        <p className="text-sm leading-6">{componentRoles[c.slug]?.[guide.id].join(' ')}</p>
+                        {sheet && worksheets[c.slug] && (
+                          <WorksheetLink slug={c.slug} name={c.name} sheet={sheet} />
+                        )}
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -96,5 +113,27 @@ export function RolePage() {
         </Section>
       </div>
     </article>
+  );
+}
+
+function WorksheetLink({ slug, name, sheet }: { slug: string; name: string; sheet: 'content' | 'design' }) {
+  const ws = worksheets[slug];
+  const entry = loadWorksheet(slug);
+  const done =
+    sheet === 'content'
+      ? ws.content.filter((f) => (entry.fields[f.id] ?? '').trim()).length
+      : ws.design.filter((d) => entry.design.includes(d.text)).length;
+  const what = sheet === 'content' ? `${ws.content.length} fields to write` : `${ws.design.length} requirements`;
+  return (
+    <p className="text-sm">
+      <Link to={`/components/${slug}?sheet=${sheet}`} className="link">
+        {sheet === 'content' ? 'Content' : 'Design'} worksheet<span className="sr-only"> for {name}</span>
+      </Link>
+      <span className="text-muted">
+        {' '}
+        · {what}
+        {done > 0 && `, ${done} done`}
+      </span>
+    </p>
   );
 }

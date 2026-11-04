@@ -1,0 +1,462 @@
+/**
+ * Handoff worksheets: what each role must supply or decide when they use a component.
+ *
+ * Content fields are things a content designer fills in (labels, alt text, errors).
+ * Design requirements are decisions a designer must make and check before handoff.
+ * Both can be limited to specific variations with `variants`.
+ */
+
+export type FieldKind = 'name' | 'link' | 'alt' | 'label' | 'hint' | 'error' | 'heading' | 'message' | 'text';
+
+export interface ContentField {
+  id: string;
+  /** What to fill in, as a question or short noun phrase. */
+  label: string;
+  /** Where the text ends up in the markup. */
+  target: string;
+  kind: FieldKind;
+  required: boolean;
+  guidance: string;
+  good: string;
+  bad?: string;
+  multiline?: boolean;
+  /** Only show this field for these variation ids. */
+  variants?: string[];
+}
+
+export interface DesignRequirement {
+  /** The requirement, phrased as something to check. */
+  text: string;
+  /** How to tell it's met. */
+  check: string;
+  variants?: string[];
+}
+
+export interface Worksheet {
+  content: ContentField[];
+  design: DesignRequirement[];
+}
+
+/* ---------- Shared design requirements ---------- */
+
+const focus = (what = 'Every interactive part'): DesignRequirement => ({
+  text: `${what} has a designed focus state.`,
+  check: 'The focus indicator is at least 2px thick, has 3:1 contrast against the background, and isn’t clipped or covered.',
+});
+const target = (what = 'Clickable areas'): DesignRequirement => ({
+  text: `${what} are at least 24×24px.`,
+  check: 'Measure the hit area, including padding. Use 44×44px on touch-first screens.',
+});
+const textContrast: DesignRequirement = {
+  text: 'All text meets contrast minimums.',
+  check: 'Body text is at least 4.5:1. Text 24px and up, or 18.66px bold and up, is at least 3:1. Check every state, including hover and disabled-looking text.',
+};
+const reflow: DesignRequirement = {
+  text: 'The layout works at 320px wide and at 200% text size.',
+  check: 'Nothing is cut off, overlaps or needs sideways scrolling. Labels wrap instead of truncating.',
+};
+const notColorOnly = (state: string): DesignRequirement => ({
+  text: `The ${state} doesn’t rely on color alone.`,
+  check: 'View it in grayscale (use the Achromatopsia simulation above). The state is still obvious from an icon, text, weight or shape.',
+});
+const fieldBorder: DesignRequirement = {
+  text: 'The field boundary has 3:1 contrast.',
+  check: 'Measure the border or underline against the page background, in light and dark themes.',
+};
+const visibleLabel: DesignRequirement = {
+  text: 'The label stays visible above the field.',
+  check: 'No placeholder-only labels and no labels that disappear on typing. The label sits close to its field.',
+};
+const errorDesign: DesignRequirement = {
+  text: 'Error states pair color with an icon and text.',
+  check: 'The error message sits next to the field, starts with an icon, and the border changes thickness or style as well as color.',
+};
+const motion: DesignRequirement = {
+  text: 'Motion has a reduced-motion version.',
+  check: 'With “reduce motion” turned on, transitions are removed or replaced by a fade. Nothing flashes more than 3 times a second.',
+};
+
+/* ---------- Shared content fields ---------- */
+
+const fieldLabel: ContentField = {
+  id: 'label',
+  label: 'Field label',
+  target: '<label>',
+  kind: 'label',
+  required: true,
+  guidance: 'Short and specific. Say what to enter, not how. Don’t end with a colon or add the required asterisk yourself.',
+  good: 'Email address',
+  bad: 'Enter your email here:',
+};
+const fieldHint: ContentField = {
+  id: 'hint',
+  label: 'Hint text',
+  target: 'aria-describedby → hint',
+  kind: 'hint',
+  required: false,
+  guidance: 'Explain the format or why you’re asking. Keep it to one sentence. Never put essential instructions in a placeholder.',
+  good: 'We’ll only use this to send your receipt.',
+};
+const fieldError = (good: string, bad = 'Invalid input'): ContentField => ({
+  id: 'error',
+  label: 'Error message for each rule',
+  target: 'aria-describedby → error',
+  kind: 'error',
+  required: true,
+  multiline: true,
+  guidance: 'One line per validation rule. Say what went wrong and how to fix it, in the same words the error summary will use.',
+  good,
+  bad,
+});
+
+export const worksheets: Record<string, Worksheet> = {
+  button: {
+    content: [
+      {
+        id: 'label',
+        label: 'Button label',
+        target: 'Visible text',
+        kind: 'name',
+        required: true,
+        guidance: 'Start with a verb that says what will happen. Two or three words is ideal. Don’t include the word “button”.',
+        good: 'Save changes',
+        bad: 'OK',
+        variants: ['standard', 'toggle', 'loading', 'unavailable'],
+      },
+      {
+        id: 'aria-label',
+        label: 'Accessible name for the icon',
+        target: 'aria-label',
+        kind: 'name',
+        required: true,
+        guidance: 'Icon-only buttons have no visible text, so screen readers rely entirely on this. Describe the action, not the icon.',
+        good: 'Delete invoice INV-204',
+        bad: 'Trash can',
+        variants: ['icon-only'],
+      },
+      {
+        id: 'tooltip',
+        label: 'Tooltip text',
+        target: 'Visible tooltip',
+        kind: 'text',
+        required: true,
+        guidance: 'Sighted users need to know what the icon does too. Match the accessible name so voice control users can say it.',
+        good: 'Delete invoice',
+        variants: ['icon-only'],
+      },
+      {
+        id: 'toggle-state',
+        label: 'What “on” means',
+        target: 'aria-pressed',
+        kind: 'text',
+        required: true,
+        guidance: 'Keep the label the same in both states. Screen readers add “pressed” or “not pressed”, so the label must make sense with either.',
+        good: 'Mute notifications (pressed = muted)',
+        bad: 'Mute / Unmute (label swaps)',
+        variants: ['toggle'],
+      },
+      {
+        id: 'loading',
+        label: 'Loading and done announcements',
+        target: 'role="status"',
+        kind: 'message',
+        required: true,
+        multiline: true,
+        guidance: 'What screen readers hear when work starts and when it finishes.',
+        good: 'Saving… / Changes saved',
+        variants: ['loading'],
+      },
+      {
+        id: 'reason',
+        label: 'Why it’s unavailable',
+        target: 'aria-describedby',
+        kind: 'hint',
+        required: true,
+        guidance: 'Tell people what they need to do to make the button available.',
+        good: 'Add at least one item to check out.',
+        variants: ['unavailable'],
+      },
+    ],
+    design: [
+      focus('The button'),
+      target('Buttons'),
+      textContrast,
+      { text: 'Hover, pressed and unavailable states are all designed.', check: 'Each state is visually distinct. The unavailable style still has readable text (aim for 4.5:1) because it stays focusable.' },
+      notColorOnly('pressed state'),
+      { text: 'The icon has 3:1 contrast and a visible tooltip.', check: 'Measure the icon against its background. The tooltip shows on hover and on keyboard focus.', variants: ['icon-only'] },
+      { text: 'The button keeps its width while loading.', check: 'The spinner replaces or sits beside the label without shifting the layout.', variants: ['loading'] },
+    ],
+  },
+
+  menu: {
+    content: [
+      { id: 'trigger', label: 'Menu button label', target: 'Visible text or aria-label', kind: 'name', required: true, guidance: 'Name the group of actions. If it’s an icon (like ⋯), write the accessible name.', good: 'Actions for invoice INV-204', bad: 'More' },
+      { id: 'items', label: 'Menu items', target: 'role="menuitem"', kind: 'name', required: true, multiline: true, guidance: 'One per line, each starting with a verb. Make the first letters different so typeahead works. Put destructive items last.', good: 'Edit\nDuplicate\nDownload PDF\nDelete', bad: 'Click to edit\nClick to copy' },
+    ],
+    design: [focus('Each menu item'), notColorOnly('highlighted item'), { text: 'Destructive items are marked with more than red.', check: 'Use an icon or the word itself (“Delete”) and separate it from other items.' }, target('Menu items'), reflow],
+  },
+
+  link: {
+    content: [
+      { id: 'text', label: 'Link text', target: 'Visible text', kind: 'link', required: true, guidance: 'It must make sense out of context, because screen reader users often list all links. Describe the destination.', good: 'Read the 2026 accessibility report', bad: 'Click here' },
+      { id: 'new-tab', label: 'New tab warning', target: 'Visible text or visually hidden text', kind: 'text', required: true, guidance: 'Say the link opens in a new tab, so people aren’t surprised when Back doesn’t work.', good: '(opens in a new tab)', variants: ['external'] },
+      { id: 'file', label: 'File type and size', target: 'Visible text', kind: 'text', required: true, guidance: 'Tell people what they’re downloading before they commit to it.', good: 'Annual report (PDF, 2.4 MB)', variants: ['download'] },
+    ],
+    design: [
+      { text: 'Links in body text are underlined.', check: 'Or they have 3:1 contrast with the surrounding text plus a non-color cue on hover and focus.', variants: ['inline'] },
+      focus('The link'),
+      textContrast,
+      { text: 'The external-link icon is decorative and paired with text.', check: 'The icon alone isn’t the only signal. The “new tab” text is visible or present for screen readers.', variants: ['external'] },
+      target('Standalone links'),
+    ],
+  },
+
+  'site-navigation': {
+    content: [
+      { id: 'nav-name', label: 'Navigation name', target: 'aria-label on <nav>', kind: 'label', required: true, guidance: 'Only needed when the page has more than one nav. Don’t include the word “navigation”; it’s announced already.', good: 'Main', bad: 'Main navigation menu' },
+      { id: 'items', label: 'Top-level labels', target: 'Links and disclosure buttons', kind: 'link', required: true, multiline: true, guidance: 'One per line. Short, distinct and the same on every page.', good: 'Products\nPricing\nDocs\nSupport' },
+    ],
+    design: [focus('Each link and toggle'), notColorOnly('current page marker'), { text: 'Dropdowns open on click, not hover alone.', check: 'A visible chevron shows a section can expand. Hover can preview, but click and Enter must work.' }, reflow, target('Links')],
+  },
+
+  breadcrumbs: {
+    content: [
+      { id: 'trail', label: 'Breadcrumb trail', target: 'Links in an <ol>', kind: 'link', required: true, multiline: true, guidance: 'One crumb per line, from the top level down. Each should match the title of the page it links to.', good: 'Home\nAccount\nBilling' },
+    ],
+    design: [{ text: 'Separators are decorative.', check: 'They’re drawn with CSS or an aria-hidden icon, not typed as characters in the text.' }, notColorOnly('current page marker'), { text: 'The trail wraps on small screens.', check: 'At 320px wide, crumbs wrap onto new lines instead of being cut off.' }, focus('Each crumb')],
+  },
+
+  pagination: {
+    content: [
+      { id: 'range', label: 'Results range text', target: 'Visible text', kind: 'message', required: true, guidance: 'Tells people where they are in the results.', good: 'Showing 21–30 of 80 results' },
+      { id: 'nav-name', label: 'Navigation name', target: 'aria-label on <nav>', kind: 'label', required: true, guidance: 'Distinguishes this nav from others on the page.', good: 'Search results pages', bad: 'Pagination navigation' },
+    ],
+    design: [notColorOnly('current page marker'), target('Page links'), focus('Each page link'), { text: 'Previous and Next have text, not just arrows.', check: 'Arrows can sit beside the words. On narrow screens the words can be hidden only if the accessible name stays.' }],
+  },
+
+  'skip-link': {
+    content: [{ id: 'text', label: 'Skip link text', target: 'Visible text', kind: 'link', required: true, guidance: 'Use the standard wording people recognize.', good: 'Skip to main content', bad: 'Skip' }],
+    design: [{ text: 'The focused skip link is clearly visible.', check: 'It appears at the top left on first Tab, with strong contrast, and isn’t hidden under a sticky header.' }, textContrast],
+  },
+
+  tabs: {
+    content: [
+      { id: 'list-name', label: 'Name for the set of tabs', target: 'aria-label on the tablist', kind: 'label', required: true, guidance: 'Describe what the tabs switch between.', good: 'Account settings' },
+      { id: 'tabs', label: 'Tab labels', target: 'role="tab"', kind: 'label', required: true, multiline: true, guidance: 'One per line. One or two words, each distinct. Don’t include counts that change unless they’re also in the panel.', good: 'Profile\nSecurity\nNotifications' },
+    ],
+    design: [notColorOnly('selected tab'), focus('Each tab'), target('Tabs'), { text: 'Tabs that don’t fit scroll or wrap.', check: 'At 320px no tab is cut off. Vertical tabs stack above the panel on narrow screens.' }, { text: 'Panel content is visually connected to its tab.', check: 'A shared surface or border shows which panel belongs to the selected tab.' }],
+  },
+
+  accordion: {
+    content: [
+      { id: 'headers', label: 'Section headers', target: 'Button inside a heading', kind: 'heading', required: true, multiline: true, guidance: 'One per line. Each should describe what’s hidden, so people can decide whether to open it.', good: 'How do refunds work?\nCan I change my plan later?', bad: 'More info\nDetails' },
+      { id: 'level', label: 'Heading level', target: '<h2>–<h4>', kind: 'text', required: true, guidance: 'The level fits the page outline, not the visual size.', good: 'h3 (sits under the “FAQ” h2)' },
+    ],
+    design: [{ text: 'The whole header row is clickable.', check: 'Not just the chevron. The hit area spans the full width.' }, notColorOnly('expanded state'), focus('Each header'), motion],
+  },
+
+  'text-input': {
+    content: [
+      fieldLabel,
+      { ...fieldHint, variants: ['hint', 'validation', 'error'] },
+      { ...fieldError('Enter an email address in the format name@example.com', 'Invalid email'), variants: ['validation', 'error'] },
+      { id: 'autocomplete', label: 'What the field collects', target: 'autocomplete', kind: 'text', required: false, guidance: 'If it’s personal data, name it so frontend can set the right autocomplete token.', good: 'Email (autocomplete="email")' },
+      { id: 'readonly', label: 'Why it can’t be changed', target: 'Hint text', kind: 'hint', required: true, guidance: 'Tell people why the value is locked and where to change it.', good: 'Contact your admin to change your username.', variants: ['read-only'] },
+    ],
+    design: [visibleLabel, fieldBorder, focus('The field'), { ...errorDesign, variants: ['validation', 'error'] }, { text: 'Read-only looks different from editable.', check: 'Use a filled background or no border, and keep the text at 4.5:1.', variants: ['read-only'] }, reflow],
+  },
+
+  textarea: {
+    content: [
+      fieldLabel,
+      { id: 'limit', label: 'Length limit text', target: 'Hint, then live count', kind: 'hint', required: true, guidance: 'State the limit before people start typing, and write the remaining-count message.', good: 'You can enter up to 500 characters. / You have 20 characters remaining.' },
+      fieldError('Description must be 500 characters or fewer'),
+    ],
+    design: [visibleLabel, fieldBorder, { text: 'People can resize the field vertically.', check: 'Don’t lock the height. Text grows without being clipped.' }, { text: 'The character count is next to the field.', check: 'It’s close enough to see while typing and changes style when over the limit, not just color.' }, focus('The field')],
+  },
+
+  checkbox: {
+    content: [
+      { id: 'legend', label: 'Group question', target: '<legend>', kind: 'label', required: true, guidance: 'Phrase it as a question or instruction. It’s read before each option.', good: 'Which emails would you like?', variants: ['group', 'required'] },
+      { id: 'options', label: 'Option labels', target: '<label>', kind: 'label', required: true, multiline: true, guidance: 'One per line. Phrase positively (“Send me…”, not “Don’t send me…”).', good: 'Product updates\nWeekly tips\nEvent invitations' },
+      { id: 'error', label: 'Error message', target: 'aria-describedby → error', kind: 'error', required: true, guidance: 'Say what they need to select.', good: 'Select at least one type of email', bad: 'Required', variants: ['required', 'single'] },
+    ],
+    design: [{ text: 'The checkbox border has 3:1 contrast.', check: 'Measure the unchecked box against the background.' }, { text: 'The label is clickable.', check: 'Clicking the text toggles the box, so the hit area is bigger than the box.' }, focus('Each checkbox'), notColorOnly('checked state')],
+  },
+
+  'radio-group': {
+    content: [
+      { id: 'legend', label: 'Group question', target: '<legend>', kind: 'label', required: true, guidance: 'The question the options answer.', good: 'How should we contact you?' },
+      { id: 'options', label: 'Option labels', target: '<label>', kind: 'label', required: true, multiline: true, guidance: 'One per line. Mutually exclusive and in a logical order.', good: 'Email\nPhone\nText message' },
+      { id: 'error', label: 'Error message', target: 'aria-describedby → error', kind: 'error', required: false, guidance: 'Only if a choice is required.', good: 'Select how we should contact you' },
+    ],
+    design: [notColorOnly('selected state'), { text: 'The radio border has 3:1 contrast.', check: 'Measure the unselected circle against the background.' }, focus('The group'), target('Options (including the label)')],
+  },
+
+  switch: {
+    content: [
+      { id: 'label', label: 'Switch label', target: '<label> or aria-labelledby', kind: 'label', required: true, guidance: 'Name the setting, not the state. It stays the same when toggled; screen readers announce on or off.', good: 'Email notifications', bad: 'Turn notifications on' },
+      { id: 'effect', label: 'What happens when toggled', target: 'Hint text', kind: 'hint', required: false, guidance: 'Only if the effect isn’t obvious. Switches act immediately, with no Save button.', good: 'We’ll email you when someone comments.' },
+    ],
+    design: [notColorOnly('on state'), { text: 'The off-state track has 3:1 contrast.', check: 'Measure the track border or fill against the background.' }, focus('The switch'), target('The switch')],
+  },
+
+  select: {
+    content: [
+      fieldLabel,
+      { id: 'options', label: 'Options', target: '<option> or role="option"', kind: 'label', required: true, multiline: true, guidance: 'One per line, in a logical order (alphabetical, by size, by frequency).', good: 'Small\nMedium\nLarge' },
+      { id: 'placeholder', label: 'Empty choice', target: 'First option', kind: 'text', required: false, guidance: 'If nothing is selected by default, write the prompt.', good: 'Select a size' },
+    ],
+    design: [visibleLabel, fieldBorder, { text: 'The highlighted option shows with more than color.', check: 'Use a filled background with 3:1 against the list, or a check mark.', variants: ['custom'] }, focus('The select'), reflow],
+  },
+
+  combobox: {
+    content: [
+      fieldLabel,
+      { id: 'empty', label: '“No results” message', target: 'Listbox and live region', kind: 'message', required: true, guidance: 'Say nothing matched and suggest what to try.', good: 'No countries match “Narn”. Check the spelling.', bad: 'No data' },
+      { id: 'count', label: 'Result count announcement', target: 'role="status"', kind: 'message', required: true, guidance: 'Short. Screen readers hear it every time the list changes.', good: '5 results available.' },
+    ],
+    design: [visibleLabel, fieldBorder, { text: 'The active option is clear while typing.', check: 'A filled highlight with 3:1 contrast moves with the arrow keys.' }, focus('The input'), reflow],
+  },
+
+  slider: {
+    content: [
+      fieldLabel,
+      { id: 'valuetext', label: 'Value wording', target: 'aria-valuetext', kind: 'text', required: true, guidance: 'How each value should be read aloud, with units and meaning.', good: '21 degrees Celsius, comfortable', bad: '21' },
+      { id: 'range', label: 'Minimum and maximum labels', target: 'Visible text', kind: 'text', required: false, guidance: 'Shown at each end of the track.', good: '16 °C / 28 °C' },
+    ],
+    design: [{ text: 'The current value is shown as text.', check: 'Not only by the thumb position.' }, { text: 'The thumb is at least 24px.', check: 'And has 3:1 contrast against the track and background.' }, focus('The thumb'), { text: 'There’s an alternative to dragging.', check: 'Clicking the track, arrow keys or a number field can also set the value.' }],
+  },
+
+  'date-picker': {
+    content: [
+      fieldLabel,
+      { id: 'format', label: 'Format hint', target: 'aria-describedby → hint', kind: 'hint', required: true, guidance: 'Give the format with a real example.', good: 'For example, 27 3 2007', variants: ['memorable'] },
+      { id: 'limits', label: 'Date limits', target: 'Hint text', kind: 'hint', required: false, guidance: 'Say if only some dates can be chosen.', good: 'Choose a date in the next 30 days.' },
+      fieldError('Date of birth must be in the past', 'Invalid date'),
+    ],
+    design: [visibleLabel, { text: 'Typing a date always works.', check: 'The field is never read-only; the calendar is optional.' }, fieldBorder, focus('Each field and calendar button'), reflow],
+  },
+
+  'file-upload': {
+    content: [
+      fieldLabel,
+      { id: 'rules', label: 'Allowed types and size', target: 'Hint text', kind: 'hint', required: true, guidance: 'List them before people choose a file.', good: 'PDF or JPG, up to 10 MB each.' },
+      { id: 'errors', label: 'Error messages', target: 'aria-describedby → error', kind: 'error', required: true, multiline: true, guidance: 'One per rule. Name the file in each message.', good: 'report.docx is not a PDF or JPG\nphoto.jpg is larger than 10 MB' },
+      { id: 'remove', label: 'Remove button name', target: 'aria-label', kind: 'name', required: true, guidance: 'Include the file name so each Remove button is unique.', good: 'Remove report.pdf', bad: 'Remove' },
+    ],
+    design: [{ text: 'There’s a visible “Choose files” button.', check: 'Drag and drop is a bonus, never the only way.' }, focus('The button and each Remove button'), { text: 'The drop zone border has 3:1 contrast.', check: 'And the drag-over state uses more than color.' }, reflow],
+  },
+
+  'error-summary': {
+    content: [
+      { id: 'title', label: 'Summary heading', target: 'Heading inside the summary', kind: 'heading', required: true, guidance: 'Say there’s a problem in plain words.', good: 'There is a problem', bad: 'Error!' },
+      { id: 'messages', label: 'Error links', target: 'Links to each field', kind: 'error', required: true, multiline: true, guidance: 'One per line, worded exactly as the inline error next to the field.', good: 'Enter your full name\nEnter an email address in the format name@example.com' },
+    ],
+    design: [{ text: 'The summary sits at the top of the form.', check: 'It has a strong border and an icon, not just a colored background.' }, textContrast, focus('The summary and each link')],
+  },
+
+  dialog: {
+    content: [
+      { id: 'title', label: 'Dialog title', target: 'aria-labelledby → heading', kind: 'heading', required: true, guidance: 'Names the dialog. Screen readers announce it on open.', good: 'Delete this project?' },
+      { id: 'body', label: 'Description', target: 'aria-describedby', kind: 'text', required: false, multiline: true, guidance: 'Short explanation of consequences. Read after the title.', good: 'This permanently removes 12 files. You can’t undo this.' },
+      { id: 'actions', label: 'Action buttons', target: 'Buttons', kind: 'name', required: true, multiline: true, guidance: 'One per line. Specific verbs, not OK and Cancel.', good: 'Delete project\nKeep project', bad: 'OK\nCancel' },
+      { id: 'close', label: 'Close button name', target: 'aria-label', kind: 'name', required: true, guidance: 'For the × icon button.', good: 'Close', bad: '×' },
+    ],
+    design: [{ text: 'There’s always a visible close option.', check: 'An × or Cancel button, not only Escape or clicking outside.' }, focus('Every control in the dialog'), reflow, { text: 'The page behind is clearly dimmed.', check: 'The backdrop makes it obvious the rest of the page is inactive.' }, motion],
+  },
+
+  tooltip: {
+    content: [
+      { id: 'text', label: 'Tooltip text', target: 'role="tooltip"', kind: 'text', required: true, guidance: 'One short sentence. Never put essential information only in a tooltip.', good: 'Copy link to clipboard' },
+      { id: 'trigger', label: 'Trigger’s own name', target: 'aria-label or text', kind: 'name', required: true, guidance: 'If the tooltip adds a description, the trigger still needs its own name.', good: 'Help with billing dates', variants: ['description'] },
+    ],
+    design: [{ text: 'It shows on hover and keyboard focus.', check: 'It stays open while the pointer moves onto it, and Escape closes it.' }, textContrast, { text: 'It doesn’t cover what it describes.', check: 'Position it beside the trigger and keep it on screen at 320px.' }],
+  },
+
+  toast: {
+    content: [
+      { id: 'message', label: 'Toast message', target: 'role="status" or role="alert"', kind: 'message', required: true, guidance: 'Short and specific. Say what happened.', good: 'Changes saved', bad: 'Success!', variants: ['success'] },
+      { id: 'error', label: 'Error message', target: 'role="alert"', kind: 'error', required: true, guidance: 'What went wrong and what to do.', good: 'Couldn’t save. Check your connection and try again.', variants: ['error'] },
+      { id: 'action', label: 'Action label', target: 'Button', kind: 'name', required: false, guidance: 'If there’s an action, make sure it’s also available elsewhere.', good: 'Undo' },
+    ],
+    design: [{ text: 'Toasts stay long enough to read.', check: 'At least 5 seconds plus 1 second per 10 words. Errors stay until dismissed.' }, notColorOnly('success or error styling'), { text: 'Toasts don’t cover important content.', check: 'They avoid the main action area and don’t block focus.' }, motion],
+  },
+
+  alert: {
+    content: [
+      { id: 'prefix', label: 'Type prefix', target: 'Visible or visually hidden text', kind: 'text', required: true, guidance: 'A word that states the type, so it isn’t conveyed by color alone.', good: 'Warning:' },
+      { id: 'message', label: 'Alert message', target: 'Text', kind: 'message', required: true, multiline: true, guidance: 'Say what happened and what to do next.', good: 'Your session expires in 5 minutes. Save your work to keep it.' },
+    ],
+    design: [notColorOnly('alert type'), textContrast, { text: 'Icons are paired with a text prefix.', check: 'The icon is decorative; the word carries the meaning.' }, reflow],
+  },
+
+  progress: {
+    content: [
+      { id: 'label', label: 'What’s loading', target: 'aria-label or <label>', kind: 'label', required: true, guidance: 'Name the task.', good: 'Uploading report.pdf', bad: 'Loading' },
+      { id: 'done', label: 'Done message', target: 'role="status"', kind: 'message', required: true, guidance: 'Confirm when it’s finished.', good: 'Upload complete' },
+      { id: 'value', label: 'Value wording', target: 'aria-valuetext', kind: 'text', required: false, guidance: 'If a percentage isn’t meaningful, say it another way.', good: 'Step 2 of 5', variants: ['determinate'] },
+    ],
+    design: [{ text: 'Spinners are paired with text.', check: 'A visible label sits next to the spinner.', variants: ['spinner', 'indeterminate'] }, { text: 'The bar has 3:1 contrast against its track.', check: 'Measure the fill against the empty track.', variants: ['determinate'] }, motion],
+  },
+
+  image: {
+    content: [
+      { id: 'alt', label: 'Alt text', target: 'alt', kind: 'alt', required: true, guidance: 'Describe what the image tells people in this context, not every detail. Usually under 150 characters. Don’t start with “Image of”.', good: 'Volunteers planting trees along the riverbank', bad: 'Image of people', variants: ['informative'] },
+      { id: 'decorative', label: 'Why it’s decorative', target: 'alt=""', kind: 'text', required: true, guidance: 'Confirm the image adds nothing that the text doesn’t already say. Frontend will set an empty alt so screen readers skip it.', good: 'Background texture; the heading says everything.', variants: ['decorative'] },
+      { id: 'short-alt', label: 'Short alt text', target: 'alt', kind: 'alt', required: true, guidance: 'Identify the image and where to find the full description.', good: 'Bar chart of monthly sales, described below', variants: ['complex'] },
+      { id: 'long', label: 'Long description', target: 'Text near the image or aria-describedby', kind: 'text', required: true, multiline: true, guidance: 'Give the key data or trends in words, or a data table.', good: 'Sales rose every month from January (£12k) to June (£31k), with the biggest jump in April.', variants: ['complex'] },
+      { id: 'link-alt', label: 'Alt text (destination)', target: 'alt on an image inside a link', kind: 'link', required: true, guidance: 'The image is the link text, so describe where it goes, not what it looks like.', good: 'Acme home page', bad: 'Logo', variants: ['link'] },
+      { id: 'caption', label: 'Caption', target: '<figcaption>', kind: 'text', required: false, guidance: 'Visible to everyone. Don’t repeat the alt text word for word.', good: 'Spring planting day, April 2026', variants: ['informative', 'complex'] },
+    ],
+    design: [{ text: 'There are no images of text.', check: 'Text is real text, styled with CSS. Logos are the exception.' }, { text: 'Meaningful icons and chart marks have 3:1 contrast.', check: 'Measure each against its background.' }, notColorOnly('difference between chart series'), reflow],
+  },
+
+  table: {
+    content: [
+      { id: 'caption', label: 'Table caption', target: '<caption>', kind: 'heading', required: true, guidance: 'Names the table. Screen readers announce it on entry.', good: 'Invoices due in March 2026' },
+      { id: 'headers', label: 'Column headers', target: '<th scope="col">', kind: 'label', required: true, multiline: true, guidance: 'One per line. Short and unique. Include units.', good: 'Invoice\nCustomer\nAmount (USD)\nDue date' },
+      { id: 'sort', label: 'Sort announcement', target: 'role="status"', kind: 'message', required: false, guidance: 'Confirm the new order.', good: 'Sorted by due date, earliest first', variants: ['sortable'] },
+    ],
+    design: [{ text: 'There are no merged or split cells.', check: 'Every row has the same columns. Complex tables are split into simpler ones.' }, { text: 'Wide tables scroll inside their container.', check: 'The page itself doesn’t scroll sideways at 320px.' }, notColorOnly('sorted column marker'), textContrast],
+  },
+};
+
+/* ---------- Content checks ---------- */
+
+export interface Lint {
+  message: string;
+}
+
+/** Quick heuristics to catch common content problems while typing. */
+export function lintField(kind: FieldKind, value: string): Lint[] {
+  const v = value.trim();
+  if (!v) return [];
+  const out: Lint[] = [];
+  const lines = v.split('\n').map((l) => l.trim()).filter(Boolean);
+  const any = (re: RegExp) => lines.some((l) => re.test(l));
+
+  if (kind === 'alt') {
+    if (any(/^(an? )?(image|picture|photo|graphic|icon)( of)?\b/i)) out.push({ message: 'Screen readers already say “image”. Start with what it shows.' });
+    if (any(/\.(png|jpe?g|gif|svg|webp)$/i)) out.push({ message: 'This looks like a file name, not a description.' });
+    if (v.length > 150) out.push({ message: 'Over 150 characters. Consider a short alt plus a long description.' });
+  }
+  if (kind === 'link' && any(/^(click here|here|read more|learn more|more|link|this)$/i)) {
+    out.push({ message: 'This won’t make sense out of context. Describe the destination.' });
+  }
+  if (kind === 'name') {
+    if (any(/^(ok|okay|submit|click|yes|no|go)$/i)) out.push({ message: 'Say what will happen, like “Save changes”.' });
+    if (any(/\bbutton\b/i)) out.push({ message: 'Don’t include “button”. Screen readers announce the role.' });
+  }
+  if (kind === 'label' || kind === 'name') {
+    if (any(/\*$/)) out.push({ message: 'Leave out the asterisk. The component adds the required marker.' });
+    if (kind === 'label' && any(/:$/)) out.push({ message: 'No colon needed at the end of a label.' });
+  }
+  if (kind === 'error' && lines.some((l) => l.split(/\s+/).length < 3)) {
+    out.push({ message: 'Too short to help. Say what went wrong and how to fix it.' });
+  }
+  if (/\b[A-Z]{5,}\b/.test(v) && !/^[A-Z0-9-]+$/.test(v)) {
+    out.push({ message: 'Avoid all caps. Some screen readers spell it out letter by letter.' });
+  }
+  return out;
+}

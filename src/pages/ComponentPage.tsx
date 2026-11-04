@@ -5,6 +5,7 @@ import { Checklist } from '../components/Checklist';
 import { DemoStage } from '../components/DemoStage';
 import { DoDont } from '../components/DoDont';
 import { RoleNotes } from '../components/RoleNotes';
+import { Worksheet } from '../components/Worksheet';
 import { VariantPicker } from '../components/VariantPicker';
 import { Section, slugify } from '../components/Section';
 import { AriaTable, KeyboardTable, WcagList } from '../components/Tables';
@@ -14,7 +15,7 @@ import { NotFound } from './NotFound';
 import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
 
-const TOC = ['Live example', 'Usage', 'Keyboard interactions', 'ARIA', 'Focus & screen readers', 'Best practices', 'Who owns what', 'Fluid UI notes', 'WCAG criteria', 'Testing checklist'];
+const TOC = ['Live example', 'Usage', 'Keyboard interactions', 'ARIA', 'Focus & screen readers', 'Best practices', 'Who owns what', 'Handoff worksheet', 'Fluid UI notes', 'WCAG criteria', 'Testing checklist'];
 
 function Bullets({ items }: { items: string[] }) {
   return (
@@ -42,7 +43,12 @@ export function ComponentPage() {
   const html = variant?.html ?? htmlExamples[spec.slug] ?? '';
   const code = variant?.code ?? spec.code;
   const setVariant = (id: string) =>
-    setParams(id === variants?.[0].id ? {} : { variant: id }, { replace: true, preventScrollReset: true });
+    {
+    const next = new URLSearchParams(params);
+    if (id === variants?.[0].id) next.delete('variant');
+    else next.set('variant', id);
+    setParams(next, { replace: true, preventScrollReset: true });
+  };
 
   return (
     <div className="flex gap-12">
@@ -128,6 +134,13 @@ export function ComponentPage() {
 
           <Section title="Who owns what" intro={<p>What your content, design and frontend specialists each need to get right.</p>}>
             <RoleNotes slug={spec.slug} />
+          </Section>
+
+          <Section
+            title="Handoff worksheet"
+            intro={<p>Using this component in a design? Content fills in the words it needs, and design checks the requirements it has to meet. Then copy the result into your ticket or design file.</p>}
+          >
+            <Worksheet spec={spec} variant={variant} />
           </Section>
 
           <Section title="Fluid UI notes" intro={<p>How this component is built with Fluid UI, and any accessibility gaps we patched.</p>}>
