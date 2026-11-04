@@ -2,6 +2,7 @@
 
 A documentation site and interactive component library focused on the accessibility of common web components. Each component page covers:
 
+- **Variations** (for 14 components): a switcher above the live example changes the demo, the HTML and the React code together. Each variation has its own link (`?variant=`).
 - **HTML code** for every component: semantic markup, ARIA and minimal vanilla JavaScript, so you don't need React or Fluid UI to use it. React + Fluid UI code is in a second tab.
 - **HTML code** with the ARIA it needs and minimal vanilla JavaScript, so readers don't need React or Fluid UI. React + Fluid UI code is in a second tab.
 - **Live example** built with [Fluid UI](https://fluid-design.io/), with a vision simulator (protanopia, deuteranopia, tritanopia, achromatopsia, blur) and a **screen reader inspector**. The inspector shows the focused element's role, accessible name, states and approximate live-region announcements.
@@ -56,7 +57,8 @@ src/
 
 1. Create `src/data/components/<slug>.tsx` that exports a `ComponentSpec` (see `src/data/types.ts`).
 2. Add it to the `components` array in `src/data/components/index.ts`.
-3. Add its plain HTML example to `htmlExamples` in `src/data/html.ts`.
-4. Add its content, design and frontend notes to `componentRoles` in `src/data/roles.ts`.
+3. Optionally add variations in `src/data/variants/<slug>.tsx` and attach them in `index.ts`.
+4. Add its plain HTML example to `htmlExamples` in `src/data/html.ts`.
+5. Add its content, design and frontend notes to `componentRoles` in `src/data/roles.ts`.
 
 It will show up in the navigation, the components index and the testing checklist automatically.

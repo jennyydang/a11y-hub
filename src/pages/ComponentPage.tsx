@@ -1,10 +1,11 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Tab } from '@fluid-design/fluid-ui';
 import { CodeBlock } from '../components/CodeBlock';
 import { Checklist } from '../components/Checklist';
 import { DemoStage } from '../components/DemoStage';
 import { DoDont } from '../components/DoDont';
 import { RoleNotes } from '../components/RoleNotes';
+import { VariantPicker } from '../components/VariantPicker';
 import { Section, slugify } from '../components/Section';
 import { AriaTable, KeyboardTable, WcagList } from '../components/Tables';
 import { components, findComponent } from '../data/components';
@@ -27,6 +28,7 @@ function Bullets({ items }: { items: string[] }) {
 
 export function ComponentPage() {
   const { slug = '' } = useParams();
+  const [params, setParams] = useSearchParams();
   const spec = findComponent(slug);
   usePageTitle(spec ? spec.name : 'Not found');
   if (!spec) return <NotFound />;
@@ -34,7 +36,13 @@ export function ComponentPage() {
   const idx = components.indexOf(spec);
   const prev = components[idx - 1];
   const next = components[idx + 1];
-  const { Demo } = spec;
+  const variants = spec.variants;
+  const variant = variants?.find((v) => v.id === params.get('variant')) ?? variants?.[0];
+  const Demo = variant?.Demo ?? spec.Demo;
+  const html = variant?.html ?? htmlExamples[spec.slug] ?? '';
+  const code = variant?.code ?? spec.code;
+  const setVariant = (id: string) =>
+    setParams(id === variants?.[0].id ? {} : { variant: id }, { replace: true, preventScrollReset: true });
 
   return (
     <div className="flex gap-12">
@@ -58,9 +66,10 @@ export function ComponentPage() {
         </PageHeader>
 
         <div className="space-y-14">
-          <Section title="Live example" intro={<p>Use the keyboard to try it. The inspector shows roughly what a screen reader would announce.</p>}>
+          <Section title="Live example" intro={<p>Use the keyboard to try it. The inspector shows roughly what a screen reader would announce.{variants ? ' Switch variations to see how the markup changes.' : ''}</p>}>
+            {variants && variant && <VariantPicker variants={variants} value={variant.id} onChange={setVariant} />}
             <DemoStage key={spec.slug}>
-              <Demo />
+              <Demo key={variant?.id} />
             </DemoStage>
             <Tab
               className="mt-2"
@@ -72,7 +81,7 @@ export function ComponentPage() {
                       <p className="text-sm text-muted">
                         Plain HTML with the ARIA it needs, plus the minimum JavaScript where behavior requires it. No framework needed.
                       </p>
-                      <CodeBlock code={htmlExamples[spec.slug] ?? ''} language="html" title="HTML" />
+                      <CodeBlock code={html} language="html" title={variant ? `HTML · ${variant.label}` : 'HTML'} />
                     </div>
                   ),
                 },
@@ -80,7 +89,7 @@ export function ComponentPage() {
                   title: 'React + Fluid UI',
                   content: (
                     <div className="pt-3">
-                      <CodeBlock code={spec.code} title="React (tsx)" />
+                      <CodeBlock code={code} title={variant ? `React · ${variant.label}` : 'React (tsx)'} />
                     </div>
                   ),
                 },

@@ -27,6 +27,36 @@ import { skipLink } from './skip-link';
 import { toast } from './toast';
 import { tooltip } from './tooltip';
 
+import { buttonVariants } from '../variants/button';
+import { linkVariants } from '../variants/link';
+import { textInputVariants } from '../variants/text-input';
+import { checkboxVariants } from '../variants/checkbox';
+import { tabsVariants } from '../variants/tabs';
+import { accordionVariants } from '../variants/accordion';
+import { alertVariants } from '../variants/alert';
+import { tooltipVariants } from '../variants/tooltip';
+import { toastVariants } from '../variants/toast';
+import { progressVariants } from '../variants/progress';
+import { imageVariants } from '../variants/image';
+import { selectVariants } from '../variants/select';
+import { datePickerVariants } from '../variants/date-picker';
+import { tableVariants } from '../variants/table';
+
+button.variants = buttonVariants;
+link.variants = linkVariants;
+textInput.variants = textInputVariants;
+checkbox.variants = checkboxVariants;
+tabs.variants = tabsVariants;
+accordion.variants = accordionVariants;
+alert.variants = alertVariants;
+tooltip.variants = tooltipVariants;
+toast.variants = toastVariants;
+progress.variants = progressVariants;
+image.variants = imageVariants;
+select.variants = selectVariants;
+datePicker.variants = datePickerVariants;
+table.variants = tableVariants;
+
 export const components: ComponentSpec[] = [
   button,
   menu,

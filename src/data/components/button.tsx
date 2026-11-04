@@ -26,7 +26,7 @@ function Demo() {
       <Button weight="outline" color="gray">
         Cancel
       </Button>
-      <Button weight="light" color="gray" aria-pressed={muted} onClick={() => setMuted((m) => !m)}>
+      <Button weight="light" color="gray" className="aria-pressed:!bg-primary-700 aria-pressed:!text-white dark:aria-pressed:!bg-primary-300 dark:aria-pressed:!text-gray-900" aria-pressed={muted} onClick={() => setMuted((m) => !m)}>
         {muted ? 'Unmute' : 'Mute'} notifications
       </Button>
       <Button iconOnly icon={TrashIcon} color="red" weight="light" sr="Delete draft" />
