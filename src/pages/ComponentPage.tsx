@@ -8,6 +8,8 @@ import { RoleNotes } from '../components/RoleNotes';
 import { Worksheet } from '../components/Worksheet';
 import { VariantPicker } from '../components/VariantPicker';
 import { Part, Section, slugify } from '../components/Section';
+import { useScrollSpy } from '../components/useScrollSpy';
+import { cx } from '../ui';
 import { AriaTable, KeyboardTable, WcagList } from '../components/Tables';
 import { components, findComponent } from '../data/components';
 import { htmlExamples } from '../data/html';
@@ -37,6 +39,8 @@ export function ComponentPage() {
   const [params, setParams] = useSearchParams();
   const spec = findComponent(slug);
   usePageTitle(spec ? spec.name : 'Not found');
+  const sections = toc(spec?.tool?.title);
+  const active = useScrollSpy(sections.flatMap(([, items]) => items.map(slugify)));
   if (!spec) return <NotFound />;
 
   const idx = components.indexOf(spec);
@@ -201,9 +205,16 @@ export function ComponentPage() {
         <nav aria-label="On this page">
           <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300">On this page</h2>
           <div className="space-y-4 text-sm">
-            {toc(spec.tool?.title).map(([part, items]) => (
+            {sections.map(([part, items]) => (
               <div key={part}>
-                <p className="mb-1 px-2 text-xs font-semibold text-primary-800 dark:text-primary-200">{part}</p>
+                <p
+                  className={cx(
+                    'mb-1 px-2 text-xs font-semibold',
+                    items.some((t) => slugify(t) === active) ? 'text-primary-800 dark:text-primary-200' : 'text-gray-600 dark:text-gray-300',
+                  )}
+                >
+                  {part}
+                </p>
                 <ul className="space-y-0.5 border-l border-gray-200 dark:border-gray-700">
                   {items.map((t) => (
                     <li key={t}>
@@ -216,7 +227,13 @@ export function ComponentPage() {
                           el?.setAttribute('tabindex', '-1');
                           el?.focus({ preventScroll: true });
                         }}
-                        className="-ml-px block border-l border-transparent py-1 pl-3 pr-2 text-gray-700 hover:border-gray-500 hover:text-gray-900 focus-ring dark:text-gray-200 dark:hover:text-white"
+                        aria-current={slugify(t) === active ? 'location' : undefined}
+                        className={cx(
+                          '-ml-px block border-l-2 py-1 pl-3 pr-2 transition-colors focus-ring',
+                          slugify(t) === active
+                            ? 'border-primary-700 bg-primary-50 font-semibold text-primary-800 dark:border-primary-300 dark:bg-primary-900/30 dark:text-primary-100'
+                            : 'border-transparent text-gray-700 hover:border-gray-400 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white',
+                        )}
                       >
                         {t}
                       </a>
