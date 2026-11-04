@@ -5,7 +5,7 @@ export function RoleNotes({ slug }: { slug: string }) {
   const notes = componentRoles[slug];
   if (!notes) return null;
   return (
-    <ul className="grid gap-4 md:grid-cols-3">
+    <ul className="grid gap-4 md:grid-cols-2">
       {roles.map((r) => (
         <li key={r.id} className="surface flex flex-col p-5">
           <h3 className="font-semibold">{r.name}</h3>

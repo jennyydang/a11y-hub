@@ -3,8 +3,10 @@ import { Checklist } from '../components/Checklist';
 import { Section } from '../components/Section';
 import { WcagList } from '../components/Tables';
 import { byCategory, categories } from '../data/components';
-import { componentRoles, findRole, roles } from '../data/roles';
+import { componentRoles, findRole, roles, type RoleId } from '../data/roles';
 import { worksheets } from '../data/requirements';
+import { sheetProgress } from '../lib/worksheetItems';
+import type { ComponentSpec } from '../data/types';
 import { loadWorksheet } from '../lib/worksheetStore';
 import { cx } from '../ui';
 import { NotFound } from './NotFound';
@@ -16,7 +18,7 @@ export function RolePage() {
   const guide = findRole(role);
   usePageTitle(guide ? `${guide.name} guide` : 'Not found');
   if (!guide) return <NotFound />;
-  const sheet = guide.id === 'content' || guide.id === 'design' ? guide.id : null;
+  const sheet = guide.id;
 
   return (
     <article className="max-w-4xl">
@@ -77,11 +79,9 @@ export function RolePage() {
         <Section
           title="Your part in each component"
           intro={
-            sheet ? (
-              <p>
-                Each component has a handoff worksheet listing exactly what you need to {sheet === 'content' ? 'write, like labels, alt text and error messages' : 'decide and check, like contrast, focus and target size'}. Open one when you use that component.
-              </p>
-            ) : undefined
+            <p>
+              Each component has a handoff worksheet with a {guide.name} tab listing exactly what you need to {WORKSHEET_ASK[sheet]}. Open one when you work on that component.
+            </p>
           }
         >
           <div className="space-y-8">
@@ -96,9 +96,7 @@ export function RolePage() {
                       </Link>
                       <div className="space-y-1">
                         <p className="text-sm leading-6">{componentRoles[c.slug]?.[guide.id].join(' ')}</p>
-                        {sheet && worksheets[c.slug] && (
-                          <WorksheetLink slug={c.slug} name={c.name} sheet={sheet} />
-                        )}
+                        {worksheets[c.slug] && <WorksheetLink spec={c} sheet={sheet} name={guide.name} />}
                       </div>
                     </li>
                   ))}
@@ -116,22 +114,23 @@ export function RolePage() {
   );
 }
 
-function WorksheetLink({ slug, name, sheet }: { slug: string; name: string; sheet: 'content' | 'design' }) {
-  const ws = worksheets[slug];
-  const entry = loadWorksheet(slug);
-  const done =
-    sheet === 'content'
-      ? ws.content.filter((f) => (entry.fields[f.id] ?? '').trim()).length
-      : ws.design.filter((d) => entry.design.includes(d.text)).length;
-  const what = sheet === 'content' ? `${ws.content.length} fields to write` : `${ws.design.length} requirements`;
+const WORKSHEET_ASK: Record<RoleId, string> = {
+  content: 'write, like labels, alt text and error messages',
+  design: 'decide and check, like contrast, focus and target size',
+  frontend: 'build, including the exact text content handed over',
+  qa: 'test, with pass, fail and N/A results you can export',
+};
+
+function WorksheetLink({ spec, sheet, name }: { spec: ComponentSpec; sheet: RoleId; name: string }) {
+  const { done, total, unit } = sheetProgress(spec, sheet, loadWorksheet(spec.slug));
   return (
     <p className="text-sm">
-      <Link to={`/components/${slug}?sheet=${sheet}`} className="link">
-        {sheet === 'content' ? 'Content' : 'Design'} worksheet<span className="sr-only"> for {name}</span>
+      <Link to={`/components/${spec.slug}?sheet=${sheet}`} className="link">
+        {name} worksheet<span className="sr-only"> for {spec.name}</span>
       </Link>
       <span className="text-muted">
         {' '}
-        · {what}
+        · {total} {unit}
         {done > 0 && `, ${done} done`}
       </span>
     </p>

@@ -85,7 +85,7 @@ export function Home() {
           Guides for your team
         </h2>
         <p className="mt-2 max-w-3xl text-muted">Accessibility is shared work. Each guide lists what one role owns, a review checklist, and their part in every component.</p>
-        <ul className="mt-6 grid gap-4 md:grid-cols-3">
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {roles.map((r) => (
             <li key={r.id}>
               <Link to={`/roles/${r.id}`} className="surface group flex h-full flex-col p-5 transition hover:shadow-md focus-ring">

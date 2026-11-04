@@ -46,6 +46,7 @@ src/
     foundations.ts
     html.ts       framework-free HTML examples
     roles.ts      role guides and per-component role notes
+    requirements.ts  handoff worksheet fields and design requirements
     wcag.ts     WCAG 2.2 success criteria used across the site
   lib/          simplified accessibility-tree inspector
   pages/        route components
@@ -59,6 +60,6 @@ src/
 2. Add it to the `components` array in `src/data/components/index.ts`.
 3. Optionally add variations in `src/data/variants/<slug>.tsx` and attach them in `index.ts`.
 4. Add its plain HTML example to `htmlExamples` in `src/data/html.ts`.
-5. Add its content, design and frontend notes to `componentRoles` in `src/data/roles.ts`.
+5. Add its content, design, frontend and QA notes to `componentRoles` in `src/data/roles.ts`, and its worksheet (content fields and design requirements) to `src/data/requirements.ts`. The frontend and QA tabs are generated from the spec.
 
 It will show up in the navigation, the components index and the testing checklist automatically.

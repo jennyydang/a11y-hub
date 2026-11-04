@@ -138,7 +138,7 @@ export function ComponentPage() {
 
           <Section
             title="Handoff worksheet"
-            intro={<p>Using this component in a design? Content fills in the words it needs, and design checks the requirements it has to meet. Then copy the result into your ticket or design file.</p>}
+            intro={<p>One shared worksheet per component. Content writes the words it needs, design checks its requirements, frontend builds from both, and QA tests the result. Copy the whole handoff into your ticket.</p>}
           >
             <Worksheet spec={spec} variant={variant} />
           </Section>
