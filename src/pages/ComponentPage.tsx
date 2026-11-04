@@ -4,6 +4,7 @@ import { CodeBlock } from '../components/CodeBlock';
 import { Checklist } from '../components/Checklist';
 import { DemoStage } from '../components/DemoStage';
 import { DoDont } from '../components/DoDont';
+import { RoleNotes } from '../components/RoleNotes';
 import { Section, slugify } from '../components/Section';
 import { AriaTable, KeyboardTable, WcagList } from '../components/Tables';
 import { components, findComponent } from '../data/components';
@@ -11,7 +12,7 @@ import { NotFound } from './NotFound';
 import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
 
-const TOC = ['Live example', 'Usage', 'Keyboard interactions', 'ARIA', 'Focus & screen readers', 'Best practices', 'Fluid UI notes', 'WCAG criteria', 'Testing checklist'];
+const TOC = ['Live example', 'Usage', 'Keyboard interactions', 'ARIA', 'Focus & screen readers', 'Best practices', 'Who owns what', 'Fluid UI notes', 'WCAG criteria', 'Testing checklist'];
 
 function Bullets({ items }: { items: string[] }) {
   return (
@@ -103,6 +104,10 @@ export function ComponentPage() {
 
           <Section title="Best practices">
             <DoDont dos={spec.dos} donts={spec.donts} />
+          </Section>
+
+          <Section title="Who owns what" intro={<p>What your content, design and frontend specialists each need to get right.</p>}>
+            <RoleNotes slug={spec.slug} />
           </Section>
 
           <Section title="Fluid UI notes" intro={<p>How this component is built with Fluid UI, and any accessibility gaps we patched.</p>}>

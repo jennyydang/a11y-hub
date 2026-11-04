@@ -6,6 +6,7 @@ import { ComponentsIndex } from './pages/ComponentsIndex';
 import { FoundationPage } from './pages/FoundationPage';
 import { Home } from './pages/Home';
 import { NotFound } from './pages/NotFound';
+import { RolePage } from './pages/RolePage';
 
 export function App() {
   return (
@@ -16,6 +17,7 @@ export function App() {
           <Route path="components" element={<ComponentsIndex />} />
           <Route path="components/:slug" element={<ComponentPage />} />
           <Route path="foundations/:slug" element={<FoundationPage />} />
+          <Route path="roles/:role" element={<RolePage />} />
           <Route path="checklist" element={<ChecklistPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>

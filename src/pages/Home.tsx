@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@fluid-design/fluid-ui';
 import { components } from '../data/components';
 import { foundations } from '../data/foundations';
+import { roles } from '../data/roles';
 import { usePageTitle } from './usePageTitle';
 
 const principles = [
@@ -74,6 +75,24 @@ export function Home() {
                 <h3 className="font-semibold">{f.title}</h3>
                 <p className="mt-1 text-sm leading-6 text-muted">{f.body}</p>
               </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="roles" className="mt-16">
+        <h2 id="roles" className="text-2xl font-bold tracking-tight">
+          Guides for your team
+        </h2>
+        <p className="mt-2 max-w-3xl text-muted">Accessibility is shared work. Each guide lists what one role owns, a review checklist, and their part in every component.</p>
+        <ul className="mt-6 grid gap-4 md:grid-cols-3">
+          {roles.map((r) => (
+            <li key={r.id}>
+              <Link to={`/roles/${r.id}`} className="surface group flex h-full flex-col p-5 transition hover:shadow-md focus-ring">
+                <span className="text-xs font-semibold uppercase tracking-wide text-primary-700 dark:text-primary-300">{r.short}</span>
+                <span className="mt-1 text-lg font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">{r.name} guide</span>
+                <span className="mt-2 text-sm leading-6 text-muted">{r.owns.slice(0, 3).join(' · ')}</span>
+              </Link>
             </li>
           ))}
         </ul>

@@ -173,14 +173,16 @@ export function inspect(el: Element): InspectResult {
     const lvl = aria('aria-level') ?? el.tagName.match(/^H(\d)$/)?.[1];
     if (lvl) states.push(`level ${lvl}`);
   }
-  if (
+  if (el instanceof HTMLInputElement && el.type === 'range') {
+    states.push(`value ${aria('aria-valuetext') ?? el.value}`);
+  } else if (
     (el instanceof HTMLInputElement && !['checkbox', 'radio', 'button', 'submit', 'reset'].includes(el.type)) ||
     el instanceof HTMLTextAreaElement
   ) {
     if (el.value) states.push(`value "${el.value}"`);
   }
   if (el instanceof HTMLSelectElement) states.push(`value "${el.selectedOptions[0]?.text ?? ''}"`);
-  if (aria('aria-valuenow') !== null) states.push(`value ${aria('aria-valuetext') ?? aria('aria-valuenow')}`);
+  if (aria('aria-valuenow') !== null && !(el instanceof HTMLInputElement)) states.push(`value ${aria('aria-valuetext') ?? aria('aria-valuenow')}`);
 
   return { role, name, nameSource: source, description, states, tag: el.tagName.toLowerCase() };
 }

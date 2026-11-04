@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { categories, byCategory } from '../data/components';
 import { foundations } from '../data/foundations';
+import { roles } from '../data/roles';
 import { cx } from '../ui';
 import { ThemeToggle } from './ThemeToggle';
 
@@ -40,8 +41,10 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   );
   const groupHeading = 'mb-1 px-3 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300';
   const foundationItems = foundations.filter((f) => match(f.name));
+  const roleItems = roles.filter((r) => match(`${r.name} guide`));
   const totalMatches =
-    foundationItems.length + categories.reduce((n, c) => n + byCategory(c).filter((x) => match(x.name)).length, 0);
+    foundationItems.length +
+    roleItems.length + categories.reduce((n, c) => n + byCategory(c).filter((x) => match(x.name)).length, 0);
 
   return (
     <div className="space-y-6">
@@ -65,6 +68,12 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
         {match('Overview') && item('/', 'Overview')}
         {match('Testing checklist') && item('/checklist', 'Testing checklist')}
       </ul>
+      {roleItems.length > 0 && (
+        <div>
+          <h2 className={groupHeading}>Role guides</h2>
+          <ul className="space-y-0.5">{roleItems.map((r) => item(`/roles/${r.id}`, `${r.name} guide`))}</ul>
+        </div>
+      )}
       {foundationItems.length > 0 && (
         <div>
           <h2 className={groupHeading}>Foundations</h2>
@@ -158,23 +167,26 @@ export function Layout() {
           <span className="chip hidden bg-gray-100 text-gray-700 sm:inline-flex dark:bg-gray-800 dark:text-gray-200">Styled with Fluid UI</span>
           <nav aria-label="Primary" className="ml-auto hidden items-center gap-1 md:flex">
             {[
-              ['/foundations/keyboard', 'Foundations'],
-              ['/components', 'Components'],
-              ['/checklist', 'Checklist'],
-            ].map(([to, label]) => (
-              <NavLink
-                key={to}
-                to={to}
-                className={({ isActive }) =>
-                  cx(
+              ['/foundations/keyboard', 'Foundations', '/foundations'],
+              ['/roles/content', 'Role guides', '/roles'],
+              ['/components', 'Components', '/components'],
+              ['/checklist', 'Checklist', '/checklist'],
+            ].map(([to, label, prefix]) => {
+              const active = location.pathname.startsWith(prefix);
+              return (
+                <NavLink
+                  key={to}
+                  to={to}
+                  aria-current={active ? 'page' : undefined}
+                  className={cx(
                     'rounded-md px-3 py-2 text-sm font-medium focus-ring',
-                    isActive ? 'text-primary-700 dark:text-primary-200' : 'text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white',
-                  )
-                }
-              >
-                {label}
-              </NavLink>
-            ))}
+                    active ? 'text-primary-700 dark:text-primary-200' : 'text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white',
+                  )}
+                >
+                  {label}
+                </NavLink>
+              );
+            })}
           </nav>
           <div className="ml-auto md:ml-2">
             <ThemeToggle />

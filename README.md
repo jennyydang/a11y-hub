@@ -11,6 +11,8 @@ A documentation site and interactive component library focused on the accessibil
 - **WCAG 2.2 criteria**, linked to the W3C Understanding docs
 - **Testing checklist**, with progress saved in `localStorage`
 
+There are 27 components, three **role guides** (content, design and frontend) with review checklists and handoff notes, and each component page has a "Who owns what" section split by role.
+
 There are also foundation pages (keyboard, focus, color and contrast with a contrast checker, semantics and ARIA, motion, text and reflow) and a combined testing checklist page.
 
 ## Stack
@@ -39,6 +41,7 @@ src/
   data/
     components/ one spec file per component (content + live demo)
     foundations.ts
+    roles.ts      role guides and per-component role notes
     wcag.ts     WCAG 2.2 success criteria used across the site
   lib/          simplified accessibility-tree inspector
   pages/        route components
@@ -50,5 +53,6 @@ src/
 
 1. Create `src/data/components/<slug>.tsx` that exports a `ComponentSpec` (see `src/data/types.ts`).
 2. Add it to the `components` array in `src/data/components/index.ts`.
+3. Add its content, design and frontend notes to `componentRoles` in `src/data/roles.ts`.
 
 It will show up in the navigation, the components index and the testing checklist automatically.

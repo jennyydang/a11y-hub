@@ -15,6 +15,15 @@ import { switchSpec } from './switch';
 import { table } from './table';
 import { tabs } from './tabs';
 import { textInput } from './text-input';
+import { textarea } from './textarea';
+import { slider } from './slider';
+import { datePicker } from './date-picker';
+import { fileUpload } from './file-upload';
+import { errorSummary } from './error-summary';
+import { breadcrumbs } from './breadcrumbs';
+import { pagination } from './pagination';
+import { siteNavigation } from './site-navigation';
+import { skipLink } from './skip-link';
 import { toast } from './toast';
 import { tooltip } from './tooltip';
 
@@ -22,14 +31,23 @@ export const components: ComponentSpec[] = [
   button,
   menu,
   link,
+  siteNavigation,
+  breadcrumbs,
+  pagination,
+  skipLink,
   tabs,
   accordion,
   textInput,
+  textarea,
   checkbox,
   radioGroup,
   switchSpec,
   select,
   combobox,
+  slider,
+  datePicker,
+  fileUpload,
+  errorSummary,
   dialog,
   tooltip,
   toast,

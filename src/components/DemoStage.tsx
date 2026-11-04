@@ -63,8 +63,23 @@ export function DemoStage({ children, title = 'Live example' }: { children: Reac
       setCurrent(r);
       push('focus', announce(r));
     };
+    // Refresh the panel (without logging) when the focused element's state changes.
+    const refresh = () => {
+      const active = document.activeElement;
+      if (active && stage.contains(active)) {
+        window.requestAnimationFrame(() => setCurrent(inspect(active)));
+      }
+    };
     stage.addEventListener('focusin', onFocus);
-    return () => stage.removeEventListener('focusin', onFocus);
+    stage.addEventListener('input', refresh);
+    stage.addEventListener('click', refresh);
+    stage.addEventListener('keyup', refresh);
+    return () => {
+      stage.removeEventListener('focusin', onFocus);
+      stage.removeEventListener('input', refresh);
+      stage.removeEventListener('click', refresh);
+      stage.removeEventListener('keyup', refresh);
+    };
   }, []);
 
   // Approximate live-region announcements anywhere on the page while this demo is mounted.
