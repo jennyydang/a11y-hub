@@ -934,6 +934,77 @@ export const htmlExamples: Record<string, string> = {
   .segmented input:checked + span { background: #fff; font-weight: 600; box-shadow: 0 1px 2px rgb(0 0 0 / .2); outline: 1px solid #9ca3af; }
   .segmented input:focus-visible + span { outline: 2px solid #1d4ed8; outline-offset: 2px; }
 </style>`,
+  video: `<figure>
+  <video controls preload="metadata" aria-describedby="video-cap">
+    <source src="trail-tip.webm" type="video/webm">
+    <track kind="captions" src="trail-tip.en.vtt" srclang="en" label="English" default>
+    Your browser can’t play this video. <a href="#transcript">Read the transcript</a>.
+  </video>
+  <figcaption id="video-cap">Riverside loop: how to find the start (9 seconds)</figcaption>
+  <details id="transcript">
+    <summary>Transcript</summary>
+    <p>[Birdsong]</p>
+    <p>Narrator: Start at the visitor centre car park.</p>
+  </details>
+</figure>
+
+<!-- trail-tip.en.vtt -->
+<!--
+WEBVTT
+
+00:00:00.000 --> 00:00:03.000
+[Birdsong]
+Narrator: Start at the visitor centre car park.
+-->`,
+  'cookie-banner': `<!-- First thing inside <body>, before the skip link -->
+<div class="cookie-banner" role="region" aria-labelledby="cookie-title">
+  <h2 id="cookie-title">Cookies on Trailmate</h2>
+  <p>We use some essential cookies to make this site work. We’d also like to set analytics cookies.</p>
+  <button type="button" data-choice="accepted">Accept analytics cookies</button>
+  <button type="button" data-choice="rejected">Reject analytics cookies</button>
+  <a href="/cookies">View cookies</a>
+</div>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<script>
+  const banner = document.querySelector('.cookie-banner');
+  banner.addEventListener('click', (e) => {
+    const choice = e.target.dataset?.choice;
+    if (!choice) return;
+    localStorage.setItem('cookies', choice);
+    banner.innerHTML = \`<p tabindex="-1">You’ve \${choice} additional cookies.
+      You can <a href="/cookies">change your cookie settings</a> at any time.</p>
+      <button type="button" class="hide">Hide cookie message</button>\`;
+    banner.querySelector('p').focus();
+  });
+</script>`,
+  'back-link': `<a href="/checkout/delivery" class="back-link">
+  <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20">…</svg>
+  Back<span class="sr-only"> to delivery</span>
+</a>
+<h1>Payment</h1>`,
+  quantity: `<label for="tickets">Number of tickets</label>
+<p id="tickets-hint">Up to 10 per order.</p>
+<button type="button" aria-controls="tickets" data-step="-1">
+  <span aria-hidden="true">−</span><span class="sr-only">Decrease number of tickets</span>
+</button>
+<input id="tickets" inputmode="numeric" pattern="[0-9]*" value="2" aria-describedby="tickets-hint">
+<button type="button" aria-controls="tickets" data-step="1">
+  <span aria-hidden="true">+</span><span class="sr-only">Increase number of tickets</span>
+</button>
+<p role="status" class="sr-only"></p>
+
+<script>
+  const input = document.getElementById('tickets');
+  const status = document.querySelector('[role=status]');
+  document.querySelectorAll('[data-step]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const v = Math.max(1, Math.min(10, (parseInt(input.value, 10) || 1) + Number(b.dataset.step)));
+      input.value = v;
+      status.textContent = 'Quantity ' + v;
+    }),
+  );
+</script>`,
   skeleton: `<button type="button" id="load">Load files</button>
 
 <!-- In the page from the start, so changes to it are announced -->

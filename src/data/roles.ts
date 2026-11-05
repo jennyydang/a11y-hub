@@ -388,6 +388,30 @@ export const componentRoles: Record<string, Record<RoleId, string[]>> = {
     frontend: ['Use native radios, visually hidden (not display: none), with peer styling.'],
     qa: ['Check it’s one tab stop, arrows change the choice, and “checked” is announced.'],
   },
+  video: {
+    content: ['Write or check captions with speakers and sounds, a transcript, and audio description where needed.'],
+    design: ['No autoplay, no flashing, and the transcript right below the video.'],
+    frontend: ['Use <video controls> with a captions <track>, and a <details> transcript.'],
+    qa: ['Check captions match the speech, controls work by keyboard, and nothing plays on load.'],
+  },
+  'cookie-banner': {
+    content: ['Write a plain explanation, clear Accept and Reject labels, and the confirmation.'],
+    design: ['Give Accept and Reject equal weight, and keep the banner in the page flow.'],
+    frontend: ['Put it first in the page, move focus to the confirmation, and remember the choice.'],
+    qa: ['Check the banner is the first Tab stop and the choice is announced and remembered.'],
+  },
+  'back-link': {
+    content: ['Use “Back”, with hidden text for the destination if it helps.'],
+    design: ['Style it as a small underlined link above the heading.'],
+    frontend: ['Link to the real previous step URL, not history.back().'],
+    qa: ['Check it goes to the previous step and keeps answers.'],
+  },
+  quantity: {
+    content: ['Write the label, the limits, and specific button names like “Increase number of tickets”.'],
+    design: ['Keep − and + at least 24×24px and show errors with more than color.'],
+    frontend: ['Use inputmode="numeric", aria-disabled at limits, and announce changes.'],
+    qa: ['Check the new value is announced and focus stays on the button at the limit.'],
+  },
   tooltip: {
     content: ['Keep tooltip text to one short sentence. Never put essential information only in a tooltip.'],
     design: ['Show it on hover and focus, and keep it open while the pointer is over it.'],

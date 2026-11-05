@@ -634,6 +634,47 @@ export const worksheets: Record<string, Worksheet> = {
     design: [notColorOnly('selected segment'), focus('Each segment'), target('Segments'), { text: 'Every segment has a text label.', check: 'Icons are optional extras, not the only label.' }],
   },
 
+  video: {
+    content: [
+      { id: 'title', label: 'Video caption', target: '<figcaption>', kind: 'text', required: true, guidance: 'What it is and how long.', good: 'Riverside loop: how to find the start (9 seconds)' },
+      { id: 'captions', label: 'Captions file', target: '<track kind="captions">', kind: 'text', required: true, multiline: true, guidance: 'Paste the WebVTT, or note who is producing it. Include speaker names and sounds in [brackets].', good: '[Birdsong]\nNarrator: Start at the visitor centre car park.' },
+      { id: 'transcript', label: 'Transcript', target: '<details> below the video', kind: 'text', required: true, multiline: true, guidance: 'Speech, sounds and important visuals.', good: 'Narrator: Start at the visitor centre car park.\nVisual: a red-roofed hut by the river path.' },
+      { id: 'ad', label: 'Audio description', target: 'Described version or extra narration', kind: 'text', required: false, multiline: true, guidance: 'Needed when important things are only shown, not said.', good: 'A red marker post stands to the left of the gate.' },
+    ],
+    design: [
+      { text: 'There’s no autoplay.', check: 'The video starts only when people press Play.' },
+      { text: 'Nothing flashes more than 3 times a second.', check: 'Check the whole video, including transitions.' },
+      { text: 'The transcript is right below the video.', check: 'Not on another page or in a download only.' },
+      { text: 'Text in the video has 4.5:1 contrast and stays on screen long enough to read.', check: 'Also check it isn’t covered by captions.' },
+    ],
+  },
+  'cookie-banner': {
+    content: [
+      { id: 'heading', label: 'Heading', target: 'Heading', kind: 'heading', required: true, guidance: 'Name the site.', good: 'Cookies on Trailmate' },
+      { id: 'body', label: 'Explanation', target: 'Paragraph', kind: 'text', required: true, multiline: true, guidance: 'Plain words on what’s essential and what’s optional.', good: 'We use some essential cookies to make this site work. We’d also like to set analytics cookies to understand how you use it.' },
+      { id: 'buttons', label: 'Button labels', target: 'Buttons', kind: 'name', required: true, multiline: true, guidance: 'Say what each does.', good: 'Accept analytics cookies\nReject analytics cookies', bad: 'OK\nNo thanks' },
+      { id: 'confirm', label: 'Confirmation', target: 'Message that receives focus', kind: 'message', required: true, guidance: 'Use {choice}.', good: 'You’ve {choice} additional cookies. You can change your cookie settings at any time.' },
+    ],
+    design: [
+      { text: 'Accept and Reject look equally important.', check: 'Same size, style and color.' },
+      { text: 'The banner is in the page flow, not fixed over content.', check: 'It doesn’t cover anything people tab to, at any zoom.' },
+      reflow,
+    ],
+  },
+  'back-link': {
+    content: [{ id: 'text', label: 'Link text', target: 'Link + hidden text', kind: 'link', required: true, guidance: '“Back”, plus where to in hidden text if helpful.', good: 'Back to delivery' }],
+    design: [{ text: 'It looks like a link.', check: 'Underlined, small, top left above the heading.' }, focus('The link')],
+  },
+  quantity: {
+    content: [
+      { id: 'label', label: 'Field label', target: '<label>', kind: 'label', required: true, guidance: 'What’s being counted.', good: 'Number of tickets' },
+      { id: 'hint', label: 'Hint with limits', target: 'aria-describedby', kind: 'hint', required: true, guidance: 'The minimum or maximum.', good: 'Up to 10 per order.' },
+      { id: 'buttons', label: 'Button names', target: 'Hidden text', kind: 'name', required: true, multiline: true, guidance: 'Two lines: decrease, increase.', good: 'Decrease number of tickets\nIncrease number of tickets', bad: 'Minus\nPlus' },
+      { id: 'error', label: 'Error message', target: 'Error text', kind: 'error', required: true, guidance: 'Give the allowed range.', good: 'Enter a number from 1 to 10' },
+    ],
+    design: [target('The − and + buttons'), errorDesign, fieldBorder, { text: 'The at-limit state is clear without disabling.', check: 'Faded but still focusable, with enough contrast to read.' }],
+  },
+
   table: {
     content: [
       { id: 'caption', label: 'Table caption', target: '<caption>', kind: 'heading', required: true, guidance: 'Names the table. Screen readers announce it on entry.', good: 'Invoices due in March 2026' },

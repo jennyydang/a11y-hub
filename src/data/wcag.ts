@@ -4,6 +4,9 @@ const c = (id: string, name: string, level: WcagRef['level']): WcagRef => ({ id,
 
 export const WCAG = {
   nonText: c('1.1.1', 'Non-text Content', 'A'),
+  captions: c('1.2.2', 'Captions (Prerecorded)', 'A'),
+  mediaAlt: c('1.2.3', 'Audio Description or Media Alternative (Prerecorded)', 'A'),
+  audioDescription: c('1.2.5', 'Audio Description (Prerecorded)', 'AA'),
   infoRel: c('1.3.1', 'Info and Relationships', 'A'),
   sequence: c('1.3.2', 'Meaningful Sequence', 'A'),
   sensory: c('1.3.3', 'Sensory Characteristics', 'A'),
@@ -35,6 +38,7 @@ export const WCAG = {
   language: c('3.1.1', 'Language of Page', 'A'),
   onFocus: c('3.2.1', 'On Focus', 'A'),
   onInput: c('3.2.2', 'On Input', 'A'),
+  consistentNav: c('3.2.3', 'Consistent Navigation', 'AA'),
   errorId: c('3.3.1', 'Error Identification', 'A'),
   labels: c('3.3.2', 'Labels or Instructions', 'A'),
   errorSuggest: c('3.3.3', 'Error Suggestion', 'AA'),
@@ -46,6 +50,9 @@ export const WCAG = {
 export function wcagUrl(ref: WcagRef): string {
   const slugs: Record<string, string> = {
     '1.1.1': 'non-text-content',
+    '1.2.2': 'captions-prerecorded',
+    '1.2.3': 'audio-description-or-media-alternative-prerecorded',
+    '1.2.5': 'audio-description-prerecorded',
     '1.3.1': 'info-and-relationships',
     '1.3.2': 'meaningful-sequence',
     '1.3.3': 'sensory-characteristics',
@@ -79,6 +86,7 @@ export function wcagUrl(ref: WcagRef): string {
     '3.2.2': 'on-input',
     '3.3.1': 'error-identification',
     '3.3.2': 'labels-or-instructions',
+    '3.2.3': 'consistent-navigation',
     '3.3.3': 'error-suggestion',
     '3.3.8': 'accessible-authentication-minimum',
     '4.1.2': 'name-role-value',

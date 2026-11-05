@@ -531,6 +531,43 @@ export const placement: Record<string, Placement> = {
     ],
     dontUse: ['For more than 5 options.', 'In submitted forms. Use a radio group.'],
   },
+  video: {
+    regions: ['Main content'],
+    where: ['In the main content near the text it supports, with the transcript directly below.'],
+    why: [
+      { point: 'Many people watch with the sound off, so captions help far more than Deaf and hard of hearing viewers alone.', source: s('Understanding Captions (Prerecorded) (W3C)', 'https://www.w3.org/WAI/WCAG22/Understanding/captions-prerecorded') },
+      { point: 'Moving content must be under the person’s control; never autoplay.', source: SRC.wcagPause },
+    ],
+    dontUse: ['When a still image and text would do.'],
+  },
+  'cookie-banner': {
+    regions: ['Page top'],
+    where: ['At the very top of the page, before the skip link, in the normal flow.'],
+    why: [
+      { point: 'First in the page, keyboard and screen reader users meet it before anything else and can answer or skip it.', source: SRC.wcagSequence },
+      { point: 'Fixed banners often cover the focused element at high zoom.', source: SRC.wcagFocusObscured },
+      { point: 'Overlays styled like ads are often ignored; plain, in-page banners are read.', source: SRC.banner },
+    ],
+    dontUse: ['As a modal that blocks the page.'],
+  },
+  'back-link': {
+    regions: ['Main content'],
+    where: ['Top left of main, above the heading, on every step after the first.'],
+    why: [
+      { point: 'People expect “back” at the top left, from browsers and apps.', source: SRC.jakob },
+      { point: 'In the same place on every step, so people find it without looking.', source: SRC.wcagConsistentNav },
+    ],
+    dontUse: ['To go up a level in the site. Use breadcrumbs.'],
+  },
+  quantity: {
+    regions: ['Forms', 'Main content'],
+    where: ['Next to the item it counts, like a ticket type or a basket line.'],
+    why: [
+      { point: 'Big − and + targets are easy to hit on touch screens.', source: SRC.fitts },
+      { point: 'Next to the item, it’s clear what the number applies to.', source: SRC.proximity },
+    ],
+    dontUse: ['For large or exact numbers. Use a text input.'],
+  },
   table: {
     regions: ['Main content'],
     where: ['In the main content, with a caption or heading above.', 'Right-align numbers so they line up for comparison.'],

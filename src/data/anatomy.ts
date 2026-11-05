@@ -617,4 +617,51 @@ export const anatomy: Record<string, Anatomy> = {
       { state: 'Focused', looks: 'Focus ring on the segment', announced: 'Name and state' },
     ],
   },
+  video: {
+    parts: [
+      { name: 'Player', required: true, note: 'Native <video controls>.' },
+      { name: 'Captions', required: true, note: 'WebVTT <track kind="captions">.' },
+      { name: 'Caption text', required: true, note: 'Title and length, linked with aria-describedby.' },
+      { name: 'Transcript', required: true, note: 'Right below, in a <details>.' },
+      { name: 'Audio description', required: false, note: 'Needed when key information is only visual.' },
+    ],
+    states: [
+      { state: 'Not playing', looks: 'Poster frame and Play', announced: '“Video, Play button”' },
+      { state: 'Playing with captions', looks: 'Captions over the video', announced: 'Controls only; captions are visual' },
+    ],
+  },
+  'cookie-banner': {
+    parts: [
+      { name: 'Region', required: true, note: 'Labelled by the heading.' },
+      { name: 'Heading', required: true, note: '“Cookies on {site}”.' },
+      { name: 'Accept and Reject', required: true, note: 'Equal style and size.' },
+      { name: 'Settings link', required: true, note: 'To a full cookie page.' },
+      { name: 'Confirmation', required: true, note: 'Replaces the question, receives focus.' },
+    ],
+    states: [
+      { state: 'Asking', looks: 'Heading, text, two buttons', announced: '“Cookies on Trailmate, region”' },
+      { state: 'Answered', looks: 'Confirmation and Hide button', announced: '“You’ve rejected additional cookies…”' },
+      { state: 'Hidden', looks: 'Gone', announced: 'Nothing' },
+    ],
+  },
+  'back-link': {
+    parts: [
+      { name: 'Chevron', required: false, note: 'Decorative.' },
+      { name: 'Link text', required: true, note: '“Back”, optionally with hidden destination.' },
+    ],
+    states: [{ state: 'Default', looks: 'Underlined “Back” with a left chevron', announced: '“Back to delivery, link”' }],
+  },
+  quantity: {
+    parts: [
+      { name: 'Label and hint', required: true, note: 'The hint states the limits.' },
+      { name: 'Decrease button', required: true, note: '“−” with a hidden name.' },
+      { name: 'Field', required: true, note: 'inputmode="numeric".' },
+      { name: 'Increase button', required: true, note: '“+” with a hidden name.' },
+    ],
+    states: [
+      { state: 'Default', looks: 'Number between two buttons', announced: '“Number of tickets, edit text, 2”' },
+      { state: 'At a limit', looks: 'Button faded but focusable', announced: '“…button, dimmed”' },
+      { state: 'Invalid', looks: 'Thick red border and error text', announced: '“invalid entry”, plus the error' },
+    ],
+  },
 };

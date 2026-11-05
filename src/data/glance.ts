@@ -51,5 +51,9 @@ export const glance: Record<string, Glance> = {
   'character-count': { does: 'Tells people how many characters they have left, without cutting off their text.', instead: [{ slug: 'textarea', when: 'there’s no real limit' }] },
   'search-field': { does: 'Lets people search the site from a labelled field in a search landmark.', instead: [{ slug: 'combobox', when: 'suggestions appear as people type' }] },
   'segmented-control': { does: 'A compact row of 2 to 5 options where one is chosen, like List or Grid.', instead: [{ slug: 'tabs', when: 'each option shows its own panel of content' }, { slug: 'radio-group', when: 'it’s in a form that’s submitted' }] },
+  video: { does: 'Plays video with captions, a transcript and the browser’s own controls.', instead: [{ slug: 'image', when: 'a still picture says enough' }] },
+  'cookie-banner': { does: 'Asks for consent to non-essential cookies without blocking the page.', instead: [{ slug: 'dialog', when: 'never: consent shouldn’t block the page' }] },
+  'back-link': { does: 'Takes people to the previous step in a journey.', instead: [{ slug: 'breadcrumbs', when: 'people go up a level in the site' }] },
+  quantity: { does: 'A number field with − and + buttons for small whole numbers.', instead: [{ slug: 'text-input', when: 'the number is large or exact' }, { slug: 'select', when: 'there are only a few fixed choices' }] },
   table: { does: 'Shows data in rows and columns so people can compare values.', instead: [{ slug: 'image', when: 'the point is a trend, not exact values (use a chart with a description)' }] },
 };

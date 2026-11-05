@@ -44,6 +44,10 @@ import { password, passwordVariants } from './password';
 import { characterCount } from './character-count';
 import { searchField } from './search-field';
 import { segmentedControl } from './segmented-control';
+import { video } from './video';
+import { cookieBanner } from './cookie-banner';
+import { backLink } from './back-link';
+import { quantity } from './quantity';
 
 import { buttonVariants } from '../variants/button';
 import { linkVariants } from '../variants/link';
@@ -91,6 +95,7 @@ export const components: ComponentSpec[] = [
   link,
   siteNavigation,
   breadcrumbs,
+  backLink,
   pagination,
   stepper,
   skipLink,
@@ -110,6 +115,7 @@ export const components: ComponentSpec[] = [
   listbox,
   tags,
   slider,
+  quantity,
   datePicker,
   fileUpload,
   errorSummary,
@@ -119,11 +125,13 @@ export const components: ComponentSpec[] = [
   tooltip,
   toast,
   alert,
+  cookieBanner,
   progress,
   skeleton,
   badge,
   image,
   avatar,
+  video,
   carousel,
   card,
   emptyState,
