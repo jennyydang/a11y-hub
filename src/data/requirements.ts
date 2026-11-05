@@ -599,6 +599,41 @@ export const worksheets: Record<string, Worksheet> = {
     design: [notColorOnly('pressed state'), focus('Each button'), target('Buttons'), { text: 'Every icon has a visible tooltip.', check: 'On hover and keyboard focus.' }],
   },
 
+  password: {
+    content: [
+      { id: 'label', label: 'Field label', target: '<label>', kind: 'label', required: true, guidance: 'Plain and specific.', good: 'Password', bad: 'Enter password here' },
+      { id: 'hint', label: 'Hint', target: 'aria-describedby', kind: 'hint', required: false, guidance: 'Encourage long phrases.', good: 'Use a long phrase that’s easy for you to remember.', variants: ['new'] },
+      { id: 'rules', label: 'Password rules', target: 'List linked with aria-describedby', kind: 'text', required: true, multiline: true, guidance: 'One per line. Only rules you really enforce.', good: 'At least 12 characters\nAt least one number', variants: ['new'] },
+      { id: 'error', label: 'Error message', target: 'Error text', kind: 'error', required: true, guidance: 'Say what’s wrong and how to fix it.', good: 'Password must be at least 12 characters', bad: 'Invalid password' },
+    ],
+    design: [{ text: 'The Show button is text, not only an eye icon.', check: 'It reads Show or Hide, at least 24×24px.' }, notColorOnly('met and unmet rules'), fieldBorder, focus('The field and the Show button')],
+  },
+  'character-count': {
+    content: [
+      { id: 'label', label: 'Field label', target: '<label>', kind: 'label', required: true, guidance: 'What to write.', good: 'Describe the problem' },
+      { id: 'hint', label: 'Hint with the limit', target: 'aria-describedby', kind: 'hint', required: true, guidance: 'State the limit up front.', good: 'You can enter up to 200 characters.' },
+      { id: 'remaining', label: 'Remaining message', target: 'Count text', kind: 'message', required: true, guidance: 'Use {n}.', good: 'You have {n} characters remaining', bad: '{n}/200' },
+      { id: 'over', label: 'Over-limit message', target: 'Count text', kind: 'error', required: true, guidance: 'Use {n}.', good: 'You have {n} characters too many' },
+    ],
+    design: [errorDesign, fieldBorder, { text: 'The count sits directly below the field.', check: 'Left-aligned with the field so it’s seen when typing.' }],
+  },
+  'search-field': {
+    content: [
+      { id: 'label', label: 'Field label', target: '<label> (can be visually hidden)', kind: 'label', required: true, guidance: 'Say what’s searched.', good: 'Search this site' },
+      { id: 'button', label: 'Button name', target: 'Hidden text', kind: 'name', required: true, guidance: 'For the magnifying glass button.', good: 'Search' },
+      { id: 'results', label: 'Results heading', target: 'Heading', kind: 'heading', required: true, guidance: 'Use {n} and {q}.', good: '{n} results for “{q}”' },
+      { id: 'none', label: 'No-results tip', target: 'Paragraph', kind: 'text', required: false, guidance: 'How to get results.', good: 'Check the spelling or try a different word.' },
+    ],
+    design: [fieldBorder, target('The search button'), focus('The field and button'), { text: 'The field is wide enough for typical queries.', check: 'About 25 characters visible on desktop.' }],
+  },
+  'segmented-control': {
+    content: [
+      { id: 'legend', label: 'Group label', target: '<legend>', kind: 'label', required: true, guidance: 'What’s being chosen.', good: 'View trails as' },
+      { id: 'options', label: 'Option labels', target: 'Radio labels', kind: 'text', required: true, multiline: true, guidance: 'One per line, one or two words each.', good: 'List\nGrid\nMap' },
+    ],
+    design: [notColorOnly('selected segment'), focus('Each segment'), target('Segments'), { text: 'Every segment has a text label.', check: 'Icons are optional extras, not the only label.' }],
+  },
+
   table: {
     content: [
       { id: 'caption', label: 'Table caption', target: '<caption>', kind: 'heading', required: true, guidance: 'Names the table. Screen readers announce it on entry.', good: 'Invoices due in March 2026' },

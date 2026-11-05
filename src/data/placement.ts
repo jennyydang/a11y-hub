@@ -495,6 +495,42 @@ export const placement: Record<string, Placement> = {
     ],
     dontUse: ['For one or two actions. Show buttons.', 'For rarely used actions. Use a menu.'],
   },
+  password: {
+    regions: ['Forms'],
+    where: ['Below the username or email field, with the Show button right after the field.', 'Rules directly under the field, before people type.'],
+    why: [
+      { point: 'Showing the password lets people catch typos without retyping, especially on mobile.', source: SRC.formErrors },
+      { point: 'Allowing paste and password managers is required so people don’t have to remember or transcribe.', source: wcag('Accessible Authentication', 'accessible-authentication-minimum') },
+    ],
+    dontUse: ['For information that isn’t secret.'],
+  },
+  'character-count': {
+    regions: ['Forms'],
+    where: ['Directly below the field it counts.'],
+    why: [
+      { point: 'People see how much room they have as they type, right where they’re looking.', source: SRC.proximity },
+      { point: 'The count must be announced without moving focus.', source: SRC.wcagStatus },
+    ],
+    dontUse: ['Where there’s no real limit.'],
+  },
+  'search-field': {
+    regions: ['Header', 'Main content'],
+    where: ['Site search: top right or center of the header, on every page.', 'Results page: at the top of main, filled in with the search term.'],
+    why: [
+      { point: 'People look for search in the header, usually top right.', source: SRC.jakob },
+      { point: 'Search should be in the same place on every page.', source: SRC.wcagConsistentNav },
+    ],
+    dontUse: ['For narrowing a list already on the page. Use a filter field next to the list.'],
+  },
+  'segmented-control': {
+    regions: ['Main content'],
+    where: ['Directly above the content it changes, aligned to its right or left edge.'],
+    why: [
+      { point: 'Controls next to the content they change are understood as acting on it.', source: SRC.proximity },
+      { point: 'Few, visible options are quicker than a menu.', source: SRC.hick },
+    ],
+    dontUse: ['For more than 5 options.', 'In submitted forms. Use a radio group.'],
+  },
   table: {
     regions: ['Main content'],
     where: ['In the main content, with a caption or heading above.', 'Right-align numbers so they line up for comparison.'],

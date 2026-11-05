@@ -567,4 +567,54 @@ export const anatomy: Record<string, Anatomy> = {
       { state: 'Focused', looks: 'Focus ring', announced: 'Name and state' },
     ],
   },
+  password: {
+    parts: [
+      { name: 'Label', required: true, note: 'Visible, linked with for/id.' },
+      { name: 'Field', required: true, note: 'type="password" with autocomplete.' },
+      { name: 'Show / Hide button', required: true, note: 'Text button with hidden “password”.' },
+      { name: 'Rules', required: false, note: 'New passwords only; linked with aria-describedby.' },
+    ],
+    states: [
+      { state: 'Hidden', looks: 'Dots, “Show” button', announced: '“Password, secure edit text”' },
+      { state: 'Shown', looks: 'Plain text, “Hide” button', announced: '“Your password is visible”' },
+      { state: 'Rule met', looks: 'Check mark, green text', announced: '“At least 12 characters (done)”' },
+    ],
+  },
+  'character-count': {
+    parts: [
+      { name: 'Label and hint', required: true, note: 'The hint states the limit.' },
+      { name: 'Textarea', required: true, note: 'No maxlength.' },
+      { name: 'Count', required: true, note: 'Visible, linked with aria-describedby.' },
+      { name: 'Live copy', required: true, note: 'Hidden role="status", debounced.' },
+    ],
+    states: [
+      { state: 'Under the limit', looks: 'Gray count', announced: '“You have 12 characters remaining”' },
+      { state: 'Over the limit', looks: 'Thick red border, “Error:” prefix', announced: '“You have 5 characters too many”, invalid' },
+    ],
+  },
+  'search-field': {
+    parts: [
+      { name: 'Search landmark', required: true, note: 'role="search" on the form.' },
+      { name: 'Label', required: true, note: 'Can be visually hidden in a header.' },
+      { name: 'Field', required: true, note: 'type="search".' },
+      { name: 'Submit button', required: true, note: 'Icon with the hidden name “Search”.' },
+    ],
+    states: [
+      { state: 'Empty', looks: 'Placeholder text', announced: '“Search this site, search edit text”' },
+      { state: 'Results', looks: 'Count heading and list', announced: '“3 results for trail, heading”' },
+      { state: 'No results', looks: 'Count of 0 and a tip', announced: '“0 results for zebra”' },
+    ],
+  },
+  'segmented-control': {
+    parts: [
+      { name: 'Legend', required: true, note: 'Names the choice.' },
+      { name: 'Segments', required: true, note: 'Native radios, visually hidden, with styled labels.' },
+      { name: 'Icon', required: false, note: 'Decorative; text label required.' },
+    ],
+    states: [
+      { state: 'Not selected', looks: 'Flat segment', announced: '“Grid, radio button, not checked, 2 of 3”' },
+      { state: 'Selected', looks: 'Raised white segment, bold', announced: '“checked”' },
+      { state: 'Focused', looks: 'Focus ring on the segment', announced: 'Name and state' },
+    ],
+  },
 };

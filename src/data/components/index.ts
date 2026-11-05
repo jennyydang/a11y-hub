@@ -40,6 +40,10 @@ import { card, cardVariants } from './card';
 import { stepper } from './stepper';
 import { tags } from './tags';
 import { toolbar } from './toolbar';
+import { password, passwordVariants } from './password';
+import { characterCount } from './character-count';
+import { searchField } from './search-field';
+import { segmentedControl } from './segmented-control';
 
 import { buttonVariants } from '../variants/button';
 import { linkVariants } from '../variants/link';
@@ -78,6 +82,7 @@ emptyState.variants = emptyStateVariants;
 carousel.variants = carouselVariants;
 listbox.variants = listboxVariants;
 card.variants = cardVariants;
+password.variants = passwordVariants;
 
 export const components: ComponentSpec[] = [
   button,
@@ -92,9 +97,13 @@ export const components: ComponentSpec[] = [
   tabs,
   accordion,
   textInput,
+  password,
+  searchField,
   textarea,
+  characterCount,
   checkbox,
   radioGroup,
+  segmentedControl,
   switchSpec,
   select,
   combobox,

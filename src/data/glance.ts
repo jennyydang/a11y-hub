@@ -47,5 +47,9 @@ export const glance: Record<string, Glance> = {
   stepper: { does: 'Shows where people are in a multi-step task and how many steps are left.', instead: [{ slug: 'progress', when: 'it’s a loading task, not steps people complete' }] },
   tags: { does: 'Shows values people have added or chosen, each with a remove button.', instead: [{ slug: 'badge', when: 'it’s a status label people can’t remove' }, { slug: 'checkbox', when: 'there’s a short fixed list' }] },
   toolbar: { does: 'Groups related buttons into one tab stop, with arrow keys between them.', instead: [{ slug: 'menu', when: 'the actions are rarely used and can be hidden' }, { slug: 'button', when: 'there are only one or two actions' }] },
+  password: { does: 'Hides what people type in a password, with a Show button to check it.', instead: [{ slug: 'text-input', when: 'it isn’t a secret' }] },
+  'character-count': { does: 'Tells people how many characters they have left, without cutting off their text.', instead: [{ slug: 'textarea', when: 'there’s no real limit' }] },
+  'search-field': { does: 'Lets people search the site from a labelled field in a search landmark.', instead: [{ slug: 'combobox', when: 'suggestions appear as people type' }] },
+  'segmented-control': { does: 'A compact row of 2 to 5 options where one is chosen, like List or Grid.', instead: [{ slug: 'tabs', when: 'each option shows its own panel of content' }, { slug: 'radio-group', when: 'it’s in a form that’s submitted' }] },
   table: { does: 'Shows data in rows and columns so people can compare values.', instead: [{ slug: 'image', when: 'the point is a trend, not exact values (use a chart with a description)' }] },
 };

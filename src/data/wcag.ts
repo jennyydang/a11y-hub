@@ -38,6 +38,7 @@ export const WCAG = {
   errorId: c('3.3.1', 'Error Identification', 'A'),
   labels: c('3.3.2', 'Labels or Instructions', 'A'),
   errorSuggest: c('3.3.3', 'Error Suggestion', 'AA'),
+  authentication: c('3.3.8', 'Accessible Authentication (Minimum)', 'AA'),
   nameRoleValue: c('4.1.2', 'Name, Role, Value', 'A'),
   statusMessages: c('4.1.3', 'Status Messages', 'AA'),
 } as const;
@@ -79,6 +80,7 @@ export function wcagUrl(ref: WcagRef): string {
     '3.3.1': 'error-identification',
     '3.3.2': 'labels-or-instructions',
     '3.3.3': 'error-suggestion',
+    '3.3.8': 'accessible-authentication-minimum',
     '4.1.2': 'name-role-value',
     '4.1.3': 'status-messages',
   };

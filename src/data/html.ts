@@ -890,6 +890,50 @@ export const htmlExamples: Record<string, string> = {
   btns.forEach((b) => b.hasAttribute('aria-pressed') && b.addEventListener('click', () =>
     b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'))));
 </script>`,
+  'character-count': `<label for="details">Describe the problem</label>
+<p id="details-hint">You can enter up to 200 characters.</p>
+<!-- No maxlength: people can type past the limit and edit down -->
+<textarea id="details" rows="4" aria-describedby="details-hint details-count"></textarea>
+<p id="details-count" aria-hidden="true">You have 200 characters remaining</p>
+<p role="status" class="sr-only"></p>
+
+<script>
+  const field = document.getElementById('details');
+  const count = document.getElementById('details-count');
+  const live = document.querySelector('[role=status]');
+  let timer;
+  field.addEventListener('input', () => {
+    const left = 200 - field.value.length;
+    const msg = left >= 0 ? \`You have \${left} characters remaining\` : \`You have \${-left} characters too many\`;
+    count.textContent = msg;
+    field.setAttribute('aria-invalid', String(left < 0));
+    clearTimeout(timer);
+    timer = setTimeout(() => (live.textContent = msg), 1000); // announce after a pause
+  });
+</script>`,
+  'search-field': `<form role="search" aria-label="Site" action="/search">
+  <label for="q" class="sr-only">Search this site</label>
+  <input id="q" name="q" type="search" placeholder="Search this site">
+  <button type="submit">
+    <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20">…</svg>
+    <span class="sr-only">Search</span>
+  </button>
+</form>
+
+<!-- On the results page -->
+<title>3 results for “trail” – Trailmate</title>
+<h1>3 results for “trail”</h1>`,
+  'segmented-control': `<fieldset class="segmented">
+  <legend>View trails as</legend>
+  <label><input type="radio" name="view" value="list" class="sr-only" checked><span>List</span></label>
+  <label><input type="radio" name="view" value="grid" class="sr-only"><span>Grid</span></label>
+  <label><input type="radio" name="view" value="map" class="sr-only"><span>Map</span></label>
+</fieldset>
+
+<style>
+  .segmented input:checked + span { background: #fff; font-weight: 600; box-shadow: 0 1px 2px rgb(0 0 0 / .2); outline: 1px solid #9ca3af; }
+  .segmented input:focus-visible + span { outline: 2px solid #1d4ed8; outline-offset: 2px; }
+</style>`,
   skeleton: `<button type="button" id="load">Load files</button>
 
 <!-- In the page from the start, so changes to it are announced -->

@@ -57,6 +57,7 @@ const TREE: Record<string, Node> = {
     ask: 'How long is the list of options?',
     options: [
       { label: 'About 5 or fewer', result: r('radio-group', 'Short lists are fastest when every option is visible.') },
+      { label: '2 to 5 short options that change a view right away', hint: 'List, Grid, Map', result: r('segmented-control', 'A segmented control is styled radios: one tab stop, arrow keys built in.') },
       { label: 'More than 5, easy to scan', result: r('select', 'A native select keeps longer lists compact and accessible.', 'native') },
       { label: 'Long, and people know what to type', hint: 'Like countries or airports', result: r('combobox', 'Typing to filter is faster than scrolling a long list.') },
     ],
@@ -65,6 +66,9 @@ const TREE: Record<string, Node> = {
     ask: 'What kind of information?',
     options: [
       { label: 'A short answer on one line', hint: 'Name, email, postcode', result: r('text-input', 'A labelled text input with a hint and clear errors.') },
+      { label: 'A password', result: r('password', 'A password field with a Show button that works with password managers.') },
+      { label: 'A search', result: r('search-field', 'A labelled search field in a search landmark.') },
+      { label: 'A longer answer with a character limit', result: r('character-count', 'A textarea with a count that never cuts off text.') },
       { label: 'A longer answer', hint: 'Comments, descriptions', result: r('textarea', 'A textarea with the length limit stated up front.') },
       { label: 'A date', result: r('date-picker', 'Typing must always work; the calendar is optional.') },
       { label: 'A number where a rough value is fine', hint: 'Volume, temperature', result: r('slider', 'A slider with the value shown as text.') },

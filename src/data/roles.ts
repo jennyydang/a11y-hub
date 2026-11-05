@@ -364,6 +364,30 @@ export const componentRoles: Record<string, Record<RoleId, string[]>> = {
     frontend: ['Use role="toolbar" with roving tabindex and aria-pressed on toggles.'],
     qa: ['Check the toolbar is one tab stop, arrows move between buttons, and pressed state is announced.'],
   },
+  password: {
+    content: ['Write a plain label, only the rules you enforce, and errors that say how to fix the problem.'],
+    design: ['Use a text Show button and show met rules with a check, not only color.'],
+    frontend: ['Set autocomplete, allow paste, and announce Show or Hide with a status message.'],
+    qa: ['Test with a password manager and paste, and check Show is announced.'],
+  },
+  'character-count': {
+    content: ['State the limit in the hint, and write the remaining and too-many messages.'],
+    design: ['Show the over-limit state with a thicker border and “Error:”, not just red.'],
+    frontend: ['Don’t use maxlength. Debounce the announcement and link the count with aria-describedby.'],
+    qa: ['Paste text over the limit and check nothing is cut off and the count is announced once.'],
+  },
+  'search-field': {
+    content: ['Label the field, name the search button, and write the results heading.'],
+    design: ['Keep the field wide enough, with a visible button.'],
+    frontend: ['Use role="search", a real label, and move focus to the results heading.'],
+    qa: ['Check the search landmark is listed and the result count is announced.'],
+  },
+  'segmented-control': {
+    content: ['Write a legend and one- or two-word option labels.'],
+    design: ['Make the selected segment clear without color, with a visible focus ring.'],
+    frontend: ['Use native radios, visually hidden (not display: none), with peer styling.'],
+    qa: ['Check it’s one tab stop, arrows change the choice, and “checked” is announced.'],
+  },
   tooltip: {
     content: ['Keep tooltip text to one short sentence. Never put essential information only in a tooltip.'],
     design: ['Show it on hover and focus, and keep it open while the pointer is over it.'],
