@@ -36,6 +36,10 @@ import { carousel, carouselVariants } from './carousel';
 import { dataGrid } from './data-grid';
 import { treeView } from './tree-view';
 import { listbox, listboxVariants } from './listbox';
+import { card, cardVariants } from './card';
+import { stepper } from './stepper';
+import { tags } from './tags';
+import { toolbar } from './toolbar';
 
 import { buttonVariants } from '../variants/button';
 import { linkVariants } from '../variants/link';
@@ -73,14 +77,17 @@ avatar.variants = avatarVariants;
 emptyState.variants = emptyStateVariants;
 carousel.variants = carouselVariants;
 listbox.variants = listboxVariants;
+card.variants = cardVariants;
 
 export const components: ComponentSpec[] = [
   button,
   menu,
+  toolbar,
   link,
   siteNavigation,
   breadcrumbs,
   pagination,
+  stepper,
   skipLink,
   tabs,
   accordion,
@@ -92,6 +99,7 @@ export const components: ComponentSpec[] = [
   select,
   combobox,
   listbox,
+  tags,
   slider,
   datePicker,
   fileUpload,
@@ -108,6 +116,7 @@ export const components: ComponentSpec[] = [
   image,
   avatar,
   carousel,
+  card,
   emptyState,
   table,
   dataGrid,

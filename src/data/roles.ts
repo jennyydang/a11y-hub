@@ -340,6 +340,30 @@ export const componentRoles: Record<string, Record<RoleId, string[]>> = {
     frontend: ['Prefer a checkbox list in forms. For a listbox, use aria-multiselectable, aria-selected and aria-activedescendant.'],
     qa: ['Check Space toggles, the outline follows the arrow keys, and “selected” is announced.'],
   },
+  card: {
+    content: ['Write card headings that work as link text on their own. Leave decorative images without alt.'],
+    design: ['Design one focus and hover state for the whole card, and a one-column layout for small screens.'],
+    frontend: ['Use a list of cards, a heading with a stretched link, and never wrap the whole card in <a>.'],
+    qa: ['Check one tab stop per linked card and that the links list reads the card titles.'],
+  },
+  stepper: {
+    content: ['Write short step names that match each step’s heading.'],
+    design: ['Show completed, current and future steps without relying on color, plus “Step 2 of 4” text.'],
+    frontend: ['Use a labelled nav with an ordered list and aria-current="step". Move focus to the step heading on change.'],
+    qa: ['Check the current step is announced and focus moves to the new heading on Continue.'],
+  },
+  tags: {
+    content: ['Write the remove button name pattern, like “Remove {tag}”, and the removed message.'],
+    design: ['Keep remove buttons at least 24×24px with a visible focus ring.'],
+    frontend: ['Name each remove button with its tag, announce changes, and move focus after a removal.'],
+    qa: ['Remove tags with the keyboard and check focus never lands on the page body.'],
+  },
+  toolbar: {
+    content: ['Name the toolbar and every button. Toggle names don’t change when pressed.'],
+    design: ['Show pressed state with more than color, and give every icon a tooltip.'],
+    frontend: ['Use role="toolbar" with roving tabindex and aria-pressed on toggles.'],
+    qa: ['Check the toolbar is one tab stop, arrows move between buttons, and pressed state is announced.'],
+  },
   tooltip: {
     content: ['Keep tooltip text to one short sentence. Never put essential information only in a tooltip.'],
     design: ['Show it on hover and focus, and keep it open while the pointer is over it.'],

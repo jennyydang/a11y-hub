@@ -458,6 +458,43 @@ export const placement: Record<string, Placement> = {
     ],
     dontUse: ['For one choice. Use radios or a select.', 'For long lists people can type. Use a combobox.'],
   },
+  card: {
+    regions: ['Main content'],
+    where: ['In a grid in the main content, under a heading that introduces the set.', 'Same height and structure for every card in a row.'],
+    why: [
+      { point: 'A shared border or background makes each card read as one unit.', source: SRC.region },
+      { point: 'People scan the first words of headings; front-load the card title.', source: SRC.fPattern },
+    ],
+    dontUse: ['For items people need to compare. Use a table.', 'For text-only lists. Use a list of links.'],
+  },
+  stepper: {
+    regions: ['Main content', 'Forms'],
+    where: ['At the top of main, above the step heading.', 'Back and Continue at the bottom of each step.'],
+    why: [
+      { point: 'Seeing progress toward the end motivates people to finish.', source: ux('Goal-gradient effect', 'goal-gradient-effect') },
+      { point: 'Knowing how many steps remain reduces drop-off on long forms.', source: SRC.progress },
+    ],
+    dontUse: ['For 2 steps.', 'For journeys people complete in any order. Use a task list.'],
+  },
+  tags: {
+    regions: ['Forms', 'Sidebar', 'Main content'],
+    where: ['Directly below the input that adds them.', 'Above results, for applied filters, with a Clear all button.'],
+    why: [
+      { point: 'Tags next to the field that made them are understood as its values.', source: SRC.proximity },
+      { point: 'Adding and removing must be announced without moving focus away.', source: SRC.wcagStatus },
+    ],
+    dontUse: ['For read-only labels. Use a badge.', 'For a short fixed set of options. Use checkboxes.'],
+  },
+  toolbar: {
+    regions: ['Main content'],
+    where: ['Directly above the content it acts on, like an editor or a table.', 'Most used buttons first, grouped with separators.'],
+    why: [
+      { point: 'Controls right above their content are understood as acting on it.', source: SRC.proximity },
+      { point: 'Formatting toolbars match what people know from word processors.', source: SRC.jakob },
+      { point: 'Fewer, grouped buttons are faster to choose from.', source: SRC.hick },
+    ],
+    dontUse: ['For one or two actions. Show buttons.', 'For rarely used actions. Use a menu.'],
+  },
   table: {
     regions: ['Main content'],
     where: ['In the main content, with a caption or heading above.', 'Right-align numbers so they line up for comparison.'],

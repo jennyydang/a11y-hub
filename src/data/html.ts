@@ -812,6 +812,84 @@ export const htmlExamples: Record<string, string> = {
     next.focus();
   });
 </script>`,
+  stepper: `<nav aria-label="Checkout progress">
+  <ol class="steps">
+    <li><span aria-hidden="true">✓</span><span class="sr-only">Completed: </span>Your details</li>
+    <li aria-current="step"><span aria-hidden="true">2</span>Delivery</li>
+    <li><span aria-hidden="true">3</span>Payment<span class="sr-only"> (not started)</span></li>
+    <li><span aria-hidden="true">4</span>Check and send<span class="sr-only"> (not started)</span></li>
+  </ol>
+</nav>
+
+<main>
+  <p>Step 2 of 4</p>
+  <h1>Delivery</h1>
+  …
+</main>`,
+  tags: `<label for="topic">Add a topic</label>
+<p id="topic-hint">Press Enter to add it.</p>
+<input id="topic" aria-describedby="topic-hint">
+
+<p id="topics-label">Your topics</p>
+<ul aria-labelledby="topics-label">
+  <li>Accessibility
+    <button type="button">
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20">…</svg>
+      <span class="sr-only">Remove Accessibility</span>
+    </button>
+  </li>
+  <li>Research
+    <button type="button">
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20">…</svg>
+      <span class="sr-only">Remove Research</span>
+    </button>
+  </li>
+</ul>
+<p role="status" class="sr-only"></p>
+
+<script>
+  // After removing, focus the next tag's button, the previous one, or the input
+  document.querySelector('[aria-labelledby=topics-label]').addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const li = btn.closest('li');
+    const next = li.nextElementSibling || li.previousElementSibling;
+    const name = li.firstChild.textContent.trim();
+    li.remove();
+    document.querySelector('[role=status]').textContent = name + ' removed';
+    (next ? next.querySelector('button') : document.getElementById('topic')).focus();
+  });
+</script>`,
+  toolbar: `<div role="toolbar" aria-label="Text formatting" aria-controls="editor">
+  <button type="button" aria-pressed="true" tabindex="0" title="Bold">
+    <svg aria-hidden="true" focusable="false">…</svg><span class="sr-only">Bold</span>
+  </button>
+  <button type="button" aria-pressed="false" tabindex="-1" title="Italic">
+    <svg aria-hidden="true" focusable="false">…</svg><span class="sr-only">Italic</span>
+  </button>
+  <div role="separator" aria-orientation="vertical"></div>
+  <button type="button" tabindex="-1" title="Insert link">
+    <svg aria-hidden="true" focusable="false">…</svg><span class="sr-only">Insert link</span>
+  </button>
+</div>
+<textarea id="editor" aria-label="Message"></textarea>
+
+<script>
+  const bar = document.querySelector('[role=toolbar]');
+  const btns = [...bar.querySelectorAll('button')];
+  bar.addEventListener('keydown', (e) => {
+    const i = btns.indexOf(document.activeElement);
+    const n = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: btns.length - 1 }[e.key];
+    if (n === undefined) return;
+    e.preventDefault();
+    const next = btns[(n + btns.length) % btns.length];
+    btns.forEach((b) => (b.tabIndex = -1));
+    next.tabIndex = 0;
+    next.focus();
+  });
+  btns.forEach((b) => b.hasAttribute('aria-pressed') && b.addEventListener('click', () =>
+    b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'))));
+</script>`,
   skeleton: `<button type="button" id="load">Load files</button>
 
 <!-- In the page from the start, so changes to it are announced -->

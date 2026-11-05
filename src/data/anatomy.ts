@@ -516,4 +516,55 @@ export const anatomy: Record<string, Anatomy> = {
       { state: 'Current (listbox)', looks: 'Outline on the row', announced: 'The option name and state' },
     ],
   },
+  card: {
+    parts: [
+      { name: 'Image', required: false, note: 'Usually decorative, alt="".' },
+      { name: 'Heading', required: true, note: 'Holds the link in a linked card.' },
+      { name: 'Summary', required: false, note: 'One or two short lines.' },
+      { name: 'Meta', required: false, note: 'Date, read time, price.' },
+      { name: 'Actions', required: false, note: 'Buttons with hidden text naming the card.' },
+    ],
+    states: [
+      { state: 'Default', looks: 'Card with border', announced: '“Spring trail guide, link, heading level 3”' },
+      { state: 'Hover / focus', looks: 'Ring or shadow on the whole card', announced: 'The link name' },
+    ],
+  },
+  stepper: {
+    parts: [
+      { name: 'Navigation landmark', required: true, note: 'Labelled, like “Checkout progress”.' },
+      { name: 'Step', required: true, note: 'Number or check, plus the step name.' },
+      { name: 'Connector', required: false, note: 'Decorative line between steps.' },
+      { name: '“Step 2 of 4” text', required: true, note: 'Near the step heading.' },
+    ],
+    states: [
+      { state: 'Completed', looks: 'Filled circle with a check', announced: '“Completed: Your details”' },
+      { state: 'Current', looks: 'Outlined circle, bold name', announced: '“Delivery, current step”' },
+      { state: 'Not started', looks: 'Gray circle with a number', announced: '“Payment (not started)”' },
+    ],
+  },
+  tags: {
+    parts: [
+      { name: 'Input', required: false, note: 'For adding tags, with a label and hint.' },
+      { name: 'Tag list', required: true, note: 'A labelled <ul>.' },
+      { name: 'Tag', required: true, note: 'The text of the value.' },
+      { name: 'Remove button', required: true, note: '× icon with hidden text “Remove {tag}”.' },
+    ],
+    states: [
+      { state: 'Default', looks: 'Pill with ×', announced: '“Remove Research, button”' },
+      { state: 'Removed', looks: 'Gone, focus on the next tag', announced: '“Research removed”' },
+      { state: 'Empty', looks: '“No topics yet” text', announced: 'Focus in the input' },
+    ],
+  },
+  toolbar: {
+    parts: [
+      { name: 'Toolbar', required: true, note: 'role="toolbar" with a label.' },
+      { name: 'Buttons', required: true, note: 'Icon plus hidden name and a tooltip.' },
+      { name: 'Separator', required: false, note: 'Divides groups of buttons.' },
+    ],
+    states: [
+      { state: 'Not pressed', looks: 'Plain icon', announced: '“Italic, toggle button, not pressed”' },
+      { state: 'Pressed', looks: 'Filled background', announced: '“pressed”' },
+      { state: 'Focused', looks: 'Focus ring', announced: 'Name and state' },
+    ],
+  },
 };

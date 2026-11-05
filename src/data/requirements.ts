@@ -557,6 +557,48 @@ export const worksheets: Record<string, Worksheet> = {
     ],
   },
 
+  card: {
+    content: [
+      { id: 'title', label: 'Card heading', target: 'Heading (and link text)', kind: 'link', required: true, guidance: 'Makes sense on its own, since it’s also the link.', good: 'Spring trail guide', bad: 'Read more' },
+      { id: 'summary', label: 'Summary', target: 'Paragraph', kind: 'text', required: false, guidance: 'One or two lines.', good: 'Twelve walks under two hours, all step-free.' },
+      { id: 'alt', label: 'Image alt text', target: 'alt', kind: 'alt', required: false, guidance: 'Usually leave this empty: the image is decorative and gets alt="". Only describe it if it adds something the heading doesn’t.', good: 'A cyclist on a flat coastal path at sunset' },
+      { id: 'actions', label: 'Action labels', target: 'Buttons + hidden text', kind: 'name', required: true, multiline: true, guidance: 'One per line. The card title is added as hidden text automatically.', good: 'Read\nSave', variants: ['actions'] },
+    ],
+    design: [
+      { text: 'The whole card has a visible focus and hover state.', check: 'A ring or shadow around the card, the same for hover and focus.', variants: ['link'] },
+      { text: 'Cards stack to one column at 320px.', check: 'Nothing is cut off and images keep their aspect ratio.' },
+      { text: 'Card borders or shadows have 3:1 contrast, or cards are clearly separated by space.', check: 'Check in both themes.' },
+      textContrast,
+    ],
+  },
+  stepper: {
+    content: [
+      { id: 'name', label: 'Navigation name', target: 'aria-label on <nav>', kind: 'label', required: true, guidance: 'What the steps are for.', good: 'Checkout progress' },
+      { id: 'steps', label: 'Step names', target: 'List items and step headings', kind: 'heading', required: true, multiline: true, guidance: 'One per line. Short, and the same as the step’s heading.', good: 'Your details\nDelivery\nPayment\nCheck and send' },
+    ],
+    design: [
+      notColorOnly('difference between completed, current and future steps'),
+      { text: 'There’s a “Step 2 of 4” text label.', check: 'Near the heading, not only in the indicator.' },
+      { text: 'Steps wrap at 320px.', check: 'No sideways scrolling; consider a compact “Step 2 of 4: Delivery” on mobile.' },
+    ],
+  },
+  tags: {
+    content: [
+      { id: 'label', label: 'Input label', target: '<label>', kind: 'label', required: true, guidance: 'What people add.', good: 'Add a topic' },
+      { id: 'list', label: 'Tag list label', target: 'aria-labelledby on <ul>', kind: 'label', required: true, guidance: 'What the tags are.', good: 'Your topics' },
+      { id: 'remove', label: 'Remove button name', target: 'Visually hidden text', kind: 'name', required: true, guidance: 'Use {tag} for the tag text.', good: 'Remove {tag}', bad: '×' },
+      { id: 'removed', label: 'Removed message', target: 'role="status"', kind: 'message', required: true, guidance: 'Use {tag}.', good: '{tag} removed' },
+    ],
+    design: [target('Remove buttons'), focus('Each remove button'), { text: 'Tags wrap onto new lines.', check: 'At 200% zoom tags wrap, and long tag text wraps or truncates with the full text available.' }],
+  },
+  toolbar: {
+    content: [
+      { id: 'name', label: 'Toolbar name', target: 'aria-label', kind: 'label', required: true, guidance: 'What the controls do as a group.', good: 'Text formatting' },
+      { id: 'buttons', label: 'Button names', target: 'Hidden text + tooltip', kind: 'name', required: true, multiline: true, guidance: 'One per line. Toggle names stay the same when pressed.', good: 'Bold\nItalic\nUnderline\nInsert link' },
+    ],
+    design: [notColorOnly('pressed state'), focus('Each button'), target('Buttons'), { text: 'Every icon has a visible tooltip.', check: 'On hover and keyboard focus.' }],
+  },
+
   table: {
     content: [
       { id: 'caption', label: 'Table caption', target: '<caption>', kind: 'heading', required: true, guidance: 'Names the table. Screen readers announce it on entry.', good: 'Invoices due in March 2026' },

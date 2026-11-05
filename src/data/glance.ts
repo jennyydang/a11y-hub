@@ -43,5 +43,9 @@ export const glance: Record<string, Glance> = {
   'data-grid': { does: 'An interactive table people move through cell by cell with arrow keys.', instead: [{ slug: 'table', when: 'people only read the data' }] },
   'tree-view': { does: 'Shows nested items, like folders, that people expand and collapse.', instead: [{ slug: 'accordion', when: 'there’s one level of sections' }, { slug: 'site-navigation', when: 'it’s navigation between pages' }] },
   listbox: { does: 'Lets people pick several items from a visible list.', instead: [{ slug: 'checkbox', when: 'it’s a short list in a form' }, { slug: 'combobox', when: 'the list is long and people can type' }] },
+  card: { does: 'Groups a heading, summary and image into one unit that links to more detail.', instead: [{ slug: 'table', when: 'people compare details' }, { slug: 'link', when: 'items are text only; use a list of links' }] },
+  stepper: { does: 'Shows where people are in a multi-step task and how many steps are left.', instead: [{ slug: 'progress', when: 'it’s a loading task, not steps people complete' }] },
+  tags: { does: 'Shows values people have added or chosen, each with a remove button.', instead: [{ slug: 'badge', when: 'it’s a status label people can’t remove' }, { slug: 'checkbox', when: 'there’s a short fixed list' }] },
+  toolbar: { does: 'Groups related buttons into one tab stop, with arrow keys between them.', instead: [{ slug: 'menu', when: 'the actions are rarely used and can be hidden' }, { slug: 'button', when: 'there are only one or two actions' }] },
   table: { does: 'Shows data in rows and columns so people can compare values.', instead: [{ slug: 'image', when: 'the point is a trend, not exact values (use a chart with a description)' }] },
 };
