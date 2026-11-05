@@ -28,6 +28,11 @@ import { siteNavigation } from './site-navigation';
 import { skipLink } from './skip-link';
 import { toast } from './toast';
 import { tooltip } from './tooltip';
+import { badge, badgeVariants } from './badge';
+import { avatar, avatarVariants } from './avatar';
+import { skeleton } from './skeleton';
+import { emptyState, emptyStateVariants } from './empty-state';
+import { carousel, carouselVariants } from './carousel';
 
 import { buttonVariants } from '../variants/button';
 import { linkVariants } from '../variants/link';
@@ -60,6 +65,10 @@ datePicker.variants = datePickerVariants;
 table.variants = tableVariants;
 popover.variants = popoverVariants;
 drawer.variants = drawerVariants;
+badge.variants = badgeVariants;
+avatar.variants = avatarVariants;
+emptyState.variants = emptyStateVariants;
+carousel.variants = carouselVariants;
 
 export const components: ComponentSpec[] = [
   button,
@@ -89,7 +98,12 @@ export const components: ComponentSpec[] = [
   toast,
   alert,
   progress,
+  skeleton,
+  badge,
   image,
+  avatar,
+  carousel,
+  emptyState,
   table,
 ];
 

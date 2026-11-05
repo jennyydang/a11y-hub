@@ -292,6 +292,36 @@ export const componentRoles: Record<string, Record<RoleId, string[]>> = {
     frontend: ['Use <dialog> for modal drawers. Hide closed drawers with hidden, and return focus to the trigger.'],
     qa: ['Check a closed drawer can’t be tabbed into, and modal drawers contain focus while non-modal ones don’t.'],
   },
+  badge: {
+    content: ['Write one or two status words that make sense without color. Put counts into the button name, like “Notifications, 3 unread”.'],
+    design: ['Pair each status color with an icon and keep badge text at 4.5:1 contrast.'],
+    frontend: ['Hide the visual count with aria-hidden and put it in the control’s name instead.'],
+    qa: ['Check statuses in grayscale, and that counts are read once as part of the button name.'],
+  },
+  avatar: {
+    content: ['Use the person’s name as alt text when it isn’t shown nearby; otherwise the photo gets alt="".'],
+    design: ['Plan a fallback for missing photos, and check initials have 4.5:1 contrast.'],
+    frontend: ['Set alt="" when the name is beside the photo. Hide initials and “+2” counters with aria-hidden.'],
+    qa: ['Read a list of people and check no name is read twice or missing.'],
+  },
+  skeleton: {
+    content: ['Write the loading, loaded and error messages screen readers will hear.'],
+    design: ['Match the real layout, design a failure state, and stop the pulse for reduced motion.'],
+    frontend: ['Hide the shapes with aria-hidden, set aria-busy, and use a status region that exists before loading.'],
+    qa: ['Check you hear a loading and a loaded message, and the gray shapes are never read.'],
+  },
+  'empty-state': {
+    content: ['Write a plain heading, a short reason and one action. For no results, repeat the search term.'],
+    design: ['Make the message clear without the illustration, with a single main action.'],
+    frontend: ['Hide the illustration, use a real heading, and announce no-results with role="status".'],
+    qa: ['Search for nothing and check the message is announced without focus moving.'],
+  },
+  carousel: {
+    content: ['Name the carousel, write alt text for every slide image, and keep essential messages off later slides.'],
+    design: ['Keep controls always visible. If it auto-rotates, put a Stop button first.'],
+    frontend: ['Follow the carousel pattern: labelled slides, hidden inactive slides, aria-live off while rotating, pause on focus and hover.'],
+    qa: ['Check rotation stops on focus and with reduced motion, and Next announces “2 of 3”.'],
+  },
   tooltip: {
     content: ['Keep tooltip text to one short sentence. Never put essential information only in a tooltip.'],
     design: ['Show it on hover and focus, and keep it open while the pointer is over it.'],

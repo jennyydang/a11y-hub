@@ -411,4 +411,68 @@ export const anatomy: Record<string, Anatomy> = {
       { state: 'Open (non-modal)', looks: 'Panel beside the content', announced: 'Focus on the heading: “Filters, heading level 2”' },
     ],
   },
+  badge: {
+    parts: [
+      { name: 'Container', required: true, note: 'Fill with 4.5:1 contrast against its text.' },
+      { name: 'Text', required: true, note: 'One or two words, or a number.' },
+      { name: 'Icon', required: false, note: 'Decorative; reinforces the status so it isn’t color alone.' },
+    ],
+    states: [
+      { state: 'Status', looks: 'Colored pill with icon and word', announced: 'The word: “Overdue”' },
+      { state: 'Count', looks: 'Number on a corner of a button', announced: 'In the button’s name: “Notifications, 3 unread”' },
+      { state: 'Zero', looks: 'Badge removed', announced: '“Notifications”' },
+    ],
+  },
+  avatar: {
+    parts: [
+      { name: 'Image or initials', required: true, note: 'Photo with alt, or initials hidden from screen readers.' },
+      { name: 'Name', required: false, note: 'Visible beside it, or in the alt text.' },
+      { name: 'Ring', required: false, note: 'Separates stacked avatars; matches the page color.' },
+      { name: 'Overflow count', required: false, note: '“+2” in a group, hidden; the list name says who.' },
+    ],
+    states: [
+      { state: 'With name', looks: 'Photo beside a name', announced: 'Only the name' },
+      { state: 'Alone', looks: 'Photo only', announced: '“Mei Chen, image”' },
+      { state: 'Linked', looks: 'Focus ring around the circle', announced: '“Sam Patel’s profile, link”' },
+      { state: 'No photo', looks: 'Initials on a colored circle', announced: 'Only the visible name' },
+    ],
+  },
+  skeleton: {
+    parts: [
+      { name: 'Placeholder shapes', required: true, note: 'aria-hidden; match the real layout.' },
+      { name: 'Status message', required: true, note: 'Visually hidden role="status", in the page before loading.' },
+      { name: 'Container', required: true, note: 'aria-busy while loading.' },
+    ],
+    states: [
+      { state: 'Loading', looks: 'Gray shapes, gentle pulse', announced: '“Loading files”' },
+      { state: 'Loaded', looks: 'Real content in the same space', announced: '“3 files loaded”' },
+      { state: 'Failed', looks: 'Error message replaces the shapes', announced: 'The error, via role="alert"' },
+    ],
+  },
+  'empty-state': {
+    parts: [
+      { name: 'Illustration', required: false, note: 'Decorative, aria-hidden.' },
+      { name: 'Heading', required: true, note: 'Says what’s empty.' },
+      { name: 'Explanation', required: true, note: 'Why it’s empty, or what to try.' },
+      { name: 'Action', required: false, note: 'One button or link for the next step.' },
+    ],
+    states: [
+      { state: 'First use', looks: 'Heading, text and a main button', announced: '“No projects yet, heading”' },
+      { state: 'No results', looks: 'Message with the search term', announced: '“No projects match zebra” as a status' },
+    ],
+  },
+  carousel: {
+    parts: [
+      { name: 'Carousel region', required: true, note: 'aria-roledescription="carousel" and a label.' },
+      { name: 'Stop / Start button', required: false, note: 'Required if it auto-rotates; first in the tab order.' },
+      { name: 'Previous and Next', required: true, note: 'Visible buttons with names, at least 24×24px.' },
+      { name: 'Slide', required: true, note: 'role="group", aria-roledescription="slide", labelled “1 of 3”.' },
+      { name: 'Position indicator', required: false, note: '“2 / 3”; hidden because each slide says it.' },
+    ],
+    states: [
+      { state: 'Showing a slide', looks: 'One slide visible', announced: '“1 of 3, slide”' },
+      { state: 'Auto-rotating', looks: 'Slides change every 5 seconds', announced: 'Nothing (aria-live off)' },
+      { state: 'Paused', looks: 'Play icon on the button', announced: '“Start slide rotation, button”' },
+    ],
+  },
 };

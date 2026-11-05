@@ -745,6 +745,35 @@ export const htmlExamples: Record<string, string> = {
   document.getElementById('upload-status').textContent = 'Upload complete.';
 </script>`,
 
+  skeleton: `<button type="button" id="load">Load files</button>
+
+<!-- In the page from the start, so changes to it are announced -->
+<p role="status" class="sr-only" id="load-status"></p>
+
+<ul aria-label="Recent files" id="files" aria-busy="false"></ul>
+
+<style>
+  .skeleton { background: #e5e7eb; border-radius: 4px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton { animation: pulse 2s ease-in-out infinite; }
+  }
+  @keyframes pulse { 50% { opacity: .5; } }
+</style>
+
+<script>
+  const list = document.getElementById('files');
+  const status = document.getElementById('load-status');
+  document.getElementById('load').addEventListener('click', async () => {
+    list.setAttribute('aria-busy', 'true');
+    status.textContent = 'Loading files';
+    // Placeholder shapes are hidden from assistive tech
+    list.innerHTML = '<li aria-hidden="true"><span class="skeleton"></span></li>'.repeat(3);
+    const files = await fetch('/api/files').then((r) => r.json());
+    list.innerHTML = files.map((f) => \`<li>\${f.title}</li>\`).join('');
+    list.setAttribute('aria-busy', 'false');
+    status.textContent = \`\${files.length} files loaded\`;
+  });
+</script>`,
   image: `<!-- Informative image -->
 <img src="team.jpg" alt="Our five-person support team at the Lisbon office">
 

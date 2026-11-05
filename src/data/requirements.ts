@@ -444,6 +444,77 @@ export const worksheets: Record<string, Worksheet> = {
     design: [{ text: 'There are no images of text.', check: 'Text is real text, styled with CSS. Logos are the exception.' }, { text: 'Meaningful icons and chart marks have 3:1 contrast.', check: 'Measure each against its background.' }, notColorOnly('difference between chart series'), reflow],
   },
 
+  badge: {
+    content: [
+      { id: 'statuses', label: 'Status words', target: 'Badge text', kind: 'text', required: true, multiline: true, guidance: 'One per line. One or two words each, and distinct without their color.', good: 'Paid\nDue soon\nOverdue', bad: 'Green\nAmber\nRed', variants: ['status'] },
+      { id: 'name', label: 'Button name with count', target: 'Visually hidden text', kind: 'name', required: true, guidance: 'The control’s name plus the count and what it counts. Use {n} for the number.', good: 'Notifications, {n} unread', bad: '3', variants: ['count'] },
+      { id: 'new', label: 'Announcement for new items', target: 'role="status"', kind: 'message', required: false, guidance: 'Optional. Said when the count goes up while people are on the page.', good: '1 new notification', variants: ['count'] },
+    ],
+    design: [
+      notColorOnly('status'),
+      { text: 'Badge text has 4.5:1 contrast with its fill.', check: 'Check every status color in light and dark themes.' },
+      { text: 'Count badges don’t cover the icon’s meaning.', check: 'The icon is still recognizable with the badge on it, at 200% zoom too.', variants: ['count'] },
+      { text: 'Badges don’t look clickable.', check: 'No hover state or pointer cursor, unless the whole badge is a real button or link.' },
+    ],
+  },
+  avatar: {
+    content: [
+      { id: 'name', label: 'Visible name', target: 'Text beside the image', kind: 'text', required: true, guidance: 'The person’s name as people know them. The photo then gets alt="".', good: 'Amara Okafor', variants: ['with-name', 'initials'] },
+      { id: 'alt', label: 'Alt text', target: 'alt', kind: 'alt', required: true, guidance: 'The person’s name, not what they look like.', good: 'Mei Chen', bad: 'Profile photo', variants: ['alone'] },
+      { id: 'link-alt', label: 'Alt text when linked', target: 'alt on an image inside a link', kind: 'link', required: false, guidance: 'Say where the link goes.', good: 'Sam Patel’s profile', bad: 'Avatar', variants: ['alone'] },
+      { id: 'group', label: 'Group name', target: 'aria-label on the list', kind: 'label', required: true, guidance: 'Who’s in the group, including the hidden ones.', good: 'Editors: Amara Okafor, Lucas Ferreira, Mei Chen, Sam Patel, Noor Haddad', bad: '+2', variants: ['group'] },
+    ],
+    design: [
+      { text: 'Initials have 4.5:1 contrast with their circle.', check: 'Measure each color pair you use, in both themes.', variants: ['initials'] },
+      { text: 'Linked avatars have a visible round focus ring.', check: 'The ring follows the circle and isn’t clipped by overlapping avatars.', variants: ['alone', 'group'] },
+      { text: 'Stacked avatars are separated by a ring.', check: 'The ring matches the page background so the overlap is visible in both themes.', variants: ['group'] },
+      { text: 'There’s a fallback when the photo fails.', check: 'Initials or a generic icon, never an empty circle.' },
+    ],
+  },
+  skeleton: {
+    content: [
+      { id: 'loading', label: 'Loading message', target: 'role="status" (visually hidden)', kind: 'message', required: true, guidance: 'Say what’s loading.', good: 'Loading files', bad: 'Please wait…' },
+      { id: 'done', label: 'Loaded message', target: 'role="status" (visually hidden)', kind: 'message', required: true, guidance: 'Say it’s ready, with a count if helpful.', good: '3 files loaded', bad: 'Done' },
+      { id: 'error', label: 'Error message', target: 'role="alert"', kind: 'error', required: true, guidance: 'What failed and what to do.', good: 'Files couldn’t load. Refresh the page to try again.' },
+    ],
+    design: [
+      { text: 'The skeleton matches the real layout.', check: 'Swap in real content and confirm nothing jumps or shifts.' },
+      motion,
+      { text: 'There’s a designed error state.', check: 'The skeleton never stays forever; an error replaces it.' },
+    ],
+  },
+  'empty-state': {
+    content: [
+      { id: 'heading', label: 'Heading', target: 'Heading element', kind: 'heading', required: true, guidance: 'Say what’s empty, plainly.', good: 'No projects yet', bad: 'Oops!', variants: ['first-use'] },
+      { id: 'body', label: 'Explanation', target: 'Paragraph', kind: 'text', required: true, multiline: true, guidance: 'Why it matters or what to do. One or two sentences.', good: 'Projects keep your files, tasks and people together. Create one to get started.', variants: ['first-use'] },
+      { id: 'action', label: 'Action label', target: 'Button or link', kind: 'name', required: false, guidance: 'A verb-first label for the next step.', good: 'Create a project', bad: 'Click here', variants: ['first-use'] },
+      { id: 'message', label: 'No-results message', target: 'role="status"', kind: 'message', required: true, guidance: 'Repeat what was searched for. Use {q} for the search term.', good: 'No projects match “{q}”', bad: 'Nothing here', variants: ['no-results'] },
+      { id: 'tip', label: 'Suggestion', target: 'Paragraph', kind: 'text', required: false, guidance: 'How to get results.', good: 'Check the spelling or try a shorter word.', variants: ['no-results'] },
+      { id: 'clear', label: 'Clear button label', target: 'Button', kind: 'name', required: false, guidance: 'Say what it resets.', good: 'Clear filter', variants: ['no-results'] },
+    ],
+    design: [
+      { text: 'The illustration is optional and decorative.', check: 'The message is fully clear with the illustration removed.' },
+      { text: 'There’s one clear next step.', check: 'A single main button or link, not a row of equal options.' },
+      textContrast,
+      reflow,
+    ],
+  },
+  carousel: {
+    content: [
+      { id: 'name', label: 'Carousel name', target: 'aria-label on the section', kind: 'label', required: true, guidance: 'What the set of slides is.', good: 'Featured guides', bad: 'Carousel' },
+      { id: 'alts', label: 'Alt text for each slide image', target: 'alt', kind: 'alt', required: true, multiline: true, guidance: 'One per line, in slide order. Use alt="" if the slide heading says it all.', good: 'Green hills under a pale blue sky\nSandy shoreline at sunset\nDark hills under a night sky with a full moon' },
+      { id: 'headings', label: 'Slide headings', target: 'Heading in each slide', kind: 'heading', required: true, multiline: true, guidance: 'One per line, in slide order.', good: 'Spring trail guide\nCoastal cycling\nNight sky events' },
+      { id: 'links', label: 'Slide link text', target: 'Link in each slide', kind: 'link', required: false, multiline: true, guidance: 'One per line. Each makes sense on its own.', good: 'Read the spring trail guide', bad: 'Learn more' },
+    ],
+    design: [
+      { text: 'Previous and Next are always visible.', check: 'Not only on hover, with at least a 24×24px target and 3:1 contrast.' },
+      { text: 'Auto-rotation has a visible Stop button, placed first.', check: 'It’s before the slides in reading order and shows its state with an icon change.', variants: ['auto'] },
+      { text: 'Slides change without sliding motion, or have a reduced-motion version.', check: 'With reduced motion on, slides swap instantly and auto-rotation doesn’t start.' },
+      { text: 'Nothing essential is only on a later slide.', check: 'The key message is on slide 1 or elsewhere on the page.' },
+      focus('Each control and link'),
+    ],
+  },
+
   table: {
     content: [
       { id: 'caption', label: 'Table caption', target: '<caption>', kind: 'heading', required: true, guidance: 'Names the table. Screen readers announce it on entry.', good: 'Invoices due in March 2026' },

@@ -35,5 +35,10 @@ export const glance: Record<string, Glance> = {
   alert: { does: 'Shows an important message in the page, and announces it if it appears later.', instead: [{ slug: 'toast', when: 'it’s a brief confirmation' }, { slug: 'error-summary', when: 'it’s a list of form errors' }] },
   progress: { does: 'Shows that something is loading or how far along a task is.', instead: [{ slug: 'toast', when: 'you only need to confirm it finished' }] },
   image: { does: 'Shows a picture, icon or chart, with a text alternative or hidden if decorative.', instead: [{ slug: 'table', when: 'a chart’s data would be clearer as a table' }] },
+  badge: { does: 'Labels a status or shows a count, like “Overdue” or “3 unread”.', instead: [{ slug: 'alert', when: 'the status needs attention now' }, { slug: 'toast', when: 'it’s a one-off confirmation' }] },
+  avatar: { does: 'Shows a small photo or initials to represent a person.', instead: [{ slug: 'image', when: 'the picture isn’t of a person' }] },
+  skeleton: { does: 'Holds the shape of content while it loads.', instead: [{ slug: 'progress', when: 'the task is long or you know how far along it is' }] },
+  'empty-state': { does: 'Explains why there’s nothing to show and what to do next.', instead: [{ slug: 'alert', when: 'something failed to load' }] },
+  carousel: { does: 'Shows one slide at a time from a small set, with Previous and Next.', instead: [{ slug: 'tabs', when: 'people need to switch between labelled views' }, { slug: 'table', when: 'people need to compare items' }] },
   table: { does: 'Shows data in rows and columns so people can compare values.', instead: [{ slug: 'image', when: 'the point is a trend, not exact values (use a chart with a description)' }] },
 };
