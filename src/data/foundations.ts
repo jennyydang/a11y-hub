@@ -1,5 +1,6 @@
 import { ContrastChecker } from '../tools/ContrastChecker';
 import { MotionDemo } from '../tools/MotionDemo';
+import { PageLayoutMap } from '../tools/PageLayoutMap';
 import type { FoundationSpec } from './types';
 import { WCAG } from './wcag';
 
@@ -206,6 +207,60 @@ export const foundations: FoundationSpec[] = [
       {
         heading: 'Target size',
         body: ['Interactive targets should be at least 24×24 CSS pixels, or have enough spacing around them. Fluid UI’s md buttons are 40px tall.'],
+      },
+    ],
+  },
+  {
+    slug: 'layout',
+    name: 'Page layout and placement',
+    summary:
+      'Where a component sits matters as much as how it’s built. People find things faster when they’re where other sites put them, next to what they affect, and in the same place on every page.',
+    wcag: [WCAG.bypass, WCAG.sequence, WCAG.focusOrder, WCAG.reflow, WCAG.focusNotObscured, WCAG.infoRel],
+    Tool: PageLayoutMap,
+    sections: [
+      {
+        heading: 'Put things where people expect them',
+        body: [
+          'People spend most of their time on other sites, so they expect yours to work the same way (Jakob’s law). Logo top left, search and account top right, main navigation across the top or down the left, legal links in the footer.',
+          'Breaking these conventions costs time for everyone. It costs the most for screen magnifier users, who see a small part of the page at once and rely on knowing where to look.',
+        ],
+      },
+      {
+        heading: 'Keep the same things in the same place',
+        body: ['Navigation, search and help must appear in the same relative order on every page (WCAG 3.2.3 and 3.2.6). People with memory or cognitive disabilities depend on this most.'],
+      },
+      {
+        heading: 'Place controls next to what they affect',
+        body: [
+          'Items close together are seen as related (the law of proximity). A row action belongs at the end of its row, a field’s error belongs right by the field, a filter panel belongs beside the results it filters.',
+          'Distance also costs effort: a control far from where people are looking takes longer to reach (Fitts’s law), and screen magnifier users may not see it at all.',
+        ],
+      },
+      {
+        heading: 'Make the reading order match the visual order',
+        body: [
+          'Screen readers and keyboards follow the order of the HTML, not the visual layout. If CSS moves something visually, such as a sidebar shown before the main content, the two orders disagree and people get lost.',
+          'Use the Show focus order button on any component example to check the order.',
+        ],
+        bullets: [
+          'One <header>, one <nav> per navigation area (each labelled), one <main>, one <footer>.',
+          'The skip link comes first, then the header, then navigation, then main content.',
+          'Overlays are placed in the HTML right after the control that opens them, or focus is moved into them.',
+        ],
+      },
+      {
+        heading: 'Put the important things first',
+        body: [
+          'On text-heavy pages people scan in an F shape: across the top, then down the left edge. Key actions, headings and the first words of links get the most attention.',
+          'People also remember the first and last items in a list best (the serial position effect), so put the most important navigation items at the ends.',
+        ],
+      },
+      {
+        heading: 'Plan for small screens and zoom',
+        body: [
+          'At 320px wide, or 400% zoom on a laptop, a three-column layout becomes one column. Decide the stacking order: usually main content before the sidebar, and filters behind a button.',
+          'Sticky headers and cookie banners must not cover the focused element (WCAG 2.4.11).',
+        ],
       },
     ],
   },

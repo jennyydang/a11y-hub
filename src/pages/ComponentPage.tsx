@@ -7,6 +7,7 @@ import { DoDont } from '../components/DoDont';
 import { RoleNotes } from '../components/RoleNotes';
 import { Worksheet } from '../components/Worksheet';
 import { AtAGlance } from '../components/AtAGlance';
+import { PlacementGuide, WhenToUse } from '../components/PlacementGuide';
 import { VariantPicker } from '../components/VariantPicker';
 import { Part, Section, slugify } from '../components/Section';
 import { useScrollSpy } from '../components/useScrollSpy';
@@ -23,8 +24,8 @@ import { usePageTitle } from './usePageTitle';
 const toc = (tool?: string, hasAnatomy?: boolean): [string, string[]][] => [
   ['Overview', ['At a glance']],
   ['Try it', ['Live example']],
-  ['How it works', ['Usage', ...(hasAnatomy ? ['Anatomy & states'] : []), 'Keyboard interactions', 'ARIA', 'Focus & screen readers']],
-  ['Guidance', ['Best practices', ...(tool ? [tool] : []), 'WCAG criteria', 'Fluid UI notes']],
+  ['How it works', ['When to use', ...(hasAnatomy ? ['Anatomy & states'] : []), 'Keyboard interactions', 'ARIA', 'Focus & screen readers']],
+  ['Guidance', ['Placement & UX', 'Best practices', ...(tool ? [tool] : []), 'WCAG criteria', 'Fluid UI notes']],
   ['Team handoff', ['Who owns what', 'Handoff worksheet', 'Testing checklist']],
 ];
 
@@ -121,10 +122,8 @@ export function ComponentPage() {
           </Part>
 
           <Part n={2} title="How it works" description="When to use it, and the keyboard, ARIA and focus behavior it needs.">
-            <Section title="Usage">
-              <div className="surface p-5">
-                <Bullets items={spec.whenToUse} />
-              </div>
+            <Section title="When to use">
+              <WhenToUse slug={spec.slug} use={spec.whenToUse} />
             </Section>
 
             {anatomy[spec.slug] && (
@@ -155,7 +154,14 @@ export function ComponentPage() {
             </Section>
           </Part>
 
-          <Part n={3} title="Guidance" description="What good looks like, the standards it must meet, and how it’s built with Fluid UI.">
+          <Part n={3} title="Guidance" description="Where it goes, what good looks like, the standards it must meet, and how it’s built with Fluid UI.">
+            <Section
+              title="Placement & UX"
+              intro={<p>Where it belongs on the page, and the user experience research behind that advice.</p>}
+            >
+              <PlacementGuide slug={spec.slug} name={spec.name} />
+            </Section>
+
             <Section title="Best practices">
               <DoDont dos={spec.dos} donts={spec.donts} />
             </Section>

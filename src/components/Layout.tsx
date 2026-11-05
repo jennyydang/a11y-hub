@@ -119,7 +119,19 @@ export function Layout() {
       first.current = false;
       return;
     }
-    if (location.hash) return;
+    if (location.hash) {
+      // Deep link to a section: scroll to it and move focus to its heading
+      const id = decodeURIComponent(location.hash.slice(1));
+      requestAnimationFrame(() => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const target = el.matches('h1, h2, h3') ? el : el.querySelector<HTMLElement>('h2, h3') ?? el;
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        el.scrollIntoView({ block: 'start' });
+        target.focus({ preventScroll: true });
+      });
+      return;
+    }
     const h1 = mainRef.current?.querySelector('h1');
     if (h1) {
       h1.setAttribute('tabindex', '-1');

@@ -1,4 +1,5 @@
 import type { ComponentSpec, Variant } from '../data/types';
+import { placement } from '../data/placement';
 import { worksheets, type ContentField, type DesignRequirement } from '../data/requirements';
 import type { WorksheetEntry } from './worksheetStore';
 
@@ -32,7 +33,16 @@ export function contentFields(spec: ComponentSpec, variant?: Variant): ContentFi
 }
 
 export function designRequirements(spec: ComponentSpec, variant?: Variant): DesignRequirement[] {
-  return forVariant(worksheets[spec.slug]?.design ?? [], variant);
+  const reqs = forVariant(worksheets[spec.slug]?.design ?? [], variant);
+  const p = placement[spec.slug];
+  if (!p) return reqs;
+  return [
+    ...reqs,
+    {
+      text: `It’s placed where people expect it (${p.regions.join(', ').toLowerCase()}).`,
+      check: `${p.where[0]} See Placement & UX on this page.`,
+    },
+  ];
 }
 
 /** What frontend needs to build, including the text content handed over. */
