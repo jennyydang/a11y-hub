@@ -5,6 +5,8 @@ import { button } from './button';
 import { checkbox } from './checkbox';
 import { combobox } from './combobox';
 import { dialog } from './dialog';
+import { popover, popoverVariants } from './popover';
+import { drawer, drawerVariants } from './drawer';
 import { image } from './image';
 import { link } from './link';
 import { menu } from './menu';
@@ -56,6 +58,8 @@ image.variants = imageVariants;
 select.variants = selectVariants;
 datePicker.variants = datePickerVariants;
 table.variants = tableVariants;
+popover.variants = popoverVariants;
+drawer.variants = drawerVariants;
 
 export const components: ComponentSpec[] = [
   button,
@@ -79,6 +83,8 @@ export const components: ComponentSpec[] = [
   fileUpload,
   errorSummary,
   dialog,
+  popover,
+  drawer,
   tooltip,
   toast,
   alert,

@@ -78,6 +78,7 @@ const TREE: Record<string, Node> = {
       { label: 'Errors after submitting a form', result: r('error-summary', 'An error summary lists every problem with links to the fields.') },
       { label: 'Something is loading', result: r('progress', 'Show progress and announce when it’s done.') },
       { label: 'A short hint about a control', result: r('tooltip', 'Tooltips are for short, non-essential hints on hover and focus.') },
+      { label: 'Help text people open with an info button', result: r('popover', 'A toggletip works with click, touch and keyboard, and announces its text.', 'toggletip') },
     ],
   },
   organize: {
@@ -87,6 +88,8 @@ const TREE: Record<string, Node> = {
       { label: 'Show and hide sections, several can be open', result: r('accordion', 'An accordion lets people expand only what they need.') },
       { label: 'Data to compare in rows and columns', result: r('table', 'A table with headers lets screen readers announce the row and column.') },
       { label: 'Extra detail people may not need', result: r('accordion', 'A native details element is the simplest show/hide.', 'details') },
+      { label: 'Small content or controls next to one button', hint: 'Share options, quick settings', result: r('popover', 'A popover opens on click, doesn’t block the page, and returns focus on Escape.', 'interactive') },
+      { label: 'A side panel for navigation, filters or details', result: r('drawer', 'A drawer slides in from the edge; make it modal on small screens.') },
     ],
   },
   wayfind: {

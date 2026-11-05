@@ -280,6 +280,18 @@ export const componentRoles: Record<string, Record<RoleId, string[]>> = {
     frontend: ['Trap focus, close on Escape, return focus to the trigger and label the dialog.'],
     qa: ['Check focus moves in, stays in, Escape closes it and focus returns to the trigger.'],
   },
+  popover: {
+    content: ['Give the popover a short name and keep its text brief. Never hide essential instructions in it.'],
+    design: ['Open on click, not hover. Include a visible Close button for popovers with controls.'],
+    frontend: ['Set aria-expanded on the button, move focus in for interactive popovers, close on Escape and return focus.'],
+    qa: ['Check Escape returns focus to the button, focus isn’t trapped, and toggletip text is announced.'],
+  },
+  drawer: {
+    content: ['Write a clear drawer heading and a specific Close label, like “Close filters”.'],
+    design: ['Show a Close button, design a reduced-motion version, and check it fits at 320px.'],
+    frontend: ['Use <dialog> for modal drawers. Hide closed drawers with hidden, and return focus to the trigger.'],
+    qa: ['Check a closed drawer can’t be tabbed into, and modal drawers contain focus while non-modal ones don’t.'],
+  },
   tooltip: {
     content: ['Keep tooltip text to one short sentence. Never put essential information only in a tooltip.'],
     design: ['Show it on hover and focus, and keep it open while the pointer is over it.'],

@@ -384,4 +384,31 @@ export const anatomy: Record<string, Anatomy> = {
       { state: 'Scrolling', looks: 'Table scrolls inside its box', announced: 'Nothing; the region is focusable and named' },
     ],
   },
+  popover: {
+    parts: [
+      { name: 'Trigger button', required: true, note: 'aria-expanded; opens on click.' },
+      { name: 'Panel', required: true, note: 'Non-modal role="dialog" with a name if it has controls.' },
+      { name: 'Content', required: true, note: 'Short; nothing essential only here.' },
+      { name: 'Close button', required: false, note: 'Needed when the panel has controls.' },
+    ],
+    states: [
+      { state: 'Closed', looks: 'Button only', announced: '“Share, button, collapsed”' },
+      { state: 'Open', looks: 'Panel beside the button', announced: '“expanded”; interactive popovers announce “Share, dialog”' },
+      { state: 'Dismissed', looks: 'Panel gone', announced: 'Focus back on the button' },
+    ],
+  },
+  drawer: {
+    parts: [
+      { name: 'Trigger', required: true, note: 'Opens the drawer.' },
+      { name: 'Backdrop', required: false, note: 'Modal only; dims the page.' },
+      { name: 'Panel', required: true, note: '<dialog> or <aside>, named by its heading.' },
+      { name: 'Heading', required: true, note: 'Names the drawer.' },
+      { name: 'Close button', required: true, note: 'Visible, with a specific name.' },
+    ],
+    states: [
+      { state: 'Closed', looks: 'Off screen and hidden', announced: 'Not reachable' },
+      { state: 'Open (modal)', looks: 'Panel over a dimmed page', announced: '“Menu, dialog”' },
+      { state: 'Open (non-modal)', looks: 'Panel beside the content', announced: 'Focus on the heading: “Filters, heading level 2”' },
+    ],
+  },
 };

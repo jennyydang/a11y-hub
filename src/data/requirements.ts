@@ -366,6 +366,38 @@ export const worksheets: Record<string, Worksheet> = {
     design: [{ text: 'There’s always a visible close option.', check: 'An × or Cancel button, not only Escape or clicking outside.' }, focus('Every control in the dialog'), reflow, { text: 'The page behind is clearly dimmed.', check: 'The backdrop makes it obvious the rest of the page is inactive.' }, motion],
   },
 
+  popover: {
+    content: [
+      { id: 'trigger', label: 'Button label', target: 'Button text or aria-label', kind: 'name', required: true, guidance: 'Say what opens. For an info icon, write the accessible name.', good: 'Share', bad: 'More', variants: ['interactive', 'native'] },
+      { id: 'tip-name', label: 'Info button name', target: 'Visually hidden text', kind: 'name', required: true, guidance: 'Say what the help is about, since the visible “i” means nothing to a screen reader.', good: 'More about billing date', bad: 'Info', variants: ['toggletip'] },
+      { id: 'name', label: 'Popover name', target: 'aria-label or aria-labelledby', kind: 'label', required: true, guidance: 'Short name announced when focus moves in.', good: 'Share', variants: ['interactive', 'native'] },
+      { id: 'text', label: 'Popover text', target: 'Panel content or role="status"', kind: 'text', required: true, multiline: true, guidance: 'Keep it short. Nothing essential should live only here.', good: 'You’re billed on the same day each month.' },
+      { id: 'close', label: 'Close button label', target: 'Button', kind: 'name', required: false, guidance: 'For popovers with controls.', good: 'Close', variants: ['interactive'] },
+    ],
+    design: [
+      { text: 'It opens on click or Enter, not hover alone.', check: 'Hover may preview, but click must open it, so touch and keyboard work.' },
+      focus('The button and every control inside'),
+      { text: 'Popovers with controls have a visible Close button.', check: 'Escape and clicking outside aren’t discoverable for everyone.', variants: ['interactive'] },
+      { text: 'It stays on screen at 320px and 200% zoom.', check: 'It flips or repositions instead of being cut off.' },
+      { text: 'The panel edge has 3:1 contrast or a clear shadow.', check: 'The popover is clearly separate from the page behind.' },
+    ],
+  },
+  drawer: {
+    content: [
+      { id: 'trigger', label: 'Trigger label', target: 'Button text', kind: 'name', required: true, guidance: 'Name what opens.', good: 'Filters', bad: 'Open' },
+      { id: 'heading', label: 'Drawer heading', target: 'aria-labelledby → heading', kind: 'heading', required: true, guidance: 'Names the drawer when it opens.', good: 'Filters' },
+      { id: 'close', label: 'Close button name', target: 'Visually hidden text', kind: 'name', required: true, guidance: 'Say what closes, since the icon is an ×.', good: 'Close filters', bad: '×' },
+      { id: 'nav-name', label: 'Navigation name', target: 'aria-label on <nav>', kind: 'label', required: false, guidance: 'If the drawer holds navigation.', good: 'Main', variants: ['modal'] },
+    ],
+    design: [
+      { text: 'There’s a visible Close button.', check: 'At the top of the drawer, with at least a 24×24px target.' },
+      motion,
+      { text: 'The drawer fits at 320px wide.', check: 'It takes the full width on small screens and nothing is cut off.' },
+      { text: 'The page behind is dimmed for a modal drawer.', check: 'The backdrop makes it clear the page is inactive.', variants: ['modal'] },
+      { text: 'The drawer doesn’t cover the content people are filtering.', check: 'On wide screens, it sits beside the content.', variants: ['non-modal'] },
+      focus('Every control in the drawer'),
+    ],
+  },
   tooltip: {
     content: [
       { id: 'text', label: 'Tooltip text', target: 'role="tooltip"', kind: 'text', required: true, guidance: 'One short sentence. Never put essential information only in a tooltip.', good: 'Copy link to clipboard' },
