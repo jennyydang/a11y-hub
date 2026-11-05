@@ -61,7 +61,7 @@ function Demo() {
 export const table: ComponentSpec = {
   slug: 'table',
   name: 'Table',
-  category: 'Content',
+  category: 'Data',
   summary: 'Tables present data in rows and columns so people can compare values.',
   semantics: '<table> with <caption>, <th scope>',
   whenToUse: ['Use a table for tabular data only, never for page layout.', 'For interactive grids with cell-by-cell keyboard navigation, look at the ARIA grid pattern.'],

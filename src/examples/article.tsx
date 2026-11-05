@@ -23,22 +23,24 @@ function Page() {
           </span>
         </div>
       </R>
-      <div className="flex items-center px-4 text-sm">
-        <M n={2} />
-        <ol className="flex flex-wrap items-center gap-1">
-          <li>
-            <A>Home</A>
-            <span aria-hidden="true" className="mx-1 text-muted">/</span>
-          </li>
-          <li>
-            <A>Visit</A>
-            <span aria-hidden="true" className="mx-1 text-muted">/</span>
-          </li>
-          <li aria-current="page">Plan your visit</li>
-        </ol>
-      </div>
       <R tag="<main>" className="mx-4">
         <div id={`${id}-main`} tabIndex={-1} className={cx('space-y-5 rounded p-1 outline-none', !mobile && 'max-w-xl')}>
+          <R tag="<nav> breadcrumbs">
+            <div className="flex items-center text-sm">
+              <M n={2} />
+              <ol className="flex flex-wrap items-center gap-1">
+                <li>
+                  <A>Home</A>
+                  <span aria-hidden="true" className="mx-1 text-muted">/</span>
+                </li>
+                <li>
+                  <A>Visit</A>
+                  <span aria-hidden="true" className="mx-1 text-muted">/</span>
+                </li>
+                <li aria-current="page">Plan your visit</li>
+              </ol>
+            </div>
+          </R>
           <h3 className="text-2xl font-bold">Plan your visit</h3>
           <p className="text-lg leading-8">
             <M n={3} />
@@ -91,7 +93,7 @@ export const article: Example = {
   uses: ['site-navigation', 'breadcrumbs', 'image', 'link', 'accordion'],
   notes: [
     { n: 1, slug: 'site-navigation', title: 'Main navigation in the header', why: 'Same place on every page, with the current section marked. People don’t have to relearn it.' },
-    { n: 2, slug: 'breadcrumbs', title: 'Breadcrumbs above the heading', why: 'Three levels deep, so they help people see where they are and step back up.' },
+    { n: 2, slug: 'breadcrumbs', title: 'Breadcrumbs first inside main', why: 'Three levels deep, so they help people see where they are and step back up. In their own labelled nav, above the heading.' },
     { n: 3, slug: 'link', title: 'Key facts first', why: 'People read the start of a page most. Opening times and access come before anything else.' },
     { n: 4, slug: 'image', title: 'Informative image with alt text and a caption', why: 'It shows something useful (what the building looks like), so the alt describes it. The caption adds context for everyone, without repeating the alt.' },
     { n: 5, slug: 'link', title: 'Inline link that describes where it goes', why: 'Makes sense out of context, so it works in a screen reader’s links list.' },

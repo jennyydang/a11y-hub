@@ -475,4 +475,45 @@ export const anatomy: Record<string, Anatomy> = {
       { state: 'Paused', looks: 'Play icon on the button', announced: '“Start slide rotation, button”' },
     ],
   },
+  'data-grid': {
+    parts: [
+      { name: 'Caption or label', required: true, note: 'Names the grid.' },
+      { name: 'Keyboard hint', required: true, note: 'Short text linked with aria-describedby.' },
+      { name: 'Column headers', required: true, note: '<th scope="col">, with sort buttons if sortable.' },
+      { name: 'Cells', required: true, note: 'role="gridcell"; only the current one is tabbable.' },
+      { name: 'Focus ring', required: true, note: 'Inset, so the table border doesn’t clip it.' },
+    ],
+    states: [
+      { state: 'Entering', looks: 'Ring on the last focused cell', announced: '“Invoices, grid”, then the cell' },
+      { state: 'Moving', looks: 'Ring moves cell to cell', announced: '“North Studio, row 3, Client”' },
+      { state: 'Sorted', looks: 'Arrow on the sorted header', announced: '“sorted ascending”, plus a status' },
+    ],
+  },
+  'tree-view': {
+    parts: [
+      { name: 'Label', required: true, note: 'Names the tree.' },
+      { name: 'Folder item', required: true, note: 'Chevron, icon and label; aria-expanded.' },
+      { name: 'File item', required: true, note: 'No aria-expanded.' },
+      { name: 'Indent', required: true, note: 'Shows the level visually; aria-level says it to screen readers.' },
+    ],
+    states: [
+      { state: 'Collapsed', looks: 'Chevron points right', announced: '“Photos, collapsed, level 1, 2 of 3”' },
+      { state: 'Expanded', looks: 'Chevron points down, children shown', announced: '“expanded”' },
+      { state: 'Selected', looks: 'Filled background, bold', announced: '“selected”' },
+      { state: 'Focused', looks: 'Ring around the row', announced: 'The item’s name, level and position' },
+    ],
+  },
+  listbox: {
+    parts: [
+      { name: 'Label', required: true, note: 'Visible, linked with aria-labelledby or a legend.' },
+      { name: 'Hint', required: false, note: 'Explains the keys for the listbox version.' },
+      { name: 'Options', required: true, note: 'Check icon plus text.' },
+      { name: 'Selected count', required: false, note: 'Status text, like “3 selected”.' },
+    ],
+    states: [
+      { state: 'Not selected', looks: 'Empty box', announced: '“Research, not selected, 3 of 7”' },
+      { state: 'Selected', looks: 'Checked box, tinted row', announced: '“selected”' },
+      { state: 'Current (listbox)', looks: 'Outline on the row', announced: 'The option name and state' },
+    ],
+  },
 };

@@ -515,6 +515,48 @@ export const worksheets: Record<string, Worksheet> = {
     ],
   },
 
+  'data-grid': {
+    content: [
+      { id: 'name', label: 'Grid name', target: '<caption> or aria-labelledby', kind: 'label', required: true, guidance: 'What the data is.', good: 'Invoices', bad: 'Table' },
+      { id: 'hint', label: 'Keyboard hint', target: 'aria-describedby', kind: 'hint', required: true, guidance: 'One sentence on how to move and act.', good: 'Tab into the grid, then use the arrow keys. Press Enter on a column header to sort.' },
+      { id: 'headers', label: 'Column headers', target: '<th scope="col">', kind: 'heading', required: true, multiline: true, guidance: 'One per line. Short and unique.', good: 'Invoice\nClient\nDue date\nAmount' },
+      { id: 'sorted', label: 'Sort announcement', target: 'role="status"', kind: 'message', required: false, guidance: 'Said after sorting. Use {col} and {dir}.', good: 'Sorted by {col}, {dir}' },
+    ],
+    design: [
+      focus('The current cell'),
+      { text: 'The focus ring is inset and visible inside the table border.', check: 'It isn’t clipped on the first and last rows and columns.' },
+      { text: 'Sorted state is shown with an arrow, not only color.', check: 'Unsorted columns show a faint arrow so people know they can sort.' },
+      { text: 'Numbers are right-aligned.', check: 'Decimal points line up for comparison.' },
+      reflow,
+    ],
+  },
+  'tree-view': {
+    content: [
+      { id: 'name', label: 'Tree name', target: 'aria-labelledby', kind: 'label', required: true, guidance: 'What the tree holds.', good: 'Files' },
+      { id: 'items', label: 'Item labels', target: 'Each treeitem', kind: 'text', required: true, multiline: true, guidance: 'One per line, indent children with spaces. Keep labels unique at each level.', good: 'Documents\n  Reports\n  Cover letter.docx' },
+    ],
+    design: [
+      { text: 'Expanded and collapsed look different without color.', check: 'A chevron that rotates, or a plus and minus.' },
+      { text: 'Focus and selection look different.', check: 'Focus is a ring; selection is a fill and bold text.' },
+      { text: 'Indentation shows the level clearly.', check: 'At least 16px per level, still clear at 200% zoom.' },
+      target('Rows'),
+    ],
+  },
+  listbox: {
+    content: [
+      { id: 'label', label: 'List label', target: 'aria-labelledby or <legend>', kind: 'label', required: true, guidance: 'What people are choosing.', good: 'Topics you follow' },
+      { id: 'hint', label: 'Keyboard hint', target: 'aria-describedby', kind: 'hint', required: true, guidance: 'How to move and select.', good: 'Use the arrow keys to move and Space to select.', variants: ['listbox'] },
+      { id: 'options', label: 'Options', target: 'role="option" or checkbox labels', kind: 'text', required: true, multiline: true, guidance: 'One per line.', good: 'Accessibility\nDesign systems\nResearch' },
+      { id: 'count', label: 'Selected count', target: 'role="status"', kind: 'message', required: false, guidance: 'Use {n} for the number.', good: '{n} selected' },
+    ],
+    design: [
+      notColorOnly('selected state'),
+      { text: 'The current option has its own outline.', check: 'Different from the selected style, and visible in both themes.', variants: ['listbox'] },
+      { text: 'The list shows at least 5 options before scrolling.', check: 'A partly visible last option hints that it scrolls.' },
+      target('Options'),
+    ],
+  },
+
   table: {
     content: [
       { id: 'caption', label: 'Table caption', target: '<caption>', kind: 'heading', required: true, guidance: 'Names the table. Screen readers announce it on entry.', good: 'Invoices due in March 2026' },

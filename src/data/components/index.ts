@@ -33,6 +33,9 @@ import { avatar, avatarVariants } from './avatar';
 import { skeleton } from './skeleton';
 import { emptyState, emptyStateVariants } from './empty-state';
 import { carousel, carouselVariants } from './carousel';
+import { dataGrid } from './data-grid';
+import { treeView } from './tree-view';
+import { listbox, listboxVariants } from './listbox';
 
 import { buttonVariants } from '../variants/button';
 import { linkVariants } from '../variants/link';
@@ -69,6 +72,7 @@ badge.variants = badgeVariants;
 avatar.variants = avatarVariants;
 emptyState.variants = emptyStateVariants;
 carousel.variants = carouselVariants;
+listbox.variants = listboxVariants;
 
 export const components: ComponentSpec[] = [
   button,
@@ -87,6 +91,7 @@ export const components: ComponentSpec[] = [
   switchSpec,
   select,
   combobox,
+  listbox,
   slider,
   datePicker,
   fileUpload,
@@ -105,9 +110,11 @@ export const components: ComponentSpec[] = [
   carousel,
   emptyState,
   table,
+  dataGrid,
+  treeView,
 ];
 
-export const categories: ComponentCategory[] = ['Actions', 'Navigation', 'Forms', 'Overlays', 'Feedback', 'Content'];
+export const categories: ComponentCategory[] = ['Actions', 'Navigation', 'Forms', 'Overlays', 'Feedback', 'Content', 'Data'];
 
 export function byCategory(cat: ComponentCategory) {
   return components.filter((c) => c.category === cat).sort((a, b) => a.name.localeCompare(b.name));

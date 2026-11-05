@@ -40,5 +40,8 @@ export const glance: Record<string, Glance> = {
   skeleton: { does: 'Holds the shape of content while it loads.', instead: [{ slug: 'progress', when: 'the task is long or you know how far along it is' }] },
   'empty-state': { does: 'Explains why there’s nothing to show and what to do next.', instead: [{ slug: 'alert', when: 'something failed to load' }] },
   carousel: { does: 'Shows one slide at a time from a small set, with Previous and Next.', instead: [{ slug: 'tabs', when: 'people need to switch between labelled views' }, { slug: 'table', when: 'people need to compare items' }] },
+  'data-grid': { does: 'An interactive table people move through cell by cell with arrow keys.', instead: [{ slug: 'table', when: 'people only read the data' }] },
+  'tree-view': { does: 'Shows nested items, like folders, that people expand and collapse.', instead: [{ slug: 'accordion', when: 'there’s one level of sections' }, { slug: 'site-navigation', when: 'it’s navigation between pages' }] },
+  listbox: { does: 'Lets people pick several items from a visible list.', instead: [{ slug: 'checkbox', when: 'it’s a short list in a form' }, { slug: 'combobox', when: 'the list is long and people can type' }] },
   table: { does: 'Shows data in rows and columns so people can compare values.', instead: [{ slug: 'image', when: 'the point is a trend, not exact values (use a chart with a description)' }] },
 };

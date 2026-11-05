@@ -156,12 +156,13 @@ export const placement: Record<string, Placement> = {
   breadcrumbs: {
     regions: ['Navigation', 'Main content'],
     where: [
-      'Above the page heading, below the header, on pages more than two levels deep.',
+      'First thing inside <main>, above the page heading, in their own <nav aria-label="Breadcrumb">. Use them on pages more than two levels deep.',
       'Start with Home and end with the current page.',
     ],
     why: [
       { point: 'Breadcrumbs show where people are in the hierarchy and let them move up in one click, with little space cost.', source: SRC.breadcrumbs },
-      { point: 'Placed before the h1, they’re the expected first thing after the header.', source: SRC.govBreadcrumbs },
+      { point: 'Inside main, people who jump straight to the main content still hear where they are before the heading.', source: SRC.wcagBypass },
+      { point: 'Keep them in the same place on every page, so people know where to look.', source: SRC.wcagConsistentNav },
     ],
     dontUse: ['On flat sites with only one or two levels.', 'As a history of pages visited. Use a back link.'],
   },
@@ -428,6 +429,34 @@ export const placement: Record<string, Placement> = {
       { point: 'No-results messages must be announced without moving focus.', source: SRC.wcagStatus },
     ],
     dontUse: ['When something failed to load. Use an alert with a retry.'],
+  },
+  'data-grid': {
+    regions: ['Main content'],
+    where: ['In the main content, with a heading and the keyboard hint above it.', 'Bulk actions in a toolbar directly above the grid.'],
+    why: [
+      { point: 'One tab stop keeps the rest of the page quick to reach; arrow keys match spreadsheet habits.', source: SRC.jakob },
+      { point: 'Actions next to the data they change are understood as related.', source: SRC.proximity },
+      { point: 'Wide grids scroll inside their own box, not the page, at 320px.', source: SRC.wcagReflow },
+    ],
+    dontUse: ['For data people only read. Use a table.', 'For layout.'],
+  },
+  'tree-view': {
+    regions: ['Sidebar', 'Main content'],
+    where: ['In a sidebar beside the content it controls, like a folder tree beside a file list.', 'In a dialog for picking a location.'],
+    why: [
+      { point: 'People know folder trees from their computer’s file manager.', source: SRC.jakob },
+      { point: 'Deep trees are slow to scan; keep levels and items per level small.', source: SRC.hick },
+    ],
+    dontUse: ['For site navigation. Use nested lists of links.', 'For one level of sections. Use an accordion.'],
+  },
+  listbox: {
+    regions: ['Forms', 'Sidebar'],
+    where: ['In a form, label above. Or in a filters sidebar.', 'The selected count right below the list.'],
+    why: [
+      { point: 'Checkboxes signal “pick any” and need no explanation.', source: SRC.checkRadio },
+      { point: 'Status messages like “3 selected” are announced without moving focus.', source: SRC.wcagStatus },
+    ],
+    dontUse: ['For one choice. Use radios or a select.', 'For long lists people can type. Use a combobox.'],
   },
   table: {
     regions: ['Main content'],

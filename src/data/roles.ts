@@ -322,6 +322,24 @@ export const componentRoles: Record<string, Record<RoleId, string[]>> = {
     frontend: ['Follow the carousel pattern: labelled slides, hidden inactive slides, aria-live off while rotating, pause on focus and hover.'],
     qa: ['Check rotation stops on focus and with reduced motion, and Next announces “2 of 3”.'],
   },
+  'data-grid': {
+    content: ['Write the grid name, short column headers and a one-line keyboard hint.'],
+    design: ['Design an inset focus ring for cells and a sort arrow that doesn’t rely on color.'],
+    frontend: ['Use role="grid" with roving tabindex. Only use a grid when people interact with cells; otherwise use a table.'],
+    qa: ['Check the grid is one tab stop and every arrow, Home and End key works.'],
+  },
+  'tree-view': {
+    content: ['Name the tree and keep item labels unique at each level.'],
+    design: ['Make expanded, selected and focused states all look different without color.'],
+    frontend: ['Follow the tree pattern: roving tabindex, aria-expanded on folders only, ← and → to collapse and expand.'],
+    qa: ['Check level and position are announced, and files aren’t announced as collapsed.'],
+  },
+  listbox: {
+    content: ['Write the list label, the options, and a keyboard hint for the listbox version.'],
+    design: ['Show a check on selected options, and a separate outline for the current one.'],
+    frontend: ['Prefer a checkbox list in forms. For a listbox, use aria-multiselectable, aria-selected and aria-activedescendant.'],
+    qa: ['Check Space toggles, the outline follows the arrow keys, and “selected” is announced.'],
+  },
   tooltip: {
     content: ['Keep tooltip text to one short sentence. Never put essential information only in a tooltip.'],
     design: ['Show it on hover and focus, and keep it open while the pointer is over it.'],

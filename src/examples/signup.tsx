@@ -47,22 +47,20 @@ function Page() {
           </span>
         </div>
       </R>
-      <div className="px-4">
-        <R tag="<nav> breadcrumbs">
-          <div className="flex items-center text-sm">
-          <M n={3} />
-          <ol className="flex flex-wrap items-center gap-1">
-            <li>
-              <A>Home</A>
-              <span aria-hidden="true" className="mx-1 text-muted">/</span>
-            </li>
-            <li aria-current="page">Create an account</li>
-          </ol>
-          </div>
-        </R>
-      </div>
       <R tag="<main>" className="mx-4">
         <div id="signup-main" tabIndex={-1} className={cx('space-y-5 rounded p-1 outline-none', mobile ? '' : 'max-w-md')}>
+            <R tag="<nav> breadcrumbs">
+              <div className="flex items-center text-sm">
+              <M n={3} />
+              <ol className="flex flex-wrap items-center gap-1">
+                <li>
+                  <A>Home</A>
+                  <span aria-hidden="true" className="mx-1 text-muted">/</span>
+                </li>
+                <li aria-current="page">Create an account</li>
+              </ol>
+              </div>
+            </R>
           {list.length > 0 && (
             <div ref={summaryRef} tabIndex={-1} aria-labelledby="signup-errors" className="space-y-2 rounded-lg border-4 border-red-700 p-4 outline-none focus-visible:ring-2 focus-visible:ring-primary-600 dark:border-red-400">
               <h3 id="signup-errors" className="flex items-center font-semibold">
@@ -147,7 +145,7 @@ export const signup: Example = {
   notes: [
     { n: 1, slug: 'skip-link', title: 'Logo, top left, after the skip link', why: 'People expect the logo top left. The skip link comes before it, so it’s the first thing Tab reaches (press Tab inside the example to see it).' },
     { n: 2, slug: 'link', title: 'Sign in, top right', why: 'Account links live top right on most sites, so returning users find them without searching.' },
-    { n: 3, slug: 'breadcrumbs', title: 'Breadcrumbs above the heading', why: 'They show where the page sits and give a one-click way back, before the content starts.' },
+    { n: 3, slug: 'breadcrumbs', title: 'Breadcrumbs first inside main', why: 'In their own labelled nav, above the heading. People who jump to the main content still hear where they are.' },
     { n: 4, slug: 'error-summary', title: 'Error summary at the top of main', why: 'After a failed submit, focus moves here so people hear what went wrong. Each error links to its field.' },
     { n: 5, slug: 'text-input', title: 'Labels above fields, hint below the label', why: 'One downward scan reads label, hint and field. Field width matches the expected answer.' },
     { n: 6, slug: 'radio-group', title: 'Two plans as radios', why: 'Both options are visible to compare, and only one can be chosen.' },

@@ -46,6 +46,7 @@ const TREE: Record<string, Node> = {
     ask: 'How many options can people pick?',
     options: [
       { label: 'Any number, or just yes to one statement', result: r('checkbox', 'Checkboxes allow zero, one or many choices.') },
+      { label: 'Several, from a longer scrolling list', result: r('listbox', 'A multi-select list keeps 5 to 20 options compact. A checkbox list is the safest build.', 'checkboxes') },
       { label: 'Exactly one', next: 'one' },
       { label: 'One on/off setting that applies immediately', result: r('switch', 'Use a switch when there’s no Save button.') },
     ],
@@ -90,6 +91,8 @@ const TREE: Record<string, Node> = {
       { label: 'Switch between views, one at a time', result: r('tabs', 'Tabs show one panel at a time under a shared heading.') },
       { label: 'Show and hide sections, several can be open', result: r('accordion', 'An accordion lets people expand only what they need.') },
       { label: 'Data to compare in rows and columns', result: r('table', 'A table with headers lets screen readers announce the row and column.') },
+      { label: 'Data people edit, select or act on cell by cell', result: r('data-grid', 'A grid is one tab stop with arrow-key navigation, like a spreadsheet.') },
+      { label: 'Nested folders or categories to browse', result: r('tree-view', 'A tree lets people expand and collapse levels with arrow keys.') },
       { label: 'Extra detail people may not need', result: r('accordion', 'A native details element is the simplest show/hide.', 'details') },
       { label: 'Small content or controls next to one button', hint: 'Share options, quick settings', result: r('popover', 'A popover opens on click, doesn’t block the page, and returns focus on Escape.', 'interactive') },
       { label: 'A side panel for navigation, filters or details', result: r('drawer', 'A drawer slides in from the edge; make it modal on small screens.') },

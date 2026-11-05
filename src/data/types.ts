@@ -25,7 +25,8 @@ export type ComponentCategory =
   | 'Navigation'
   | 'Overlays'
   | 'Feedback'
-  | 'Content';
+  | 'Content'
+  | 'Data';
 
 export interface Variant {
   id: string;

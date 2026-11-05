@@ -745,6 +745,73 @@ export const htmlExamples: Record<string, string> = {
   document.getElementById('upload-status').textContent = 'Upload complete.';
 </script>`,
 
+  'data-grid': `<p id="grid-help">Tab into the grid, then use the arrow keys. Press Enter on a column header to sort.</p>
+
+<table role="grid" aria-labelledby="grid-cap" aria-describedby="grid-help">
+  <caption id="grid-cap">Invoices</caption>
+  <thead>
+    <tr>
+      <th scope="col" aria-sort="ascending"><button type="button" tabindex="0">Due date</button></th>
+      <th scope="col"><button type="button" tabindex="-1">Client</button></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td role="gridcell" tabindex="-1">12 Oct 2026</td>
+      <td role="gridcell" tabindex="-1">Harbour Café</td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  // Roving tabindex: only the current cell (or the button in it) has tabindex="0"
+  const grid = document.querySelector('[role=grid]');
+  const rows = [...grid.rows];
+  let r = 0, c = 0;
+  const target = (cell) => cell.querySelector('button') || cell;
+  function go(nr, nc) {
+    r = Math.max(0, Math.min(rows.length - 1, nr));
+    c = Math.max(0, Math.min(rows[r].cells.length - 1, nc));
+    grid.querySelectorAll('[tabindex="0"]').forEach((el) => el.setAttribute('tabindex', '-1'));
+    const el = target(rows[r].cells[c]);
+    el.setAttribute('tabindex', '0');
+    el.focus();
+  }
+  grid.addEventListener('keydown', (e) => {
+    const keys = {
+      ArrowRight: [r, c + 1], ArrowLeft: [r, c - 1], ArrowDown: [r + 1, c], ArrowUp: [r - 1, c],
+      Home: e.ctrlKey ? [0, 0] : [r, 0], End: e.ctrlKey ? [rows.length - 1, 99] : [r, 99],
+    };
+    if (!keys[e.key]) return;
+    e.preventDefault();
+    go(...keys[e.key]);
+  });
+</script>`,
+  'tree-view': `<p id="tree-label">Files</p>
+<!-- A flat list: level and position come from ARIA, so each item's name is just its label -->
+<ul role="tree" aria-labelledby="tree-label">
+  <li role="treeitem" aria-level="1" aria-setsize="2" aria-posinset="1" aria-expanded="true" aria-selected="false" tabindex="0">Documents</li>
+  <li role="treeitem" aria-level="2" aria-setsize="2" aria-posinset="1" aria-expanded="false" aria-selected="false" tabindex="-1">Reports</li>
+  <!-- Files have no aria-expanded -->
+  <li role="treeitem" aria-level="2" aria-setsize="2" aria-posinset="2" aria-selected="true" tabindex="-1">Cover letter.docx</li>
+  <li role="treeitem" aria-level="1" aria-setsize="2" aria-posinset="2" aria-selected="false" tabindex="-1">Notes.txt</li>
+</ul>
+
+<script>
+  // ↓ ↑ move, → opens a folder or moves to its first child, ← closes or moves to the parent.
+  // Re-render the list from your data when a folder opens or closes, then restore focus.
+  const tree = document.querySelector('[role=tree]');
+  tree.addEventListener('keydown', (e) => {
+    const items = [...tree.querySelectorAll('[role=treeitem]')];
+    const i = items.indexOf(e.target);
+    const next = { ArrowDown: items[i + 1], ArrowUp: items[i - 1], Home: items[0], End: items.at(-1) }[e.key];
+    if (!next) return;
+    e.preventDefault();
+    e.target.tabIndex = -1;
+    next.tabIndex = 0;
+    next.focus();
+  });
+</script>`,
   skeleton: `<button type="button" id="load">Load files</button>
 
 <!-- In the page from the start, so changes to it are announced -->
