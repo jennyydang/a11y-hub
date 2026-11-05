@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@fluid-design/fluid-ui';
+import { Code } from '../components/Code';
 
 type ResultId = 'functional' | 'text' | 'complex' | 'informative' | 'mood' | 'decorative';
 
@@ -262,7 +263,7 @@ export function AltDecision() {
             <div>
               <h4 className="mb-1 text-sm font-semibold">Markup for frontend</h4>
               <pre className="overflow-x-auto rounded-lg bg-gray-900 p-3 text-[13px] leading-6 text-gray-50" tabIndex={0} aria-label="Markup example">
-                <code>{result.markup}</code>
+                <Code code={result.markup} language="html" />
               </pre>
             </div>
             <div className="flex flex-wrap items-center gap-3">

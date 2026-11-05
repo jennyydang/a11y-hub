@@ -5,6 +5,7 @@ import type { AxeResults, Result } from 'axe-core';
 import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
 import { cx } from '../ui';
+import { Code } from '../components/Code';
 
 const EXAMPLES: { label: string; html: string }[] = [
   {
@@ -164,7 +165,7 @@ export function CheckerPage({ usedBy }: { usedBy?: React.ReactNode } = {}) {
                     {v.nodes.map((n, i) => (
                       <li key={i} className="space-y-1">
                         <pre className="overflow-x-auto rounded-md bg-gray-900 p-2 text-xs text-gray-50" tabIndex={0} aria-label="Failing element">
-                          <code>{n.html}</code>
+                          <Code code={n.html} language="html" />
                         </pre>
                         {n.failureSummary && <p className="whitespace-pre-line">{n.failureSummary.replace(/^Fix (any|all) of the following:\n\s*/gm, 'To fix: ')}</p>}
                       </li>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@fluid-design/fluid-ui';
+import { Code } from './Code';
 
 export function CodeBlock({ code, language = 'tsx', title }: { code: string; language?: string; title?: string }) {
   const [copied, setCopied] = useState(false);
@@ -21,7 +22,7 @@ export function CodeBlock({ code, language = 'tsx', title }: { code: string; lan
         </Button>
       </figcaption>
       <pre className="overflow-x-auto p-4 text-[13px] leading-6 text-gray-50" tabIndex={0} aria-label={`${title ?? language} code example`}>
-        <code>{code.trim()}</code>
+        <Code code={code.trim()} language={language} />
       </pre>
       <span className="sr-only" role="status">
         {copied ? 'Code copied to clipboard' : ''}
