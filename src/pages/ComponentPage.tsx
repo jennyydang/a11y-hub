@@ -4,6 +4,7 @@ import { CodeBlock } from '../components/CodeBlock';
 import { Checklist } from '../components/Checklist';
 import { DemoStage } from '../components/DemoStage';
 import { DoDont } from '../components/DoDont';
+import { GoodBad } from '../components/GoodBad';
 import { RoleNotes } from '../components/RoleNotes';
 import { Worksheet } from '../components/Worksheet';
 import { AtAGlance } from '../components/AtAGlance';
@@ -25,7 +26,7 @@ const toc = (tool?: string, hasAnatomy?: boolean): [string, string[]][] => [
   ['Overview', ['At a glance']],
   ['Try it', ['Live example']],
   ['How it works', ['When to use', ...(hasAnatomy ? ['Anatomy & states'] : []), 'Keyboard interactions', 'ARIA', 'Focus & screen readers']],
-  ['Guidance', ['Placement & UX', 'Best practices', ...(tool ? [tool] : []), 'WCAG criteria', 'Fluid UI notes']],
+  ['Guidance', ['Placement & UX', 'Best practices', 'Good and bad examples', ...(tool ? [tool] : []), 'WCAG criteria', 'Fluid UI notes']],
   ['Team handoff', ['Who owns what', 'Handoff worksheet', 'Testing checklist']],
 ];
 
@@ -164,6 +165,13 @@ export function ComponentPage() {
 
             <Section title="Best practices">
               <DoDont dos={spec.dos} donts={spec.donts} />
+            </Section>
+
+            <Section
+              title="Good and bad examples"
+              intro={<p>The same thing built two ways, and what people actually experience with each: what a screen reader says, what happens with a keyboard, and what people see.</p>}
+            >
+              <GoodBad slug={spec.slug} />
             </Section>
 
             {spec.tool && (

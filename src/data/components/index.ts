@@ -48,6 +48,10 @@ import { video } from './video';
 import { cookieBanner } from './cookie-banner';
 import { backLink } from './back-link';
 import { quantity } from './quantity';
+import { pageHeader } from './page-header';
+import { pageFooter } from './page-footer';
+import { fieldsetSpec } from './fieldset';
+import { starRating } from './star-rating';
 
 import { buttonVariants } from '../variants/button';
 import { linkVariants } from '../variants/link';
@@ -93,12 +97,14 @@ export const components: ComponentSpec[] = [
   menu,
   toolbar,
   link,
+  pageHeader,
   siteNavigation,
   breadcrumbs,
   backLink,
   pagination,
   stepper,
   skipLink,
+  pageFooter,
   tabs,
   accordion,
   textInput,
@@ -107,8 +113,10 @@ export const components: ComponentSpec[] = [
   textarea,
   characterCount,
   checkbox,
+  fieldsetSpec,
   radioGroup,
   segmentedControl,
+  starRating,
   switchSpec,
   select,
   combobox,

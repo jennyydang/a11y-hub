@@ -78,6 +78,7 @@ export const SRC = {
   wcagHoverFocus: wcag('Content on Hover or Focus', 'content-on-hover-or-focus'),
   wcagSequence: wcag('Meaningful Sequence', 'meaningful-sequence'),
   wcagReflow: wcag('Reflow', 'reflow'),
+  wcagConsistentHelp: wcag('Consistent Help', 'consistent-help'),
   wcagDragging: wcag('Dragging Movements', 'dragging-movements'),
 } satisfies Record<string, Source>;
 
@@ -567,6 +568,43 @@ export const placement: Record<string, Placement> = {
       { point: 'Next to the item, it’s clear what the number applies to.', source: SRC.proximity },
     ],
     dontUse: ['For large or exact numbers. Use a text input.'],
+  },
+  header: {
+    regions: ['Header'],
+    where: ['At the very top of every page, after the skip link and before main.', 'Logo top left; account and search top right.'],
+    why: [
+      { point: 'People expect the logo top left to go home, and account links top right.', source: SRC.jakob },
+      { point: 'The same header in the same order on every page.', source: SRC.wcagConsistentNav },
+      { point: 'A common header layout people recognise.', source: SRC.govHeader },
+    ],
+    dontUse: ['For page-specific actions. Put those in main, near the content.'],
+  },
+  footer: {
+    regions: ['Footer'],
+    where: ['At the bottom of every page, after main.', 'Contact, help and accessibility statement in the same place every time.'],
+    why: [
+      { point: 'People scroll to the footer looking for contact and legal details.', source: SRC.jakob },
+      { point: 'Help in a consistent place is a WCAG 2.2 requirement.', source: SRC.wcagConsistentHelp },
+    ],
+    dontUse: ['For main tasks. Few people scroll that far to start something.'],
+  },
+  fieldset: {
+    regions: ['Forms'],
+    where: ['Around fields that answer one question, inside the form.', 'On one-question pages, the legend is the page heading.'],
+    why: [
+      { point: 'Grouping related fields with a common label makes them read as one unit.', source: SRC.region },
+      { point: 'One question per group keeps forms scannable.', source: SRC.govRadios },
+    ],
+    dontUse: ['Around a single field, or a whole long form.'],
+  },
+  'star-rating': {
+    regions: ['Forms', 'Main content'],
+    where: ['Right after the thing being rated, like at the end of an article or a review form.'],
+    why: [
+      { point: 'Next to the item, it’s clear what the score is for.', source: SRC.proximity },
+      { point: 'Large star targets are easy to hit on touch screens.', source: SRC.fitts },
+    ],
+    dontUse: ['For detailed feedback. Ask a question with a text field.'],
   },
   table: {
     regions: ['Main content'],

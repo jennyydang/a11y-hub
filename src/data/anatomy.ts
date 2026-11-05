@@ -664,4 +664,48 @@ export const anatomy: Record<string, Anatomy> = {
       { state: 'Invalid', looks: 'Thick red border and error text', announced: '“invalid entry”, plus the error' },
     ],
   },
+  header: {
+    parts: [
+      { name: 'Logo link', required: true, note: 'Goes to the home page; named “<site> home”.' },
+      { name: 'Main navigation', required: true, note: 'A nav labelled “Main”, with the current section marked.' },
+      { name: 'Search', required: false, note: 'A search landmark, if the site has search.' },
+      { name: 'Account actions', required: false, note: 'Sign in, or the account menu.' },
+    ],
+    states: [
+      { state: 'Wide screens', looks: 'Logo, links and actions in one row', announced: '“Banner landmark”' },
+      { state: 'Narrow screens', looks: 'Links behind a Menu button', announced: '“Menu, button, collapsed”' },
+    ],
+  },
+  footer: {
+    parts: [
+      { name: 'Link groups', required: true, note: 'Each under a short heading.' },
+      { name: 'Help and contact', required: true, note: 'In the same place on every page.' },
+      { name: 'Legal text', required: false, note: 'Copyright, licence, company details.' },
+    ],
+    states: [{ state: 'Default', looks: 'Grouped links, then legal text', announced: '“Content information landmark”' }],
+  },
+  fieldset: {
+    parts: [
+      { name: 'Legend', required: true, note: 'The question; first child of the fieldset.' },
+      { name: 'Hint', required: false, note: 'Linked to the fields with aria-describedby.' },
+      { name: 'Fields', required: true, note: 'Each with its own label.' },
+    ],
+    states: [
+      { state: 'Default', looks: 'Legend above the fields', announced: '“What is your address?, group”' },
+      { state: 'Error', looks: 'Error text under the legend, red bar on the left', announced: 'The legend, then the error' },
+    ],
+  },
+  'star-rating': {
+    parts: [
+      { name: 'Legend', required: true, note: 'What’s being rated.' },
+      { name: 'Five radios', required: true, note: 'Visually hidden, named “1 star” to “5 stars”.' },
+      { name: 'Star icons', required: true, note: 'Decorative; filled up to the rating.' },
+      { name: 'Text summary', required: false, note: '“3 out of 5 stars”, hidden from screen readers.' },
+    ],
+    states: [
+      { state: 'Not rated', looks: 'Five outlined stars', announced: '“1 star, radio button, not checked, 1 of 5”' },
+      { state: 'Rated', looks: 'Filled stars up to the rating', announced: '“3 stars, radio button, checked, 3 of 5”' },
+      { state: 'Focused', looks: 'Ring around the focused star', announced: 'The star’s name and state' },
+    ],
+  },
 };

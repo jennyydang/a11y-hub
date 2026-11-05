@@ -55,5 +55,9 @@ export const glance: Record<string, Glance> = {
   'cookie-banner': { does: 'Asks for consent to non-essential cookies without blocking the page.', instead: [{ slug: 'dialog', when: 'never: consent shouldn’t block the page' }] },
   'back-link': { does: 'Takes people to the previous step in a journey.', instead: [{ slug: 'breadcrumbs', when: 'people go up a level in the site' }] },
   quantity: { does: 'A number field with − and + buttons for small whole numbers.', instead: [{ slug: 'text-input', when: 'the number is large or exact' }, { slug: 'select', when: 'there are only a few fixed choices' }] },
+  header: { does: 'Holds the logo, main navigation and global actions on every page.', instead: [{ slug: 'site-navigation', when: 'you need the navigation pattern itself' }] },
+  footer: { does: 'Holds secondary links, help, contact and legal information on every page.', instead: [{ slug: 'site-navigation', when: 'the links are main sections' }] },
+  fieldset: { does: 'Groups related fields under one question.', instead: [{ slug: 'radio-group', when: 'the group is a set of radios' }] },
+  'star-rating': { does: 'Lets people score something from 1 to 5.', instead: [{ slug: 'radio-group', when: 'the options are words, not a score' }, { slug: 'segmented-control', when: 'it switches a view' }] },
   table: { does: 'Shows data in rows and columns so people can compare values.', instead: [{ slug: 'image', when: 'the point is a trend, not exact values (use a chart with a description)' }] },
 };

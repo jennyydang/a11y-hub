@@ -1005,6 +1005,69 @@ Narrator: Start at the visitor centre car park.
     }),
   );
 </script>`,
+  header: `<a href="#main" class="skip-link">Skip to main content</a>
+<header>
+  <a href="/" class="logo">
+    <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20">…</svg>
+    Trailmate<span class="sr-only"> home</span>
+  </a>
+  <nav aria-label="Main">
+    <ul>
+      <li><a href="/trails" aria-current="page">Trails</a></li>
+      <li><a href="/guides">Guides</a></li>
+      <li><a href="/community">Community</a></li>
+    </ul>
+  </nav>
+  <a href="/sign-in">Sign in</a>
+</header>
+<main id="main" tabindex="-1">…</main>`,
+  footer: `<footer>
+  <nav aria-label="Footer">
+    <h2 id="f-explore">Explore</h2>
+    <ul aria-labelledby="f-explore">
+      <li><a href="/trails">Trails</a></li>
+      <li><a href="/guides">Guides</a></li>
+    </ul>
+    <h2 id="f-help">Help</h2>
+    <ul aria-labelledby="f-help">
+      <li><a href="/contact">Contact us</a></li>
+      <li><a href="/accessibility">Accessibility statement</a></li>
+    </ul>
+  </nav>
+  <p>© 2026 Trailmate</p>
+</footer>`,
+  fieldset: `<fieldset>
+  <legend>What is your address?</legend>
+  <label for="line1">Address line 1</label>
+  <input id="line1" autocomplete="address-line1">
+  <label for="line2">Address line 2 (optional)</label>
+  <input id="line2" autocomplete="address-line2">
+  <label for="town">Town or city</label>
+  <input id="town" autocomplete="address-level2">
+  <label for="postcode">Postcode</label>
+  <input id="postcode" autocomplete="postal-code" class="w-10ch">
+</fieldset>`,
+  'star-rating': `<fieldset class="stars">
+  <legend>Rate Riverside loop</legend>
+  <label><input type="radio" name="rating" value="1" class="sr-only">
+    <svg aria-hidden="true" focusable="false">…</svg><span class="sr-only">1 star</span></label>
+  <label><input type="radio" name="rating" value="2" class="sr-only">
+    <svg aria-hidden="true" focusable="false">…</svg><span class="sr-only">2 stars</span></label>
+  <label><input type="radio" name="rating" value="3" class="sr-only">
+    <svg aria-hidden="true" focusable="false">…</svg><span class="sr-only">3 stars</span></label>
+  <label><input type="radio" name="rating" value="4" class="sr-only">
+    <svg aria-hidden="true" focusable="false">…</svg><span class="sr-only">4 stars</span></label>
+  <label><input type="radio" name="rating" value="5" class="sr-only">
+    <svg aria-hidden="true" focusable="false">…</svg><span class="sr-only">5 stars</span></label>
+</fieldset>
+<p aria-hidden="true" class="stars-summary">Not rated yet</p>
+
+<style>
+  /* Fill every star up to the checked one */
+  .stars label:has(~ label input:checked) svg,
+  .stars label:has(input:checked) svg { fill: #f59e0b; }
+  .stars input:focus-visible + svg { outline: 2px solid #2563eb; }
+</style>`,
   skeleton: `<button type="button" id="load">Load files</button>
 
 <!-- In the page from the start, so changes to it are announced -->

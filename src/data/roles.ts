@@ -412,6 +412,30 @@ export const componentRoles: Record<string, Record<RoleId, string[]>> = {
     frontend: ['Use inputmode="numeric", aria-disabled at limits, and announce changes.'],
     qa: ['Check the new value is announced and focus stays on the button at the limit.'],
   },
+  header: {
+    content: ['Name the logo link “<site> home” and keep navigation labels short.'],
+    design: ['Keep the header the same on every page and short enough when sticky.'],
+    frontend: ['Use a top-level header with a labelled nav and a skip link before it.'],
+    qa: ['Check there’s one banner landmark and focus is never hidden under a sticky header.'],
+  },
+  footer: {
+    content: ['Group links under short headings, and include contact and the accessibility statement.'],
+    design: ['Use readable, underlined links with enough contrast on the footer background.'],
+    frontend: ['Use a top-level footer with a nav labelled “Footer”.'],
+    qa: ['Check there’s one contentinfo landmark and help links are consistent across pages.'],
+  },
+  fieldset: {
+    content: ['Write the legend as a short question; put extra help in a hint.'],
+    design: ['Show the legend above the fields, visibly.'],
+    frontend: ['Use fieldset and legend as the first child; don’t nest fieldsets.'],
+    qa: ['Check the legend is read when entering the first field.'],
+  },
+  'star-rating': {
+    content: ['Name what’s rated in the legend and each star by its number.'],
+    design: ['Keep stars at least 24px and show selection with fill and outline.'],
+    frontend: ['Use five native radios, visually hidden, with aria-hidden star icons.'],
+    qa: ['Check arrow keys work and each rating is announced “of 5”.'],
+  },
   tooltip: {
     content: ['Keep tooltip text to one short sentence. Never put essential information only in a tooltip.'],
     design: ['Show it on hover and focus, and keep it open while the pointer is over it.'],

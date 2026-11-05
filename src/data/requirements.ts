@@ -675,6 +675,34 @@ export const worksheets: Record<string, Worksheet> = {
     design: [target('The − and + buttons'), errorDesign, fieldBorder, { text: 'The at-limit state is clear without disabling.', check: 'Faded but still focusable, with enough contrast to read.' }],
   },
 
+  header: {
+    content: [
+      { id: 'logo', label: 'Logo link name', target: 'Logo alt or hidden text', kind: 'link', required: true, guidance: 'The site name and “home”.', good: 'Trailmate home', bad: 'logo' },
+      { id: 'nav', label: 'Navigation label', target: 'aria-label', kind: 'name', required: true, guidance: 'One word that tells it apart from other navigation.', good: 'Main' },
+    ],
+    design: [{ text: 'It’s identical on every page.', check: 'Same items, same order, same place.' }, { text: 'A sticky header doesn’t hide focus.', check: 'Tab down the page; the focused item is never under the header.' }, focus('Header links'), reflow],
+  },
+  footer: {
+    content: [
+      { id: 'groups', label: 'Group headings', target: '<h2>', kind: 'heading', required: true, multiline: true, guidance: 'One short heading per group.', good: 'Explore\nHelp' },
+      { id: 'nav', label: 'Navigation label', target: 'aria-label', kind: 'name', required: true, guidance: 'Tells it apart from the main navigation.', good: 'Footer' },
+    ],
+    design: [{ text: 'Help and contact links are in the same place on every page.', check: 'Same group, same order.' }, textContrast, reflow],
+  },
+  fieldset: {
+    content: [
+      { id: 'legend', label: 'Legend', target: '<legend>', kind: 'heading', required: true, guidance: 'The question people answer, kept short.', good: 'What is your address?', bad: 'Please fill in your address details below so we can send your order' },
+      { id: 'hint', label: 'Hint', target: 'aria-describedby', kind: 'hint', required: false, guidance: 'Extra help, outside the legend.', good: 'We’ll only use this to send your order.' },
+    ],
+    design: [{ text: 'The legend is visible and above the fields.', check: 'Not hidden, not beside the fields.' }, fieldBorder, errorDesign],
+  },
+  'star-rating': {
+    content: [
+      { id: 'legend', label: 'Legend', target: '<legend>', kind: 'heading', required: true, guidance: 'What’s being rated.', good: 'Rate Riverside loop', bad: 'Rating' },
+      { id: 'names', label: 'Star names', target: 'Hidden text', kind: 'name', required: true, guidance: 'A number and “star” or “stars”.', good: '3 stars' },
+    ],
+    design: [target('Each star'), notColorOnly('selected stars'), focus('The focused star'), { text: 'Selected stars have a 3:1 outline.', check: 'Filled and outlined stars both meet non-text contrast.' }],
+  },
   table: {
     content: [
       { id: 'caption', label: 'Table caption', target: '<caption>', kind: 'heading', required: true, guidance: 'Names the table. Screen readers announce it on entry.', good: 'Invoices due in March 2026' },
