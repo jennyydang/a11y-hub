@@ -10,10 +10,7 @@ import type { ComponentSpec } from '../data/types';
 import { loadWorksheet } from '../lib/worksheetStore';
 import { cx } from '../ui';
 import { NotFound } from './NotFound';
-import { AltDecision } from '../tools/AltDecision';
-import { AnnotationKit } from '../tools/AnnotationKit';
-import { CopyPatterns } from '../tools/CopyPatterns';
-import { ScreenReaderCheatSheet } from '../tools/ScreenReaderCheatSheet';
+import { toolPath, toolsFor } from '../data/tools';
 import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
 
@@ -70,29 +67,18 @@ export function RolePage() {
           <Checklist scope={`role-${guide.id}`} items={guide.checklist} title={`${guide.name} review checklist`} />
         </Section>
 
-        {guide.id === 'content' && (
-          <Section title="Decorative or informative?" intro={<p>Not sure whether an image needs alt text? Answer a few yes or no questions to find out what to write.</p>}>
-            <AltDecision />
-          </Section>
-        )}
-
-        {guide.id === 'content' && (
-          <Section title="Copy patterns" intro={<p>Reusable wording for buttons, links, labels, errors and messages. Copy an example, or follow the pattern.</p>}>
-            <CopyPatterns />
-          </Section>
-        )}
-
-        {guide.id === 'design' && (
-          <Section title="Annotation kit" intro={<p>Standard markers for accessibility notes on design files, so frontend knows exactly what to build.</p>}>
-            <AnnotationKit />
-          </Section>
-        )}
-
-        {(guide.id === 'qa' || guide.id === 'frontend') && (
-          <Section title="Screen reader cheat sheet" intro={<p>The commands you need to test a page, side by side for each screen reader.</p>}>
-            <ScreenReaderCheatSheet />
-          </Section>
-        )}
+        <Section title="Your tools" intro={<p>Tools that help with {guide.name.toLowerCase() === 'qa' ? 'QA' : guide.name.toLowerCase()} work. All tools are also listed under Tools in the menu.</p>}>
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {toolsFor(guide.id).map((t) => (
+              <li key={t.id}>
+                <Link to={toolPath(t.id)} className="surface group flex h-full flex-col p-5 transition hover:shadow-md focus-ring">
+                  <span className="font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">{t.name}</span>
+                  <span className="mt-1 text-sm leading-6 text-muted">{t.why[guide.id] ?? t.description}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Section>
 
         <Section title="Handoff notes" intro={<p>What to include when passing work to the other roles.</p>}>
           <div className="surface p-5">

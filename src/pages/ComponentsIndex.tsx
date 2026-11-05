@@ -13,7 +13,7 @@ export function ComponentsIndex() {
         </p>
         <p className="mt-2 text-base">
           Not sure which one you need?{' '}
-          <Link to="/choose" className="link">
+          <Link to="/tools/component-picker" className="link">
             Answer a few questions to find out
           </Link>
           .

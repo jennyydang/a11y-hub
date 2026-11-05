@@ -1,10 +1,10 @@
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ChecklistPage } from './pages/ChecklistPage';
-import { ChoosePage } from './pages/ChoosePage';
+import { ToolPage } from './pages/ToolPage';
+import { ToolsIndex } from './pages/ToolsIndex';
 import { ProgressPage } from './pages/ProgressPage';
 import { GlossaryPage } from './pages/GlossaryPage';
-import { CheckerPage } from './pages/CheckerPage';
 import { ComponentPage } from './pages/ComponentPage';
 import { ComponentsIndex } from './pages/ComponentsIndex';
 import { FoundationPage } from './pages/FoundationPage';
@@ -23,10 +23,12 @@ export function App() {
           <Route path="foundations/:slug" element={<FoundationPage />} />
           <Route path="roles/:role" element={<RolePage />} />
           <Route path="checklist" element={<ChecklistPage />} />
-          <Route path="choose" element={<ChoosePage />} />
+          <Route path="tools" element={<ToolsIndex />} />
+          <Route path="tools/:id" element={<ToolPage />} />
+          <Route path="choose" element={<Navigate to="/tools/component-picker" replace />} />
           <Route path="progress" element={<ProgressPage />} />
           <Route path="glossary" element={<GlossaryPage />} />
-          <Route path="checker" element={<CheckerPage />} />
+          <Route path="checker" element={<Navigate to="/tools/markup-checker" replace />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

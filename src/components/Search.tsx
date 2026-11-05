@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { components } from '../data/components';
 import { foundations } from '../data/foundations';
 import { roles } from '../data/roles';
+import { tools, toolPath } from '../data/tools';
 import { cx } from '../ui';
 
 interface Entry {
@@ -47,10 +48,8 @@ function buildIndex(): Entry[] {
     }),
   );
   entries.push(
-    { title: 'Which component should I use?', kind: 'Tool', to: '/choose', fields: [{ label: 'Tool', text: 'Pick the right component: button or link, select or radio, dialog or toast' }] },
-    { title: 'Decorative or informative?', kind: 'Tool', to: '/components/image', fields: [{ label: 'Tool', text: 'Alt text decision: decorative images, informative images, alt=""' }] },
+    ...tools.map((t) => ({ title: t.name, kind: 'Tool', to: toolPath(t.id), fields: [{ label: 'Tool', text: t.description }] })),
     { title: 'Team progress', kind: 'Page', to: '/progress', fields: [{ label: 'Page', text: 'Dashboard of worksheet progress for every role, export and import all worksheets' }] },
-    { title: 'Markup checker', kind: 'Tool', to: '/checker', fields: [{ label: 'Tool', text: 'Paste HTML and check it with axe-core for WCAG issues' }] },
     { title: 'Glossary', kind: 'Page', to: '/glossary', fields: [{ label: 'Page', text: 'Definitions: accessible name, landmark, live region, focus trap, alt text, ARIA, WCAG' }] },
     { title: 'Testing checklist', kind: 'Page', to: '/checklist', fields: [{ label: 'Page', text: 'Every testing checklist in one place' }] },
   );

@@ -1,3 +1,4 @@
+import type React from 'react';
 import { useId, useRef, useState } from 'react';
 import { Button } from '@fluid-design/fluid-ui';
 import type { AxeResults, Result } from 'axe-core';
@@ -58,7 +59,7 @@ function sanitize(html: string) {
   return doc.body.innerHTML;
 }
 
-export function CheckerPage() {
+export function CheckerPage({ usedBy }: { usedBy?: React.ReactNode } = {}) {
   usePageTitle('Markup checker');
   const id = useId();
   const [html, setHtml] = useState(EXAMPLES[0].html);
@@ -94,7 +95,7 @@ export function CheckerPage() {
 
   return (
     <article className="max-w-5xl">
-      <PageHeader eyebrow="Tools" title="Markup checker">
+      <PageHeader eyebrow="Tools" title="Markup checker" meta={usedBy}>
         <p>
           Paste a piece of HTML to check it against WCAG 2.2 AA with axe-core. Automated checks find roughly a third of issues, so follow up with
           keyboard and screen reader testing.

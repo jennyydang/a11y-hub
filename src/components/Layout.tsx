@@ -5,6 +5,7 @@ import { foundations } from '../data/foundations';
 import { roles } from '../data/roles';
 import { cx } from '../ui';
 import { Search } from './Search';
+import { tools, toolPath } from '../data/tools';
 import { ThemeToggle } from './ThemeToggle';
 
 function Logo() {
@@ -43,9 +44,10 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const groupHeading = 'mb-1 px-3 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300';
   const foundationItems = foundations.filter((f) => match(f.name));
   const roleItems = roles.filter((r) => match(`${r.name} guide`));
+  const toolItems = tools.filter((t) => match(t.name));
   const totalMatches =
     foundationItems.length +
-    roleItems.length + categories.reduce((n, c) => n + byCategory(c).filter((x) => match(x.name)).length, 0);
+    roleItems.length + toolItems.length + categories.reduce((n, c) => n + byCategory(c).filter((x) => match(x.name)).length, 0);
 
   return (
     <div className="space-y-6">
@@ -68,15 +70,19 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
       <ul className="space-y-0.5">
         {match('Overview') && item('/', 'Overview')}
         {match('Testing checklist') && item('/checklist', 'Testing checklist')}
-        {match('Which component?') && item('/choose', 'Which component?')}
         {match('Team progress') && item('/progress', 'Team progress')}
-        {match('Markup checker') && item('/checker', 'Markup checker')}
         {match('Glossary') && item('/glossary', 'Glossary')}
       </ul>
       {roleItems.length > 0 && (
         <div>
           <h2 className={groupHeading}>Role guides</h2>
           <ul className="space-y-0.5">{roleItems.map((r) => item(`/roles/${r.id}`, `${r.name} guide`))}</ul>
+        </div>
+      )}
+      {toolItems.length > 0 && (
+        <div>
+          <h2 className={groupHeading}>Tools</h2>
+          <ul className="space-y-0.5">{toolItems.map((t) => item(toolPath(t.id), t.name))}</ul>
         </div>
       )}
       {foundationItems.length > 0 && (
@@ -175,6 +181,7 @@ export function Layout() {
               ['/foundations/keyboard', 'Foundations', '/foundations'],
               ['/roles/content', 'Role guides', '/roles'],
               ['/components', 'Components', '/components'],
+              ['/tools', 'Tools', '/tools'],
               ['/checklist', 'Checklist', '/checklist'],
             ].map(([to, label, prefix]) => {
               const active = location.pathname.startsWith(prefix);

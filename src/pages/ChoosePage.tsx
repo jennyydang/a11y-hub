@@ -1,3 +1,4 @@
+import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@fluid-design/fluid-ui';
@@ -99,7 +100,7 @@ const TREE: Record<string, Node> = {
   },
 };
 
-export function ChoosePage() {
+export function ChoosePage({ usedBy }: { usedBy?: React.ReactNode } = {}) {
   usePageTitle('Which component should I use?');
   const [path, setPath] = useState<{ node: string; option: Option }[]>([]);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -116,7 +117,7 @@ export function ChoosePage() {
 
   return (
     <article className="max-w-3xl">
-      <PageHeader eyebrow="Components" title="Which component should I use?">
+      <PageHeader eyebrow="Tools" title="Which component should I use?" meta={usedBy}>
         <p>Answer a question or two to find the right component, and why. Many accessibility problems start with picking the wrong one.</p>
       </PageHeader>
 

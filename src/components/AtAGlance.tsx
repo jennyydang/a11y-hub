@@ -81,7 +81,7 @@ export function AtAGlance({ spec }: { spec: ComponentSpec }) {
             )}
             <p className="mt-2">
               Still unsure?{' '}
-              <Link to="/choose" className="link">
+              <Link to="/tools/component-picker" className="link">
                 Find the right component
               </Link>
             </p>
