@@ -71,6 +71,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
         {match('Overview') && item('/', 'Overview')}
         {match('Testing checklist') && item('/checklist', 'Testing checklist')}
         {match('Team progress') && item('/progress', 'Team progress')}
+        {match('Page examples') && item('/examples', 'Page examples')}
         {match('Glossary') && item('/glossary', 'Glossary')}
       </ul>
       {roleItems.length > 0 && (

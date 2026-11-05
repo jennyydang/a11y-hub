@@ -26,7 +26,8 @@ export function PageLayoutMap() {
         Page map
       </h2>
       <p className="text-muted">
-        A typical page, top to bottom in reading order. Each region lists the components that belong there; select one to see its guidance.
+        A typical page, top to bottom in reading order. Each region lists the components that belong there; select one to see its guidance. To see
+        regions filled in, open the <Link className="link" to="/examples">page examples</Link>.
       </p>
       <ol className="grid gap-3 md:grid-cols-3">
         {REGIONS.map((r) => (

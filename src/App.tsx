@@ -4,6 +4,7 @@ import { ChecklistPage } from './pages/ChecklistPage';
 import { ToolPage } from './pages/ToolPage';
 import { ToolsIndex } from './pages/ToolsIndex';
 import { ProgressPage } from './pages/ProgressPage';
+import { ExamplePage, ExamplesIndex } from './pages/ExamplesPage';
 import { GlossaryPage } from './pages/GlossaryPage';
 import { ComponentPage } from './pages/ComponentPage';
 import { ComponentsIndex } from './pages/ComponentsIndex';
@@ -28,6 +29,8 @@ export function App() {
           <Route path="choose" element={<Navigate to="/tools/component-picker" replace />} />
           <Route path="progress" element={<ProgressPage />} />
           <Route path="glossary" element={<GlossaryPage />} />
+          <Route path="examples" element={<ExamplesIndex />} />
+          <Route path="examples/:id" element={<ExamplePage />} />
           <Route path="checker" element={<Navigate to="/tools/markup-checker" replace />} />
           <Route path="*" element={<NotFound />} />
         </Route>

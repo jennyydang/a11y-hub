@@ -5,6 +5,7 @@ import { foundations } from '../data/foundations';
 import { roles } from '../data/roles';
 import { tools, toolPath } from '../data/tools';
 import { cx } from '../ui';
+import { examples } from '../examples';
 
 interface Entry {
   title: string;
@@ -50,6 +51,8 @@ function buildIndex(): Entry[] {
   entries.push(
     ...tools.map((t) => ({ title: t.name, kind: 'Tool', to: toolPath(t.id), fields: [{ label: 'Tool', text: t.description }] })),
     { title: 'Team progress', kind: 'Page', to: '/progress', fields: [{ label: 'Page', text: 'Dashboard of worksheet progress for every role, export and import all worksheets' }] },
+    { title: 'Page examples', kind: 'Page', to: '/examples', fields: [{ label: 'Page', text: 'Annotated example pages: content page, sign-up form, search results, dashboard. Layout, placement, wireframe' }] },
+    ...examples.map((e) => ({ title: `${e.name} example`, kind: 'Page example', to: `/examples/${e.id}`, fields: [{ label: 'Example', text: e.summary }, ...e.notes.map((n) => ({ label: 'Note', text: `${n.title}. ${n.why}` }))] })),
     { title: 'Glossary', kind: 'Page', to: '/glossary', fields: [{ label: 'Page', text: 'Definitions: accessible name, landmark, live region, focus trap, alt text, ARIA, WCAG' }] },
     { title: 'Testing checklist', kind: 'Page', to: '/checklist', fields: [{ label: 'Page', text: 'Every testing checklist in one place' }] },
   );
