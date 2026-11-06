@@ -138,7 +138,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const toolItems = tools.filter((t) => match(t.name));
   const componentGroups = categories.map((cat) => [cat, byCategory(cat).filter((c) => match(c.name))] as const).filter(([, list]) => list.length);
   const componentCount = componentGroups.reduce((n, [, list]) => n + list.length, 0);
-  const totalMatches = (match('Overview') ? 1 : 0) + referenceItems.length + foundationItems.length + roleItems.length + toolItems.length + componentCount;
+  const totalMatches = (match('Overview') ? 1 : 0) + (match('Agency playbook') ? 1 : 0) + referenceItems.length + foundationItems.length + roleItems.length + toolItems.length + componentCount;
 
   return (
     <div className="space-y-4">
@@ -158,7 +158,12 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
           {q ? `${totalMatches} pages match` : ''}
         </p>
       </div>
-      {match('Overview') && <ul>{item('/', 'Overview')}</ul>}
+      {(match('Overview') || match('Agency playbook')) && (
+        <ul className="space-y-0.5">
+          {match('Overview') && item('/', 'Overview')}
+          {match('Agency playbook') && item('/agency', 'Agency playbook')}
+        </ul>
+      )}
       {roleItems.length > 0 && (
         <NavGroup id="roles" title="Role guides" open={isOpen('roles')} onToggle={() => toggle('roles')}>
           <ul className="space-y-0.5">{roleItems.map((r) => item(`/roles/${r.id}`, `${r.name} guide`, r.id === role ? '(you)' : undefined))}</ul>

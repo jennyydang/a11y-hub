@@ -4,6 +4,7 @@ import { AltDecision } from '../tools/AltDecision';
 import { AnnotationKit } from '../tools/AnnotationKit';
 import { ContrastChecker } from '../tools/ContrastChecker';
 import { CopyPatterns } from '../tools/CopyPatterns';
+import { DeliverablesBuilder } from '../tools/DeliverablesBuilder';
 import { ScreenReaderCheatSheet } from '../tools/ScreenReaderCheatSheet';
 
 export interface ToolInfo {
@@ -85,6 +86,20 @@ export const tools: ToolInfo[] = [
     why: { qa: 'The commands you need for every screen reader test.', frontend: 'Check your work with a screen reader before handing it to QA.' },
     Tool: ScreenReaderCheatSheet,
     heading: 'Commands',
+  },
+  {
+    id: 'deliverables',
+    name: 'Client deliverables builder',
+    description: 'Scope a client redesign and export its audit, requirements, component specs, WCAG matrix, test plan and accessibility statement.',
+    roles: ['content', 'design', 'frontend', 'qa'],
+    why: {
+      content: 'Hand the client a statement draft and content requirements for every component in scope.',
+      design: 'Agree the conformance target and components in scope before design starts.',
+      frontend: 'Give developers one spec document for every component in the redesign.',
+      qa: 'Export a test plan with result columns and a sign-off sheet.',
+    },
+    Tool: DeliverablesBuilder,
+    ownHeadings: true,
   },
 ];
 

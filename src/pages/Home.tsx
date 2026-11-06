@@ -104,6 +104,20 @@ export function Home() {
         )}
       </section>
 
+      <section aria-labelledby="agency" className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-primary-50 px-6 py-5 ring-1 ring-primary-200 dark:bg-primary-900/20 dark:ring-primary-800/60">
+        <div className="max-w-2xl">
+          <h2 id="agency" className="text-lg font-semibold">
+            Redesigning a site for a client?
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-muted">
+            The agency playbook shows what to use at each phase. The deliverables builder exports an audit report, requirements, component specs, a WCAG matrix, a test plan and an accessibility statement.
+          </p>
+        </div>
+        <Button as={Link} to="/agency" weight="light">
+          Open the agency playbook
+        </Button>
+      </section>
+
       <section aria-labelledby="features" className="mt-16">
         <h2 id="features" className="text-2xl font-bold tracking-tight">
           What’s on every component page

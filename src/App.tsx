@@ -12,6 +12,7 @@ import { FoundationPage } from './pages/FoundationPage';
 import { Home } from './pages/Home';
 import { NotFound } from './pages/NotFound';
 import { RolePage } from './pages/RolePage';
+import { AgencyPage } from './pages/AgencyPage';
 
 export function App() {
   return (
@@ -23,6 +24,7 @@ export function App() {
           <Route path="components/:slug" element={<ComponentPage />} />
           <Route path="foundations/:slug" element={<FoundationPage />} />
           <Route path="roles/:role" element={<RolePage />} />
+          <Route path="agency" element={<AgencyPage />} />
           <Route path="checklist" element={<ChecklistPage />} />
           <Route path="tools" element={<ToolsIndex />} />
           <Route path="tools/:id" element={<ToolPage />} />
