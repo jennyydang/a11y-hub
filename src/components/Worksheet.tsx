@@ -216,7 +216,7 @@ function FieldInput({ field, value, onChange }: { field: ContentField; value: st
   );
 }
 
-export function Worksheet({ spec, variant }: { spec: ComponentSpec; variant?: Variant }) {
+export function Worksheet({ spec, variant, defaultSheet }: { spec: ComponentSpec; variant?: Variant; defaultSheet?: string }) {
   const ws = useWorksheet(spec.slug);
   const { entry } = ws;
   const [params, setParams] = useSearchParams();
@@ -224,7 +224,7 @@ export function Worksheet({ spec, variant }: { spec: ComponentSpec; variant?: Va
   const rootRef = useRef<HTMLDivElement>(null);
 
   const requested = params.get('sheet');
-  const index = Math.max(0, SHEETS.indexOf(requested as (typeof SHEETS)[number]));
+  const index = Math.max(0, SHEETS.indexOf((requested ?? defaultSheet) as (typeof SHEETS)[number]));
 
   // Arriving from a role guide: bring the worksheet into view.
   useEffect(() => {

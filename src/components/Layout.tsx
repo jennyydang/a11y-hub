@@ -1,6 +1,7 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { categories, byCategory } from '../data/components';
+import { categories, byCategory, findComponent } from '../data/components';
+import { useRole } from '../lib/useRole';
 import { foundations } from '../data/foundations';
 import { roles } from '../data/roles';
 import { cx } from '../ui';
@@ -18,15 +19,98 @@ function Logo() {
   );
 }
 
+function Chevron({ open }: { open: boolean }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" className={cx('h-4 w-4 flex-none transition-transform', open && 'rotate-90')}>
+      <path fillRule="evenodd" d="M7.2 14.8a.75.75 0 0 1 0-1.06L10.94 10 7.2 6.26a.75.75 0 1 1 1.06-1.06l4.27 4.27a.75.75 0 0 1 0 1.06L8.26 14.8a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+/** A collapsible nav group. Open when it holds the current page, when filtering, or when the reader opens it. */
+function NavGroup({
+  id,
+  title,
+  count,
+  open,
+  onToggle,
+  nested,
+  children,
+}: {
+  id: string;
+  title: string;
+  count?: number;
+  open: boolean;
+  onToggle: () => void;
+  nested?: boolean;
+  children: ReactNode;
+}) {
+  const panel = `nav-group-${id}`;
+  return (
+    <div>
+      <h2>
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={panel}
+          onClick={onToggle}
+          className={cx(
+            'flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left focus-ring hover:bg-gray-100 dark:hover:bg-gray-800',
+            nested
+              ? 'text-sm font-medium text-gray-800 dark:text-gray-100'
+              : 'text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200',
+          )}
+        >
+          <Chevron open={open} />
+          <span className="flex-1">{title}</span>
+          {count !== undefined && <span className="text-xs font-normal normal-case tracking-normal text-muted">{count}</span>}
+        </button>
+      </h2>
+      <div id={panel} hidden={!open} className={cx('mt-0.5', nested ? 'pl-4' : 'pl-3')}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const [query, setQuery] = useState('');
   const id = useId();
+  const { pathname } = useLocation();
+  const [role] = useRole();
   const q = query.trim().toLowerCase();
   const match = (s: string) => !q || s.toLowerCase().includes(q);
-  const item = (to: string, label: string) => (
+
+  // Which group holds the current page, so it starts open.
+  const currentGroups = new Set<string>();
+  if (pathname.startsWith('/roles')) currentGroups.add('roles');
+  if (pathname.startsWith('/foundations')) currentGroups.add('foundations');
+  if (pathname.startsWith('/tools')) currentGroups.add('tools');
+  if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
+  if (pathname.startsWith('/components')) {
+    currentGroups.add('components');
+    const c = findComponent(pathname.split('/')[2] ?? '');
+    if (c) currentGroups.add(`cat-${c.category}`);
+  }
+  const [toggled, setToggled] = useState<Record<string, boolean>>({ roles: true });
+  // A newly visited group opens; groups the reader closed elsewhere stay as they were.
+  const [lastPath, setLastPath] = useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
+    setToggled((t) => {
+      const next = { ...t };
+      currentGroups.forEach((g) => (next[g] = true));
+      return next;
+    });
+  }
+  const isOpen = (g: string) => Boolean(q) || (toggled[g] ?? currentGroups.has(g));
+  const toggle = (g: string) => setToggled((t) => ({ ...t, [g]: !isOpen(g) }));
+
+  const item = (to: string, label: string, extra?: string) => (
     <li key={to}>
       <NavLink
         to={to}
+        end={to === '/' || to === '/components' || to === '/tools'}
         onClick={onNavigate}
         className={({ isActive }) =>
           cx(
@@ -38,19 +122,28 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
         }
       >
         {label}
+        {extra && <span className="ml-1.5 text-xs font-normal text-muted">{extra}</span>}
       </NavLink>
     </li>
   );
-  const groupHeading = 'mb-1 px-3 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300';
+  const reference: [string, string][] = [
+    ['/fixes', 'Common problems and fixes'],
+    ['/checklist', 'Testing checklist'],
+    ['/progress', 'Team progress'],
+    ['/examples', 'Page examples'],
+    ['/glossary', 'Glossary'],
+    ['/changelog', 'What’s new'],
+  ];
+  const referenceItems = reference.filter(([, l]) => match(l));
   const foundationItems = foundations.filter((f) => match(f.name));
   const roleItems = roles.filter((r) => match(`${r.name} guide`));
   const toolItems = tools.filter((t) => match(t.name));
-  const totalMatches =
-    foundationItems.length +
-    roleItems.length + toolItems.length + categories.reduce((n, c) => n + byCategory(c).filter((x) => match(x.name)).length, 0);
+  const componentGroups = categories.map((cat) => [cat, byCategory(cat).filter((c) => match(c.name))] as const).filter(([, list]) => list.length);
+  const componentCount = componentGroups.reduce((n, [, list]) => n + list.length, 0);
+  const totalMatches = (match('Overview') ? 1 : 0) + (match('Accessibility basics') ? 1 : 0) + (match('Agency playbook') ? 1 : 0) + referenceItems.length + foundationItems.length + roleItems.length + toolItems.length + componentCount;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
         <label htmlFor={id} className="sr-only">
           Filter navigation
@@ -67,41 +160,50 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
           {q ? `${totalMatches} pages match` : ''}
         </p>
       </div>
-      <ul className="space-y-0.5">
-        {match('Overview') && item('/', 'Overview')}
-        {match('Testing checklist') && item('/checklist', 'Testing checklist')}
-        {match('Team progress') && item('/progress', 'Team progress')}
-        {match('Page examples') && item('/examples', 'Page examples')}
-        {match('Glossary') && item('/glossary', 'Glossary')}
-      </ul>
-      {roleItems.length > 0 && (
-        <div>
-          <h2 className={groupHeading}>Role guides</h2>
-          <ul className="space-y-0.5">{roleItems.map((r) => item(`/roles/${r.id}`, `${r.name} guide`))}</ul>
-        </div>
+      {(match('Overview') || match('Accessibility basics') || match('Agency playbook')) && (
+        <ul className="space-y-0.5">
+          {match('Overview') && item('/', 'Overview')}
+          {match('Accessibility basics') && item('/basics', 'Accessibility basics')}
+          {match('Agency playbook') && item('/agency', 'Agency playbook')}
+        </ul>
       )}
-      {toolItems.length > 0 && (
-        <div>
-          <h2 className={groupHeading}>Tools</h2>
-          <ul className="space-y-0.5">{toolItems.map((t) => item(toolPath(t.id), t.name))}</ul>
-        </div>
+      {roleItems.length > 0 && (
+        <NavGroup id="roles" title="Role guides" open={isOpen('roles')} onToggle={() => toggle('roles')}>
+          <ul className="space-y-0.5">{roleItems.map((r) => item(`/roles/${r.id}`, `${r.name} guide`, r.id === role ? '(you)' : undefined))}</ul>
+        </NavGroup>
+      )}
+      {componentCount > 0 && (
+        <NavGroup id="components" title="Components" count={componentCount} open={isOpen('components')} onToggle={() => toggle('components')}>
+          <ul className="space-y-0.5">
+            {!q && item('/components', 'All components')}
+            {componentGroups.map(([cat, list]) => (
+              <li key={cat}>
+                <NavGroup id={`cat-${cat}`} title={cat} count={list.length} nested open={isOpen(`cat-${cat}`)} onToggle={() => toggle(`cat-${cat}`)}>
+                  <ul className="space-y-0.5">{list.map((c) => item(`/components/${c.slug}`, c.name))}</ul>
+                </NavGroup>
+              </li>
+            ))}
+          </ul>
+        </NavGroup>
       )}
       {foundationItems.length > 0 && (
-        <div>
-          <h2 className={groupHeading}>Foundations</h2>
+        <NavGroup id="foundations" title="Foundations" count={foundationItems.length} open={isOpen('foundations')} onToggle={() => toggle('foundations')}>
           <ul className="space-y-0.5">{foundationItems.map((f) => item(`/foundations/${f.slug}`, f.name))}</ul>
-        </div>
+        </NavGroup>
       )}
-      {categories.map((cat) => {
-        const list = byCategory(cat).filter((c) => match(c.name));
-        if (!list.length) return null;
-        return (
-          <div key={cat}>
-            <h2 className={groupHeading}>{cat}</h2>
-            <ul className="space-y-0.5">{list.map((c) => item(`/components/${c.slug}`, c.name))}</ul>
-          </div>
-        );
-      })}
+      {toolItems.length > 0 && (
+        <NavGroup id="tools" title="Tools" count={toolItems.length} open={isOpen('tools')} onToggle={() => toggle('tools')}>
+          <ul className="space-y-0.5">
+            {!q && item('/tools', 'All tools')}
+            {toolItems.map((t) => item(toolPath(t.id), t.name, role && t.roles.includes(role) ? '(for you)' : undefined))}
+          </ul>
+        </NavGroup>
+      )}
+      {referenceItems.length > 0 && (
+        <NavGroup id="reference" title="Testing & reference" open={isOpen('reference')} onToggle={() => toggle('reference')}>
+          <ul className="space-y-0.5">{referenceItems.map(([to, label]) => item(to, label))}</ul>
+        </NavGroup>
+      )}
       {totalMatches === 0 && <p className="px-3 text-sm text-muted">No pages match “{query}”.</p>}
     </div>
   );
@@ -109,6 +211,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
 
 export function Layout() {
   const location = useLocation();
+  const [role] = useRole();
   const mainRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -186,13 +289,14 @@ export function Layout() {
           </button>
           <NavLink to="/" className="flex items-center gap-2.5 rounded-md focus-ring">
             <Logo />
-            <span className="text-lg font-bold tracking-tight">A11y Hub</span>
+            <span className="whitespace-nowrap text-lg font-bold tracking-tight">A11y Hub</span>
           </NavLink>
-          <span className="chip hidden bg-gray-100 text-gray-700 sm:inline-flex dark:bg-gray-800 dark:text-gray-200">Styled with Fluid UI</span>
-          <nav aria-label="Primary" className="ml-auto hidden items-center gap-1 md:flex">
+          <span className="chip hidden bg-gray-100 text-gray-700 xl:inline-flex dark:bg-gray-800 dark:text-gray-200">Styled with Fluid UI</span>
+          <nav aria-label="Primary" className="ml-auto hidden items-center gap-1 lg:flex">
             {[
+              ['/basics', 'Basics', '/basics'],
               ['/foundations/keyboard', 'Foundations', '/foundations'],
-              ['/roles/content', 'Role guides', '/roles'],
+              [`/roles/${role ?? 'content'}`, 'Role guides', '/roles'],
               ['/components', 'Components', '/components'],
               ['/tools', 'Tools', '/tools'],
               ['/checklist', 'Checklist', '/checklist'],
@@ -204,7 +308,7 @@ export function Layout() {
                   to={to}
                   aria-current={active ? 'page' : undefined}
                   className={cx(
-                    'rounded-md px-3 py-2 text-sm font-medium focus-ring',
+                    'whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium focus-ring',
                     active ? 'text-primary-700 dark:text-primary-200' : 'text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white',
                   )}
                 >
@@ -213,7 +317,7 @@ export function Layout() {
               );
             })}
           </nav>
-          <div className="ml-auto flex items-center gap-2 md:ml-2">
+          <div className="ml-auto flex items-center gap-2 lg:ml-2">
             <Search />
             <ThemeToggle />
           </div>
@@ -234,7 +338,11 @@ export function Layout() {
         </main>
       </div>
       <footer className="border-t border-gray-200/80 px-4 py-8 text-center text-sm text-muted dark:border-gray-800">
-        A11y Hub · Built with React, Vite and{' '}
+        A11y Hub ·{' '}
+        <NavLink className="link" to="/changelog">
+          What’s new
+        </NavLink>{' '}
+        · Built with React, Vite and{' '}
         <a className="link" href="https://fluid-design.io/" target="_blank" rel="noreferrer">
           Fluid UI<span className="sr-only"> (opens in a new tab)</span>
         </a>

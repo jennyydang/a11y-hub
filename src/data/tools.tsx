@@ -4,6 +4,12 @@ import { AltDecision } from '../tools/AltDecision';
 import { AnnotationKit } from '../tools/AnnotationKit';
 import { ContrastChecker } from '../tools/ContrastChecker';
 import { CopyPatterns } from '../tools/CopyPatterns';
+import { DeliverablesBuilder } from '../tools/DeliverablesBuilder';
+import { PaletteGrid } from '../tools/PaletteGrid';
+import { ReadingLevel } from '../tools/ReadingLevel';
+import { SocialPostChecker } from '../tools/SocialPostChecker';
+import { Templates } from '../tools/Templates';
+import { TestKit } from '../tools/TestKit';
 import { ScreenReaderCheatSheet } from '../tools/ScreenReaderCheatSheet';
 
 export interface ToolInfo {
@@ -85,6 +91,65 @@ export const tools: ToolInfo[] = [
     why: { qa: 'The commands you need for every screen reader test.', frontend: 'Check your work with a screen reader before handing it to QA.' },
     Tool: ScreenReaderCheatSheet,
     heading: 'Commands',
+  },
+  {
+    id: 'deliverables',
+    name: 'Client deliverables builder',
+    description: 'Scope a client redesign and export its audit, requirements, component specs, WCAG matrix, test plan and accessibility statement.',
+    roles: ['content', 'design', 'frontend', 'qa'],
+    why: {
+      content: 'Hand the client a statement draft and content requirements for every component in scope.',
+      design: 'Agree the conformance target and components in scope before design starts.',
+      frontend: 'Give developers one spec document for every component in the redesign.',
+      qa: 'Export a test plan with result columns and a sign-off sheet.',
+    },
+    Tool: DeliverablesBuilder,
+    ownHeadings: true,
+  },
+  {
+    id: 'social-post-checker',
+    name: 'Social post checker',
+    description: 'Check a post’s hashtags, emoji, fancy fonts and alt text before you publish.',
+    roles: ['content'],
+    why: { content: 'Catch the hashtag, emoji and alt text problems screen reader users hit most on social media.' },
+    Tool: SocialPostChecker,
+    heading: 'Check your post',
+  },
+  {
+    id: 'reading-level',
+    name: 'Plain language checker',
+    description: 'See the reading grade of your text, plus long sentences, passive voice and wordy phrases.',
+    roles: ['content'],
+    why: { content: 'Bring copy down to a reading grade most people can follow.' },
+    Tool: ReadingLevel,
+    heading: 'Check your text',
+  },
+  {
+    id: 'templates',
+    name: 'Email and document templates',
+    description: 'An accessible HTML email, a document starter, and how to export a tagged PDF from Word, Docs and PowerPoint.',
+    roles: ['content', 'design'],
+    why: { content: 'Start emails and documents from an accessible template.', design: 'Hand off email and document layouts that already work with screen readers.' },
+    Tool: Templates,
+    ownHeadings: true,
+  },
+  {
+    id: 'palette-grid',
+    name: 'Palette contrast grid',
+    description: 'Paste a palette and see the contrast of every text and background pair at once.',
+    roles: ['design', 'frontend'],
+    why: { design: 'See at a glance which brand color pairs can carry text.', frontend: 'Check design tokens before they ship.' },
+    Tool: PaletteGrid,
+    heading: 'Your palette',
+  },
+  {
+    id: 'test-kit',
+    name: 'Automated test kit',
+    description: 'A GitHub Actions workflow, an axe page scan, and a keyboard and ARIA test for any component.',
+    roles: ['frontend', 'qa'],
+    why: { frontend: 'Catch regressions in CI before they reach QA.', qa: 'Automate the repeatable checks so manual time goes on screen reader testing.' },
+    Tool: TestKit,
+    ownHeadings: true,
   },
 ];
 

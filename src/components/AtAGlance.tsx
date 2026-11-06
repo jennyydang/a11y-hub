@@ -3,6 +3,7 @@ import type { ComponentSpec } from '../data/types';
 import { glance } from '../data/glance';
 import { findComponent } from '../data/components';
 import { Keys } from './Tables';
+import { withTerms } from './TermTip';
 
 export function AtAGlance({ spec }: { spec: ComponentSpec }) {
   const g = glance[spec.slug];
@@ -19,6 +20,16 @@ export function AtAGlance({ spec }: { spec: ComponentSpec }) {
         <div className="md:col-span-2">
           <dt className="font-semibold">What it does</dt>
           <dd className="text-base">{g.does}</dd>
+        </div>
+        <div className="md:col-span-2 rounded-lg bg-primary-50 p-4 dark:bg-primary-900/30">
+          <dt className="font-semibold">The short version: three must-dos</dt>
+          <dd>
+            <ol className="mt-1 list-decimal space-y-1 pl-5 text-base">
+              {spec.dos.slice(0, 3).map((d) => (
+                <li key={d}>{withTerms(d)}</li>
+              ))}
+            </ol>
+          </dd>
         </div>
         <div>
           <dt className="font-semibold">Built on</dt>
