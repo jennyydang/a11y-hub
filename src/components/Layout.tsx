@@ -138,7 +138,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const toolItems = tools.filter((t) => match(t.name));
   const componentGroups = categories.map((cat) => [cat, byCategory(cat).filter((c) => match(c.name))] as const).filter(([, list]) => list.length);
   const componentCount = componentGroups.reduce((n, [, list]) => n + list.length, 0);
-  const totalMatches = (match('Overview') ? 1 : 0) + (match('Agency playbook') ? 1 : 0) + referenceItems.length + foundationItems.length + roleItems.length + toolItems.length + componentCount;
+  const totalMatches = (match('Overview') ? 1 : 0) + (match('Accessibility basics') ? 1 : 0) + (match('Agency playbook') ? 1 : 0) + referenceItems.length + foundationItems.length + roleItems.length + toolItems.length + componentCount;
 
   return (
     <div className="space-y-4">
@@ -158,9 +158,10 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
           {q ? `${totalMatches} pages match` : ''}
         </p>
       </div>
-      {(match('Overview') || match('Agency playbook')) && (
+      {(match('Overview') || match('Accessibility basics') || match('Agency playbook')) && (
         <ul className="space-y-0.5">
           {match('Overview') && item('/', 'Overview')}
+          {match('Accessibility basics') && item('/basics', 'Accessibility basics')}
           {match('Agency playbook') && item('/agency', 'Agency playbook')}
         </ul>
       )}
@@ -286,11 +287,12 @@ export function Layout() {
           </button>
           <NavLink to="/" className="flex items-center gap-2.5 rounded-md focus-ring">
             <Logo />
-            <span className="text-lg font-bold tracking-tight">A11y Hub</span>
+            <span className="whitespace-nowrap text-lg font-bold tracking-tight">A11y Hub</span>
           </NavLink>
-          <span className="chip hidden bg-gray-100 text-gray-700 sm:inline-flex dark:bg-gray-800 dark:text-gray-200">Styled with Fluid UI</span>
-          <nav aria-label="Primary" className="ml-auto hidden items-center gap-1 md:flex">
+          <span className="chip hidden bg-gray-100 text-gray-700 xl:inline-flex dark:bg-gray-800 dark:text-gray-200">Styled with Fluid UI</span>
+          <nav aria-label="Primary" className="ml-auto hidden items-center gap-1 lg:flex">
             {[
+              ['/basics', 'Basics', '/basics'],
               ['/foundations/keyboard', 'Foundations', '/foundations'],
               [`/roles/${role ?? 'content'}`, 'Role guides', '/roles'],
               ['/components', 'Components', '/components'],
@@ -304,7 +306,7 @@ export function Layout() {
                   to={to}
                   aria-current={active ? 'page' : undefined}
                   className={cx(
-                    'rounded-md px-3 py-2 text-sm font-medium focus-ring',
+                    'whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium focus-ring',
                     active ? 'text-primary-700 dark:text-primary-200' : 'text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white',
                   )}
                 >
@@ -313,7 +315,7 @@ export function Layout() {
               );
             })}
           </nav>
-          <div className="ml-auto flex items-center gap-2 md:ml-2">
+          <div className="ml-auto flex items-center gap-2 lg:ml-2">
             <Search />
             <ThemeToggle />
           </div>

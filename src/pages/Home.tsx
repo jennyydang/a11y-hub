@@ -31,18 +31,17 @@ export function Home() {
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-700 via-primary-800 to-gray-900 px-6 py-14 text-white sm:px-12">
         <div className="bg-grid-white/[0.06] absolute inset-0" aria-hidden="true" />
         <div className="relative max-w-2xl space-y-5">
-          <p className="chip bg-white/15 text-white">Accessibility specs for web components</p>
-          <h1 className="text-4xl font-bold tracking-tight outline-none sm:text-5xl">Build components everyone can use.</h1>
+          <p className="chip bg-white/15 text-white">Accessibility guidance for everyone who makes the web</p>
+          <h1 className="text-4xl font-bold tracking-tight outline-none sm:text-5xl">Make things everyone can use.</h1>
           <p className="text-lg leading-8 text-primary-50">
-            A11y Hub documents the keyboard behavior, ARIA, focus handling and WCAG requirements for common UI components, with live examples built
-            on Fluid UI.
+            Plain-language basics for anyone who writes, designs or publishes, plus detailed specs, live examples and tools for accessibility specialists.
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
-            <Button as={Link} to="/components" className="btn-bold-[#ffffff] !text-primary-800" size="lg">
-              Browse components
+            <Button as={Link} to="/basics" className="btn-bold-[#ffffff] !text-primary-800" size="lg">
+              Start with the basics
             </Button>
-            <Button as={Link} to="/foundations/keyboard" weight="clear" size="lg" className="!text-white ring-1 ring-inset ring-white/80 hover:!bg-white/10">
-              Read the foundations
+            <Button as={Link} to="/components" weight="clear" size="lg" className="!text-white ring-1 ring-inset ring-white/80 hover:!bg-white/10">
+              Browse components
             </Button>
           </div>
         </div>
@@ -51,7 +50,7 @@ export function Home() {
 
       <section aria-labelledby="start-here" className="mt-12">
         <h2 id="start-here" className="text-2xl font-bold tracking-tight">
-          {mine ? `Your next steps as ${mine.name === 'QA' ? 'QA' : `a ${mine.name.toLowerCase()} specialist`}` : 'Start here: what’s your role?'}
+          {mine ? `Your next steps as ${mine.name === 'QA' ? 'QA' : `a ${mine.name.toLowerCase()} specialist`}` : 'Start here: what do you do?'}
         </h2>
         {mine ? (
           <>
@@ -82,8 +81,24 @@ export function Home() {
           </>
         ) : (
           <>
-            <p className="mt-2 max-w-3xl text-muted">
-              Pick the work you do. We’ll open your guide, and component pages will show the sections you need instead of all of them. You can change this at any time.
+            <Link
+              to="/basics"
+              onClick={() => setRole(null)}
+              className="surface group mt-6 flex flex-wrap items-center justify-between gap-4 p-5 ring-2 ring-primary-200 transition hover:shadow-md focus-ring dark:ring-primary-800"
+            >
+              <span className="max-w-2xl">
+                <span className="block text-lg font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">I write, publish or market things</span>
+                <span className="mt-1 block text-sm leading-6 text-muted">
+                  Posts, pages, emails, social media, slides or PDFs. Accessibility basics in plain words, with a quick checklist for before you publish. No expertise needed.
+                </span>
+              </span>
+              <span className="text-sm font-semibold text-primary-700 dark:text-primary-300">
+                Start with the basics <span aria-hidden="true">→</span>
+              </span>
+            </Link>
+            <p className="mt-8 max-w-3xl text-muted">
+              <span className="font-semibold text-gray-900 dark:text-gray-50">Accessibility is part of your job?</span> Pick your specialism. We’ll open your guide, and component pages will
+              show the sections you need. You can change this at any time.
             </p>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {roles.map((r) => (
@@ -110,7 +125,7 @@ export function Home() {
             Redesigning a site for a client?
           </h2>
           <p className="mt-1 text-sm leading-6 text-muted">
-            The agency playbook shows what to use at each phase. The deliverables builder exports an audit report, requirements, component specs, a WCAG matrix, a test plan and an accessibility statement.
+            The agency playbook shows what to use at each phase. The deliverables builder exports what you hand over: component documentation, a testing summary, an issue log, a conformance summary and developer handoff notes.
           </p>
         </div>
         <Button as={Link} to="/agency" weight="light">
