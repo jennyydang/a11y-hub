@@ -52,7 +52,7 @@ export function ExamplesIndex() {
       </PageHeader>
       <ul className="grid gap-5 sm:grid-cols-2">
         {examples.map((e) => (
-          <li key={e.id}>
+          <li key={e.id} className="min-w-0">
             <Link to={`/examples/${e.id}`} className="surface group flex h-full flex-col overflow-hidden focus-ring">
               <Thumbnail id={e.id} />
               <span className="flex flex-1 flex-col p-5">

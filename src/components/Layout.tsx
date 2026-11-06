@@ -269,7 +269,7 @@ export function Layout() {
         Skip to main content
       </a>
       <header className="sticky top-0 z-40 border-b border-gray-200/80 bg-white/90 backdrop-blur dark:border-gray-800 dark:bg-[#0f1113]/90">
-        <div className="mx-auto flex h-16 max-w-[90rem] items-center gap-3 px-4 sm:px-6">
+        <div className="mx-auto flex h-16 max-w-[90rem] items-center gap-2 px-3 sm:gap-3 sm:px-6">
           <button
             ref={menuButtonRef}
             type="button"
@@ -289,7 +289,7 @@ export function Layout() {
           </button>
           <NavLink to="/" className="flex items-center gap-2.5 rounded-md focus-ring">
             <Logo />
-            <span className="whitespace-nowrap text-lg font-bold tracking-tight">A11y Hub</span>
+            <span className="whitespace-nowrap text-base font-bold tracking-tight sm:text-lg">A11y Hub</span>
           </NavLink>
           <span className="chip hidden bg-gray-100 text-gray-700 xl:inline-flex dark:bg-gray-800 dark:text-gray-200">Styled with Fluid UI</span>
           <nav aria-label="Primary" className="ml-auto hidden items-center gap-1 lg:flex">

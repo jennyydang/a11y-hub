@@ -40,6 +40,14 @@
   }
 
   /* ---- A11y Hub additions ---- */
+  /*
+   * Scroll regions contain their own absolutely positioned children (like sr-only text in table cells).
+   * Without this, those children are placed relative to <body> and make the whole page scroll sideways.
+   */
+  .overflow-x-auto,
+  .overflow-auto {
+    position: relative;
+  }
   .surface {
     @apply rounded-xl bg-white ring-1 ring-black/5 dark:bg-gray-900 dark:ring-white/10;
   }
