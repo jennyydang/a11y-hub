@@ -7,6 +7,8 @@ import { tools, toolPath } from '../data/tools';
 import { cx } from '../ui';
 import { examples } from '../examples';
 import { basicsTasks } from '../data/basics';
+import { fixes } from '../data/fixes';
+import { slugify } from './Section';
 
 interface Entry {
   title: string;
@@ -61,6 +63,8 @@ function buildIndex(): Entry[] {
       fields: [{ label: 'Page', text: 'Plain-language basics for anyone: before you publish checklist, social media, email, PDF, documents, slides, video captions, hashtags, emoji, alt text' }],
     },
     ...basicsTasks.map((t) => ({ title: t.title, kind: 'Basics', to: `/basics#${t.id}`, fields: [{ label: 'Basics', text: `${t.why} ${t.dos.join(' ')}` }] })),
+    ...fixes.map((f) => ({ title: f.symptom, kind: 'Problem and fix', to: `/fixes#${slugify(f.symptom)}`, fields: [{ label: 'Fix', text: `${f.cause} ${f.fix}` }] })),
+    { title: 'What’s new', kind: 'Page', to: '/changelog', fields: [{ label: 'Page', text: 'Changelog, recent updates, new pages and tools' }] },
     { title: 'Agency playbook', kind: 'Page', to: '/agency', fields: [{ label: 'Page', text: 'Client redesign, agency deliverables, conformance summary, testing summary, issue log, handoff' }] },
     { title: 'Glossary', kind: 'Page', to: '/glossary', fields: [{ label: 'Page', text: 'Definitions: accessible name, landmark, live region, focus trap, alt text, ARIA, WCAG' }] },
     { title: 'Testing checklist', kind: 'Page', to: '/checklist', fields: [{ label: 'Page', text: 'Every testing checklist in one place' }] },

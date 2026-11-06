@@ -102,3 +102,14 @@
 .sim-tritanopia { filter: url(#sim-tritanopia); }
 .sim-achromatopsia { filter: grayscale(1); }
 .sim-blur { filter: blur(2px); }
+
+/* Print: just the page content, in black on white, with link targets shown. */
+@media print {
+  header.sticky, nav[aria-label='Documentation'], aside, footer, a[href='#main'], #mobile-nav { display: none !important; }
+  main { padding: 0 !important; }
+  body, main { background: #fff !important; color: #000 !important; }
+  .surface { box-shadow: none !important; border: 1px solid #999; break-inside: avoid; }
+  pre { white-space: pre-wrap; break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  article a[href^='http']::after { content: ' (' attr(href) ')'; font-size: 0.85em; }
+}

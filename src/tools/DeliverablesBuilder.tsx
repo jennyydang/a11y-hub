@@ -3,6 +3,7 @@ import { Button } from '@fluid-design/fluid-ui';
 import { byCategory, categories, components } from '../data/components';
 import { examples } from '../examples';
 import { WCAG } from '../data/wcag';
+import { importIssues } from '../lib/importIssues';
 import type { WcagRef } from '../data/types';
 import {
   DELIVERABLES,
@@ -198,7 +199,7 @@ function Radios<T extends string>({ legend, name, value, options, onChange }: { 
   return (
     <fieldset className="space-y-1">
       <legend className="text-sm font-semibold">{legend}</legend>
-      <div className="space-y-1">
+      <div className="space-y-2">
         {options.map((o) => (
           <label key={o.id} className="flex items-start gap-2 text-sm">
             <input type="radio" name={name} className={cx(check, 'mt-1')} checked={value === o.id} onChange={() => onChange(o.id)} />
@@ -286,7 +287,7 @@ function FindingForm({ onAdd, owners }: { onAdd: (f: NewFinding) => void; owners
           aria-describedby={`${id}-issue-hint${error ? ` ${id}-issue-error` : ''}`}
         />
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 sm:gap-x-8">
         <div className="space-y-1">
           <label htmlFor={`${id}-wcag`} className="block text-sm font-semibold">
             WCAG criterion <span className="font-normal text-muted">(optional)</span>
@@ -316,6 +317,8 @@ export function DeliverablesBuilder() {
   const [preview, setPreview] = useState<DeliverableId>('components');
   const [status, setStatus] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
+  const importRef = useRef<HTMLInputElement>(null);
+  const [importSource, setImportSource] = useState<Finding['source']>('delivery');
   const previewId = useId();
 
   useEffect(() => {
@@ -526,6 +529,53 @@ export function DeliverablesBuilder() {
             flash(`A11Y-${String(n).padStart(3, '0')} added to the log.`);
           }}
         />
+        <div className="surface space-y-3 p-4">
+          <p className="font-semibold">Import issues from a file</p>
+          <p className="text-sm leading-6 text-muted">
+            Bring in results from an axe scan (.json from axe-core, @axe-core/playwright or axe DevTools) or a spreadsheet saved as .csv with an “Issue” column. Columns for page, component, WCAG,
+            severity, recommendation, owner and status are picked up when present. Check owners and severities after importing.
+          </p>
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="space-y-1">
+              <label htmlFor={`${previewId}-import-src`} className="block text-sm font-semibold">
+                These issues are from
+              </label>
+              <select id={`${previewId}-import-src`} className="rounded-md border border-gray-400 bg-white px-3 py-2 text-sm dark:border-gray-500 dark:bg-gray-900" value={importSource} onChange={(e) => setImportSource(e.target.value as Finding['source'])}>
+                {SOURCES.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Button size="sm" weight="light" color="gray" onClick={() => importRef.current?.click()}>
+              Import .csv or axe .json
+            </Button>
+            <input
+              ref={importRef}
+              type="file"
+              accept=".csv,text/csv,.json,application/json"
+              className="sr-only"
+              tabIndex={-1}
+              aria-hidden="true"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                e.target.value = '';
+                if (!file) return;
+                try {
+                  const found = await importIssues(file, importSource);
+                  if (!found.length) throw new Error('No issues found in that file.');
+                  const start = Math.max(0, ...p.findings.map((x) => x.n));
+                  const stamp = Date.now();
+                  set('findings', [...p.findings, ...found.map((f, i) => ({ ...f, id: `${stamp}-${i}`, n: start + i + 1 }))]);
+                  flash(`${found.length} issue${found.length === 1 ? '' : 's'} imported from ${file.name}.`);
+                } catch (err) {
+                  flash(`Couldn’t import ${file.name}. ${err instanceof Error ? err.message : ''}`);
+                }
+              }}
+            />
+          </div>
+        </div>
         {p.findings.length > 0 && (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">

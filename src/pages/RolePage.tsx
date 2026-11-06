@@ -13,6 +13,7 @@ import { NotFound } from './NotFound';
 import { toolPath, toolsFor } from '../data/tools';
 import { PageHeader } from './PageHeader';
 import { useRole } from '../lib/useRole';
+import { withTerms } from '../components/TermTip';
 import { usePageTitle } from './usePageTitle';
 
 export function RolePage() {
@@ -48,7 +49,7 @@ export function RolePage() {
           </nav>
         }
       >
-        <p>{guide.summary}</p>
+        <p>{withTerms(guide.summary)}</p>
         <p className="mt-3 text-base">
           {myRole === guide.id ? (
             <>

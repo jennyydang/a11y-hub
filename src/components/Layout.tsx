@@ -86,7 +86,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   if (pathname.startsWith('/roles')) currentGroups.add('roles');
   if (pathname.startsWith('/foundations')) currentGroups.add('foundations');
   if (pathname.startsWith('/tools')) currentGroups.add('tools');
-  if (['/checklist', '/progress', '/examples', '/glossary'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
+  if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
   if (pathname.startsWith('/components')) {
     currentGroups.add('components');
     const c = findComponent(pathname.split('/')[2] ?? '');
@@ -127,10 +127,12 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
     </li>
   );
   const reference: [string, string][] = [
+    ['/fixes', 'Common problems and fixes'],
     ['/checklist', 'Testing checklist'],
     ['/progress', 'Team progress'],
     ['/examples', 'Page examples'],
     ['/glossary', 'Glossary'],
+    ['/changelog', 'What’s new'],
   ];
   const referenceItems = reference.filter(([, l]) => match(l));
   const foundationItems = foundations.filter((f) => match(f.name));
@@ -336,7 +338,11 @@ export function Layout() {
         </main>
       </div>
       <footer className="border-t border-gray-200/80 px-4 py-8 text-center text-sm text-muted dark:border-gray-800">
-        A11y Hub · Built with React, Vite and{' '}
+        A11y Hub ·{' '}
+        <NavLink className="link" to="/changelog">
+          What’s new
+        </NavLink>{' '}
+        · Built with React, Vite and{' '}
         <a className="link" href="https://fluid-design.io/" target="_blank" rel="noreferrer">
           Fluid UI<span className="sr-only"> (opens in a new tab)</span>
         </a>

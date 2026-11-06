@@ -136,7 +136,7 @@ export function normalizeProject(raw: Partial<AgencyProject>): AgencyProject {
   return base;
 }
 
-export type DeliverableId = 'components' | 'testsummary' | 'issuelog' | 'conformance' | 'devhandoff' | 'audit' | 'scope' | 'testplan' | 'statement';
+export type DeliverableId = 'components' | 'testsummary' | 'issuelog' | 'conformance' | 'devhandoff' | 'acr' | 'audit' | 'scope' | 'testplan' | 'statement';
 
 export const DELIVERABLES: { id: DeliverableId; name: string; when: string; required: boolean; description: string }[] = [
   {
@@ -173,6 +173,13 @@ export const DELIVERABLES: { id: DeliverableId; name: string; when: string; requ
     when: 'Delivery',
     required: true,
     description: 'Implementation guidance, what not to break, regression checks and open issues, so the client’s frontend team can keep components accessible.',
+  },
+  {
+    id: 'acr',
+    name: 'Accessibility Conformance Report (VPAT format)',
+    when: 'Delivery',
+    required: false,
+    description: 'Every WCAG A and AA criterion in the VPAT 2.5 table format, filled in from your test results and issue log.',
   },
   {
     id: 'audit',
@@ -239,7 +246,7 @@ const today = () => new Date().toISOString().slice(0, 10);
 const specsFor = (p: AgencyProject): ComponentSpec[] =>
   components.filter((c) => p.components.includes(c.slug)).sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
 /** Criteria that are new in WCAG 2.2, so out of scope for a 2.1 target. */
-const NEW_IN_22 = ['2.4.11', '2.5.7', '2.5.8', '3.2.6', '3.3.8'];
+const NEW_IN_22 = ['2.4.11', '2.5.7', '2.5.8', '3.2.6', '3.3.7', '3.3.8'];
 const inTarget = (p: AgencyProject, w: WcagRef) => w.level !== 'AAA' && !(p.target === 'WCAG 2.1 AA' && NEW_IN_22.includes(w.id));
 const wcagText = (id: string) => {
   const w = wcagById(id);
@@ -509,37 +516,42 @@ function issueLogDoc(p: AgencyProject): Doc {
 
 type Support = 'Supports' | 'Partially supports' | 'Does not support' | 'Not evaluated';
 
-function conformanceDoc(p: AgencyProject): Doc {
+interface Evaluation {
+  w: WcagRef;
+  appliesTo: string;
+  level: Support;
+  live: Finding[];
+}
+
+/** Evaluate one success criterion against the delivered scope, from test records and delivery issues. */
+function evaluate(p: AgencyProject, w: WcagRef): Evaluation {
   const specs = specsFor(p);
   const pages = lines(p.pages);
-  const issues = delivery(p);
+  const used = specs.filter((s) => s.wcag.some((x) => x.id === w.id));
+  const page = PAGE_LEVEL_WCAG.includes(w.id);
+  const live = delivery(p).filter((f) => f.wcag === w.id && (isOutstanding(f) || f.status === 'accepted'));
+  const fullyTested = used.every((s) => p.tests[s.slug]?.manual) && (!page || pages.some((pg) => p.tests[`page:${pg}`]?.manual));
+  let level: Support;
+  if (live.some((f) => f.severity === 'blocker' && f.status !== 'accepted')) level = 'Does not support';
+  else if (live.length) level = 'Partially supports';
+  else if (fullyTested && (used.length || page)) level = 'Supports';
+  else level = 'Not evaluated';
+  return { w, appliesTo: [page ? 'All templates' : '', ...used.map((s) => s.name)].filter(Boolean).join(', '), level, live };
+}
+
+const limitationText = (e: Evaluation) => e.live.map((f) => `${e.w.id}: ${location(f)}: ${f.issue.trim().replace(/\.$/, '')} (${issueRef(f)}, ${statusLabel(f.status).toLowerCase()}).`);
+
+function conformanceDoc(p: AgencyProject): Doc {
+  const specs = specsFor(p);
   const ids = new Set<string>(PAGE_LEVEL_WCAG);
   specs.forEach((s) => s.wcag.forEach((w) => ids.add(w.id)));
   const criteria = [...ids]
     .map(wcagById)
     .filter((w): w is WcagRef => Boolean(w) && inTarget(p, w!))
     .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
-  const limitations: string[] = [];
-  const rows = criteria.map((w) => {
-    const used = specs.filter((s) => s.wcag.some((x) => x.id === w.id));
-    const page = PAGE_LEVEL_WCAG.includes(w.id);
-    const against = issues.filter((f) => f.wcag === w.id);
-    const live = against.filter((f) => isOutstanding(f) || f.status === 'accepted');
-    const fullyTested = used.every((s) => p.tests[s.slug]?.manual) && (!page || pages.some((pg) => p.tests[`page:${pg}`]?.manual));
-    let level: Support;
-    if (live.some((f) => f.severity === 'blocker' && f.status !== 'accepted')) level = 'Does not support';
-    else if (live.length) level = 'Partially supports';
-    else if (fullyTested && (used.length || page)) level = 'Supports';
-    else level = 'Not evaluated';
-    live.forEach((f) => limitations.push(`${w.id}: ${location(f)}: ${f.issue.trim().replace(/\.$/, '')} (${issueRef(f)}, ${statusLabel(f.status).toLowerCase()}).`));
-    return [
-      `${w.id} ${w.name}`,
-      w.level,
-      [page ? 'All templates' : '', ...used.map((s) => s.name)].filter(Boolean).join(', '),
-      level,
-      live.length ? live.map(issueRef).join(', ') : '—',
-    ];
-  });
+  const evals = criteria.map((w) => evaluate(p, w));
+  const limitations = evals.flatMap(limitationText);
+  const rows = evals.map((e) => [`${e.w.id} ${e.w.name}`, e.w.level, e.appliesTo, e.level, e.live.length ? e.live.map(issueRef).join(', ') : '—']);
   const count = (l: Support) => rows.filter((r) => r[3] === l).length;
   return {
     id: 'conformance',
@@ -570,6 +582,91 @@ function conformanceDoc(p: AgencyProject): Doc {
       { t: 'h', level: 2, text: 'Known limitations' },
       limitations.length ? { t: 'ul', items: limitations } : { t: 'p', text: 'None recorded.' },
       { t: 'note', text: 'Criteria not listed (for example, captions when there is no video) do not apply to the delivered scope. Re-check this list if scope changes.' },
+    ],
+  };
+}
+
+/** Every WCAG 2.2 Level A and AA success criterion, for the ACR. 4.1.1 Parsing is listed for 2.1 targets only. */
+const WCAG_ALL: [string, string, 'A' | 'AA'][] = [
+  ['1.1.1', 'Non-text Content', 'A'], ['1.2.1', 'Audio-only and Video-only (Prerecorded)', 'A'], ['1.2.2', 'Captions (Prerecorded)', 'A'],
+  ['1.2.3', 'Audio Description or Media Alternative (Prerecorded)', 'A'], ['1.2.4', 'Captions (Live)', 'AA'], ['1.2.5', 'Audio Description (Prerecorded)', 'AA'],
+  ['1.3.1', 'Info and Relationships', 'A'], ['1.3.2', 'Meaningful Sequence', 'A'], ['1.3.3', 'Sensory Characteristics', 'A'], ['1.3.4', 'Orientation', 'AA'],
+  ['1.3.5', 'Identify Input Purpose', 'AA'], ['1.4.1', 'Use of Color', 'A'], ['1.4.2', 'Audio Control', 'A'], ['1.4.3', 'Contrast (Minimum)', 'AA'],
+  ['1.4.4', 'Resize Text', 'AA'], ['1.4.5', 'Images of Text', 'AA'], ['1.4.10', 'Reflow', 'AA'], ['1.4.11', 'Non-text Contrast', 'AA'], ['1.4.12', 'Text Spacing', 'AA'],
+  ['1.4.13', 'Content on Hover or Focus', 'AA'], ['2.1.1', 'Keyboard', 'A'], ['2.1.2', 'No Keyboard Trap', 'A'], ['2.1.4', 'Character Key Shortcuts', 'A'],
+  ['2.2.1', 'Timing Adjustable', 'A'], ['2.2.2', 'Pause, Stop, Hide', 'A'], ['2.3.1', 'Three Flashes or Below Threshold', 'A'], ['2.4.1', 'Bypass Blocks', 'A'],
+  ['2.4.2', 'Page Titled', 'A'], ['2.4.3', 'Focus Order', 'A'], ['2.4.4', 'Link Purpose (In Context)', 'A'], ['2.4.5', 'Multiple Ways', 'AA'],
+  ['2.4.6', 'Headings and Labels', 'AA'], ['2.4.7', 'Focus Visible', 'AA'], ['2.4.11', 'Focus Not Obscured (Minimum)', 'AA'], ['2.5.1', 'Pointer Gestures', 'A'],
+  ['2.5.2', 'Pointer Cancellation', 'A'], ['2.5.3', 'Label in Name', 'A'], ['2.5.4', 'Motion Actuation', 'A'], ['2.5.7', 'Dragging Movements', 'AA'],
+  ['2.5.8', 'Target Size (Minimum)', 'AA'], ['3.1.1', 'Language of Page', 'A'], ['3.1.2', 'Language of Parts', 'AA'], ['3.2.1', 'On Focus', 'A'], ['3.2.2', 'On Input', 'A'],
+  ['3.2.3', 'Consistent Navigation', 'AA'], ['3.2.4', 'Consistent Identification', 'AA'], ['3.2.6', 'Consistent Help', 'A'], ['3.3.1', 'Error Identification', 'A'],
+  ['3.3.2', 'Labels or Instructions', 'A'], ['3.3.3', 'Error Suggestion', 'AA'], ['3.3.4', 'Error Prevention (Legal, Financial, Data)', 'AA'], ['3.3.7', 'Redundant Entry', 'A'],
+  ['3.3.8', 'Accessible Authentication (Minimum)', 'AA'], ['4.1.1', 'Parsing', 'A'], ['4.1.2', 'Name, Role, Value', 'A'], ['4.1.3', 'Status Messages', 'AA'],
+];
+
+/** ACR conformance terms, as defined in the VPAT 2.5 template. */
+const ACR_TERM: Record<Support, string> = {
+  Supports: 'Supports',
+  'Partially supports': 'Partially Supports',
+  'Does not support': 'Does Not Support',
+  'Not evaluated': 'Not Evaluated',
+};
+
+function acrDoc(p: AgencyProject): Doc {
+  const is21 = p.target === 'WCAG 2.1 AA';
+  const list = WCAG_ALL.filter(([id]) => (is21 ? !NEW_IN_22.includes(id) : id !== '4.1.1'));
+  const specs = specsFor(p);
+  const covered = new Set<string>([...PAGE_LEVEL_WCAG, ...specs.flatMap((s) => s.wcag.map((w) => w.id)), ...delivery(p).map((f) => f.wcag)]);
+  const row = ([id, name, level]: (typeof WCAG_ALL)[number]) => {
+    const w: WcagRef = { id, name, level };
+    if (is21 && id === '4.1.1') return [`${id} ${name} (Level ${level})`, 'Supports', 'Obsolete in WCAG 2.2 and treated as always satisfied for HTML.'];
+    if (!covered.has(id)) return [`${id} ${name} (Level ${level})`, 'Not Evaluated', 'Not covered by the delivered component specifications. Evaluate on the integrated site, or mark Not Applicable if no such content exists.'];
+    const e = evaluate(p, w);
+    const remark =
+      e.level === 'Supports'
+        ? `Tested on: ${e.appliesTo}. No outstanding issues.`
+        : e.level === 'Not evaluated'
+          ? `Applies to: ${e.appliesTo}. Manual testing not yet complete.`
+          : limitationText(e).join(' ');
+    return [`${id} ${name} (Level ${level})`, ACR_TERM[e.level], remark];
+  };
+  return {
+    id: 'acr',
+    title: 'Accessibility Conformance Report (VPAT 2.5 format)',
+    blocks: [
+      { t: 'h', level: 1, text: `${or(p.project, 'Product')} Accessibility Conformance Report` },
+      { t: 'p', text: `International Edition style, based on VPAT® Version 2.5. WCAG section only.` },
+      {
+        t: 'meta',
+        rows: [
+          ['Name of product/version', or(p.project, TBD)],
+          ['Report date', today()],
+          ['Product description', `Components and templates delivered to ${or(p.client, 'the client')}.`],
+          ['Contact information', or(p.contact, TBD)],
+          ['Prepared by', or(p.agency, TBD)],
+        ],
+      },
+      { t: 'h', level: 2, text: 'Evaluation methods used' },
+      { t: 'p', text: `Automated testing with axe-core, and manual testing with: ${p.support.join('; ') || TBD}.` },
+      { t: 'h', level: 2, text: 'Applicable standards and guidelines' },
+      { t: 'table', head: ['Standard/Guideline', 'Included in report'], rows: [[`Web Content Accessibility Guidelines ${is21 ? '2.1' : '2.2'}`, 'Level A (Yes), Level AA (Yes), Level AAA (No)']] },
+      { t: 'h', level: 2, text: 'Terms' },
+      {
+        t: 'ul',
+        items: [
+          'Supports: the functionality has at least one method that meets the criterion without known defects.',
+          'Partially Supports: some functionality does not meet the criterion.',
+          'Does Not Support: the majority of functionality does not meet the criterion.',
+          'Not Applicable: the criterion is not relevant to the product.',
+          'Not Evaluated: the product has not been evaluated against the criterion.',
+        ],
+      },
+      { t: 'note', text: 'Review every “Not Evaluated” row before publishing. Change it to Not Applicable only when the product has no content of that kind.' },
+      { t: 'h', level: 2, text: 'Table 1: Success Criteria, Level A' },
+      { t: 'table', head: ['Criteria', 'Conformance Level', 'Remarks and Explanations'], rows: list.filter((c) => c[2] === 'A').map(row) },
+      { t: 'h', level: 2, text: 'Table 2: Success Criteria, Level AA' },
+      { t: 'table', head: ['Criteria', 'Conformance Level', 'Remarks and Explanations'], rows: list.filter((c) => c[2] === 'AA').map(row) },
+      { t: 'p', text: '“Voluntary Product Accessibility Template” and “VPAT” are registered service marks of the Information Technology Industry Council (ITI).' },
     ],
   };
 }
@@ -785,6 +882,8 @@ export function buildDoc(id: DeliverableId, p: AgencyProject): Doc {
       return conformanceDoc(p);
     case 'devhandoff':
       return devHandoffDoc(p);
+    case 'acr':
+      return acrDoc(p);
   }
 }
 

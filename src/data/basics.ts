@@ -31,8 +31,8 @@ export const basicsTasks: BasicsTask[] = [
     example: { label: 'A section title', instead: 'Big bold text that looks like a heading', write: 'The same words, set as Heading 2' },
     check: 'Read only your headings, top to bottom. They should work as a table of contents.',
     links: [
+      { label: 'Plain language checker', to: '/tools/reading-level' },
       { label: 'Copy patterns', to: '/tools/copy-patterns' },
-      { label: 'Content guide', to: '/roles/content' },
     ],
   },
   {
@@ -86,7 +86,7 @@ export const basicsTasks: BasicsTask[] = [
     check: 'Look at it in grayscale, and on your phone at arm’s length.',
     links: [
       { label: 'Contrast checker', to: '/tools/contrast-checker' },
-      { label: 'Color & contrast', to: '/foundations/color' },
+      { label: 'Palette contrast grid', to: '/tools/palette-grid' },
     ],
   },
   {
@@ -117,7 +117,10 @@ export const basicsTasks: BasicsTask[] = [
     ],
     example: { label: 'A file name and title', instead: 'final_v3_FINAL.pdf', write: 'Annual report 2026 (title set in document properties)' },
     check: 'Run the built-in accessibility checker in Word, PowerPoint or Acrobat before you share.',
-    links: [{ label: 'Text, zoom & reflow', to: '/foundations/text' }],
+    links: [
+      { label: 'Document starter and PDF export steps', to: '/tools/templates' },
+      { label: 'Text, zoom & reflow', to: '/foundations/text' },
+    ],
   },
   {
     id: 'social',
@@ -132,7 +135,10 @@ export const basicsTasks: BasicsTask[] = [
     ],
     example: { label: 'A hashtag', instead: '#goodfoodfestival 🎉🎉🎉', write: 'Join us this weekend! #GoodFoodFestival 🎉' },
     check: 'Read the post out loud exactly as written, including every emoji’s name.',
-    links: [{ label: 'Decorative or informative?', to: '/tools/alt-text' }],
+    links: [
+      { label: 'Social post checker', to: '/tools/social-post-checker' },
+      { label: 'Decorative or informative?', to: '/tools/alt-text' },
+    ],
   },
   {
     id: 'email',
@@ -147,7 +153,10 @@ export const basicsTasks: BasicsTask[] = [
     ],
     example: { label: 'The main call to action', instead: 'An image of a button that says “Register”', write: 'A real text button: “Register for the webinar”' },
     check: 'Send yourself a test with images turned off. Can you still tell what to do?',
-    links: [{ label: 'Copy patterns', to: '/tools/copy-patterns' }],
+    links: [
+      { label: 'Email template', to: '/tools/templates' },
+      { label: 'Copy patterns', to: '/tools/copy-patterns' },
+    ],
   },
   {
     id: 'forms',

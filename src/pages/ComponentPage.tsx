@@ -13,6 +13,7 @@ import { VariantPicker } from '../components/VariantPicker';
 import { Part, Section, slugify } from '../components/Section';
 import { useScrollSpy } from '../components/useScrollSpy';
 import { RoleFilter } from '../components/RoleFilter';
+import { withTerms } from '../components/TermTip';
 import { YourPart } from '../components/YourPart';
 import { showsSection, type SectionKey } from '../data/roleSections';
 import { findRole } from '../data/roles';
@@ -32,7 +33,7 @@ function Bullets({ items }: { items: string[] }) {
   return (
     <ul className="list-disc space-y-2 pl-5 leading-7">
       {items.map((i) => (
-        <li key={i}>{i}</li>
+        <li key={i}>{withTerms(i)}</li>
       ))}
     </ul>
   );
@@ -263,7 +264,7 @@ export function ComponentPage() {
             </div>
           }
         >
-          <p>{spec.summary}</p>
+          <p>{withTerms(spec.summary)}</p>
         </PageHeader>
 
         <div className="-mt-4 mb-8">
