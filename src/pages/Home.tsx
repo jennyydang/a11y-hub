@@ -3,6 +3,8 @@ import { Button } from '@fluid-design/fluid-ui';
 import { components } from '../data/components';
 import { foundations } from '../data/foundations';
 import { roles } from '../data/roles';
+import { toolPath, toolsFor } from '../data/tools';
+import { useRole } from '../lib/useRole';
 import { usePageTitle } from './usePageTitle';
 
 const principles = [
@@ -21,6 +23,9 @@ const features = [
 
 export function Home() {
   usePageTitle('');
+  const [role, setRole] = useRole();
+  const mine = roles.find((r) => r.id === role);
+  const tool = mine ? toolsFor(mine.id).find((t) => t.id !== 'component-picker') : undefined;
   return (
     <div className="max-w-6xl">
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-700 via-primary-800 to-gray-900 px-6 py-14 text-white sm:px-12">
@@ -43,22 +48,60 @@ export function Home() {
         </div>
       </section>
 
-      <section aria-labelledby="principles" className="mt-16">
-        <h2 id="principles" className="text-2xl font-bold tracking-tight">
-          The four principles
+
+      <section aria-labelledby="start-here" className="mt-12">
+        <h2 id="start-here" className="text-2xl font-bold tracking-tight">
+          {mine ? `Your next steps as ${mine.name === 'QA' ? 'QA' : `a ${mine.name.toLowerCase()} specialist`}` : 'Start here: what’s your role?'}
         </h2>
-        <p className="mt-2 max-w-3xl text-muted">WCAG groups its success criteria under four principles. Every page on this site maps back to them.</p>
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {principles.map((p, i) => (
-            <li key={p.title} className="surface p-5">
-              <span className="font-mono text-sm text-primary-700 dark:text-primary-300" aria-hidden="true">
-                0{i + 1}
-              </span>
-              <h3 className="mt-1 font-semibold">{p.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-muted">{p.body}</p>
-            </li>
-          ))}
-        </ul>
+        {mine ? (
+          <>
+            <p className="mt-2 max-w-3xl text-muted">
+              Component pages now show the sections you need first. You can switch back to every section at the top of any component page.
+            </p>
+            <ol className="mt-6 grid gap-4 sm:grid-cols-3">
+              {[
+                { to: `/roles/${mine.id}`, title: `Read the ${mine.name} guide`, body: `What you own, and a ${mine.checklist.length}-point review checklist.` },
+                { to: '/tools/component-picker', title: 'Pick a component', body: 'Answer a question or two to find the right one, then open its page.' },
+                ...(tool ? [{ to: toolPath(tool.id), title: `Try: ${tool.name}`, body: tool.why[mine.id] ?? tool.description }] : []),
+              ].map((s, i) => (
+                <li key={s.to}>
+                  <Link to={s.to} className="surface group flex h-full flex-col p-5 transition hover:shadow-md focus-ring">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-primary-700 dark:text-primary-300">Step {i + 1}</span>
+                    <span className="mt-1 text-lg font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">{s.title}</span>
+                    <span className="mt-2 text-sm leading-6 text-muted">{s.body}</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-4 text-sm">
+              Not a {mine.name === 'QA' ? 'QA' : mine.name.toLowerCase()} specialist?{' '}
+              <button type="button" className="link" onClick={() => setRole(null)}>
+                Choose a different role
+              </button>
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="mt-2 max-w-3xl text-muted">
+              Pick the work you do. We’ll open your guide, and component pages will show the sections you need instead of all of them. You can change this at any time.
+            </p>
+            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {roles.map((r) => (
+                <li key={r.id}>
+                  <Link
+                    to={`/roles/${r.id}`}
+                    onClick={() => setRole(r.id)}
+                    className="surface group flex h-full flex-col p-5 transition hover:shadow-md focus-ring"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-wide text-primary-700 dark:text-primary-300">{r.short}</span>
+                    <span className="mt-1 text-lg font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">I work on {r.name === 'QA' ? 'QA' : r.name.toLowerCase()}</span>
+                    <span className="mt-2 text-sm leading-6 text-muted">{r.owns.slice(0, 3).join(' · ')}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </section>
 
       <section aria-labelledby="features" className="mt-16">
@@ -80,23 +123,6 @@ export function Home() {
         </ul>
       </section>
 
-      <section aria-labelledby="roles" className="mt-16">
-        <h2 id="roles" className="text-2xl font-bold tracking-tight">
-          Guides for your team
-        </h2>
-        <p className="mt-2 max-w-3xl text-muted">Accessibility is shared work. Each guide lists what one role owns, a review checklist, and their part in every component.</p>
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {roles.map((r) => (
-            <li key={r.id}>
-              <Link to={`/roles/${r.id}`} className="surface group flex h-full flex-col p-5 transition hover:shadow-md focus-ring">
-                <span className="text-xs font-semibold uppercase tracking-wide text-primary-700 dark:text-primary-300">{r.short}</span>
-                <span className="mt-1 text-lg font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">{r.name} guide</span>
-                <span className="mt-2 text-sm leading-6 text-muted">{r.owns.slice(0, 3).join(' · ')}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
 
       <section aria-labelledby="start" className="mt-16 grid gap-8 lg:grid-cols-2">
         <div>
@@ -129,6 +155,24 @@ export function Home() {
             ))}
           </ul>
         </div>
+      </section>
+
+      <section aria-labelledby="principles" className="mt-16">
+        <h2 id="principles" className="text-2xl font-bold tracking-tight">
+          The four principles
+        </h2>
+        <p className="mt-2 max-w-3xl text-muted">WCAG groups its success criteria under four principles. Every page on this site maps back to them.</p>
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {principles.map((p, i) => (
+            <li key={p.title} className="surface p-5">
+              <span className="font-mono text-sm text-primary-700 dark:text-primary-300" aria-hidden="true">
+                0{i + 1}
+              </span>
+              <h3 className="mt-1 font-semibold">{p.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted">{p.body}</p>
+            </li>
+          ))}
+        </ul>
       </section>
     </div>
   );

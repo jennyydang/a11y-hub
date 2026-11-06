@@ -12,11 +12,13 @@ import { cx } from '../ui';
 import { NotFound } from './NotFound';
 import { toolPath, toolsFor } from '../data/tools';
 import { PageHeader } from './PageHeader';
+import { useRole } from '../lib/useRole';
 import { usePageTitle } from './usePageTitle';
 
 export function RolePage() {
   const { role = '' } = useParams();
   const guide = findRole(role);
+  const [myRole, setMyRole] = useRole();
   usePageTitle(guide ? `${guide.name} guide` : 'Not found');
   if (!guide) return <NotFound />;
   const sheet = guide.id;
@@ -47,6 +49,21 @@ export function RolePage() {
         }
       >
         <p>{guide.summary}</p>
+        <p className="mt-3 text-base">
+          {myRole === guide.id ? (
+            <>
+              <span className="font-semibold text-gray-900 dark:text-gray-50">This is your role.</span> Component pages show the {guide.name} sections first.{' '}
+              <button type="button" className="link" onClick={() => setMyRole(null)}>
+                Show every section instead
+              </button>
+            </>
+          ) : (
+            <button type="button" className="link font-semibold" onClick={() => setMyRole(guide.id)}>
+              Make {guide.name} my role
+              <span className="font-normal text-muted"> (component pages will show your sections first)</span>
+            </button>
+          )}
+        </p>
       </PageHeader>
 
       <div className="space-y-12">
@@ -94,15 +111,21 @@ export function RolePage() {
           title="Your part in each component"
           intro={
             <p>
-              Each component has a handoff worksheet with a {guide.name} tab listing exactly what you need to {WORKSHEET_ASK[sheet]}. Open one when you work on that component.
+              Each component has a handoff worksheet with a {guide.name} tab listing exactly what you need to {WORKSHEET_ASK[sheet]}. Open a category to find your part in each component.
             </p>
           }
         >
-          <div className="space-y-8">
+          <div className="space-y-2">
             {categories.map((cat) => (
-              <div key={cat}>
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">{cat}</h3>
-                <ul className="surface divide-y divide-gray-100 dark:divide-gray-800">
+              <details key={cat} className="surface group">
+                <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg px-4 py-3 font-semibold focus-ring [&::-webkit-details-marker]:hidden">
+                  <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 flex-none transition-transform group-open:rotate-90">
+                    <path fillRule="evenodd" d="M7.2 14.8a.75.75 0 0 1 0-1.06L10.94 10 7.2 6.26a.75.75 0 1 1 1.06-1.06l4.27 4.27a.75.75 0 0 1 0 1.06L8.26 14.8a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
+                  </svg>
+                  <span className="flex-1">{cat}</span>
+                  <span className="text-sm font-normal text-muted">{byCategory(cat).length} components</span>
+                </summary>
+                <ul className="divide-y divide-gray-100 border-t border-gray-100 dark:divide-gray-800 dark:border-gray-800">
                   {byCategory(cat).map((c) => (
                     <li key={c.slug} className="grid gap-1 p-4 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4">
                       <Link to={`/components/${c.slug}`} className="link h-fit text-sm">
@@ -115,7 +138,7 @@ export function RolePage() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </details>
             ))}
           </div>
         </Section>
