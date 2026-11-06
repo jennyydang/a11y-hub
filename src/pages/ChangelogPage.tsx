@@ -4,6 +4,7 @@ import { usePageTitle } from './usePageTitle';
 
 /** Newest first. Add an entry whenever guidance, a page or a tool changes. */
 const CHANGES: { date: string; title: string; detail: string; to?: string }[] = [
+  { date: '2026-11-06', title: 'Subtle motion', detail: 'Pages fade in, cards lift on hover, focus rings settle into place and panels ease open. All of it turns off when your device is set to reduce motion.', to: '/foundations/motion' },
   { date: '2026-11-06', title: 'Common problems and fixes', detail: 'Search by what you noticed, like “I can’t see where I am when I press Tab”, and get the cause and fix.', to: '/fixes' },
   { date: '2026-11-06', title: 'Tools for writers, designers and developers', detail: 'Social post checker, plain language checker, email and document templates, palette contrast grid and an automated test kit.', to: '/tools' },
   { date: '2026-11-06', title: 'Term tips and short versions', detail: 'Jargon is underlined with a plain-language tip, and every component and foundation page starts with the three rules that matter most.' },

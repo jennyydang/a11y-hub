@@ -66,7 +66,7 @@ function NavGroup({
           {count !== undefined && <span className="text-xs font-normal normal-case tracking-normal text-muted">{count}</span>}
         </button>
       </h2>
-      <div id={panel} hidden={!open} className={cx('mt-0.5', nested ? 'pl-4' : 'pl-3')}>
+      <div id={panel} hidden={!open} className={cx('reveal mt-0.5', nested ? 'pl-4' : 'pl-3')}>
         {children}
       </div>
     </div>
@@ -334,7 +334,9 @@ export function Layout() {
           </nav>
         )}
         <main id="main" ref={mainRef} tabIndex={-1} className="min-w-0 flex-1 px-4 py-8 outline-none sm:px-8 lg:px-12 lg:py-12">
-          <Outlet />
+          <div key={location.pathname} className="page-enter">
+            <Outlet />
+          </div>
         </main>
       </div>
       <footer className="border-t border-gray-200/80 px-4 py-8 text-center text-sm text-muted dark:border-gray-800">

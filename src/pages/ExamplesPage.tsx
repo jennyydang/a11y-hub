@@ -53,7 +53,7 @@ export function ExamplesIndex() {
       <ul className="grid gap-5 sm:grid-cols-2">
         {examples.map((e) => (
           <li key={e.id}>
-            <Link to={`/examples/${e.id}`} className="surface group flex h-full flex-col overflow-hidden transition hover:shadow-md focus-ring">
+            <Link to={`/examples/${e.id}`} className="surface group flex h-full flex-col overflow-hidden focus-ring">
               <Thumbnail id={e.id} />
               <span className="flex flex-1 flex-col p-5">
                 <span className="text-lg font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">{e.name}</span>
@@ -163,7 +163,7 @@ export function ExamplePage() {
         {next && (
           <Link to={`/examples/${next.id}`} className="link">
             {next.name}
-            <span aria-hidden="true"> →</span>
+            <span aria-hidden="true" className="nudge inline-block">&nbsp;→</span>
           </Link>
         )}
       </nav>

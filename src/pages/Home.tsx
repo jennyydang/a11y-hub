@@ -64,7 +64,7 @@ export function Home() {
                 ...(tool ? [{ to: toolPath(tool.id), title: `Try: ${tool.name}`, body: tool.why[mine.id] ?? tool.description }] : []),
               ].map((s, i) => (
                 <li key={s.to}>
-                  <Link to={s.to} className="surface group flex h-full flex-col p-5 transition hover:shadow-md focus-ring">
+                  <Link to={s.to} className="surface group flex h-full flex-col p-5 focus-ring">
                     <span className="text-xs font-semibold uppercase tracking-wide text-primary-700 dark:text-primary-300">Step {i + 1}</span>
                     <span className="mt-1 text-lg font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">{s.title}</span>
                     <span className="mt-2 text-sm leading-6 text-muted">{s.body}</span>
@@ -84,7 +84,7 @@ export function Home() {
             <Link
               to="/basics"
               onClick={() => setRole(null)}
-              className="surface group mt-6 flex flex-wrap items-center justify-between gap-4 p-5 ring-2 ring-primary-200 transition hover:shadow-md focus-ring dark:ring-primary-800"
+              className="surface group mt-6 flex flex-wrap items-center justify-between gap-4 p-5 ring-2 ring-primary-200 focus-ring dark:ring-primary-800"
             >
               <span className="max-w-2xl">
                 <span className="block text-lg font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">I write, publish or market things</span>
@@ -93,7 +93,7 @@ export function Home() {
                 </span>
               </span>
               <span className="text-sm font-semibold text-primary-700 dark:text-primary-300">
-                Start with the basics <span aria-hidden="true">→</span>
+                Start with the basics <span aria-hidden="true" className="nudge inline-block">→</span>
               </span>
             </Link>
             <p className="mt-8 max-w-3xl text-muted">
@@ -106,7 +106,7 @@ export function Home() {
                   <Link
                     to={`/roles/${r.id}`}
                     onClick={() => setRole(r.id)}
-                    className="surface group flex h-full flex-col p-5 transition hover:shadow-md focus-ring"
+                    className="surface group flex h-full flex-col p-5 focus-ring"
                   >
                     <span className="text-xs font-semibold uppercase tracking-wide text-primary-700 dark:text-primary-300">{r.short}</span>
                     <span className="mt-1 text-lg font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">I work on {r.name === 'QA' ? 'QA' : r.name.toLowerCase()}</span>
@@ -163,7 +163,7 @@ export function Home() {
               <li key={f.slug}>
                 <Link to={`/foundations/${f.slug}`} className="flex items-center justify-between rounded-md px-2 py-3 font-medium hover:bg-gray-100 focus-ring dark:hover:bg-gray-800">
                   {f.name}
-                  <span aria-hidden="true">→</span>
+                  <span aria-hidden="true" className="nudge inline-block">→</span>
                 </Link>
               </li>
             ))}

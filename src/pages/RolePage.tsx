@@ -89,7 +89,7 @@ export function RolePage() {
           <ul className="grid gap-4 sm:grid-cols-2">
             {toolsFor(guide.id).map((t) => (
               <li key={t.id}>
-                <Link to={toolPath(t.id)} className="surface group flex h-full flex-col p-5 transition hover:shadow-md focus-ring">
+                <Link to={toolPath(t.id)} className="surface group flex h-full flex-col p-5 focus-ring">
                   <span className="font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">{t.name}</span>
                   <span className="mt-1 text-sm leading-6 text-muted">{t.why[guide.id] ?? t.description}</span>
                 </Link>
