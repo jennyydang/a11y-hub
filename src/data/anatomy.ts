@@ -708,4 +708,46 @@ export const anatomy: Record<string, Anatomy> = {
       { state: 'Focused', looks: 'Ring around the focused star', announced: 'The star’s name and state' },
     ],
   },
+  'table-of-contents': {
+    parts: [
+      { name: 'Heading', required: true, note: '“Contents”, also used to name the nav.' },
+      { name: 'Links', required: true, note: 'One per section, matching the heading text.' },
+      { name: 'Current marker', required: false, note: 'aria-current on the section in view, for sticky lists.' },
+    ],
+    states: [
+      { state: 'Default', looks: 'A short list of links', announced: '“Contents, navigation, list, 3 items”' },
+      { state: 'After a jump', looks: 'Focus ring on the section heading', announced: '“Getting there, heading level 2”' },
+    ],
+  },
+  'summary-list': {
+    parts: [
+      { name: 'Key', required: true, note: '<dt>, the question or property.' },
+      { name: 'Value', required: true, note: '<dd>, the answer.' },
+      { name: 'Action', required: false, note: 'A Change link with hidden context.' },
+    ],
+    states: [{ state: 'Default', looks: 'Rows of label, value and Change', announced: '“Change date of birth, link”' }],
+  },
+  spinner: {
+    parts: [
+      { name: 'Spinner icon', required: true, note: 'aria-hidden; stops for reduced motion.' },
+      { name: 'Visible text', required: true, note: '“Saving…” on the button.' },
+      { name: 'Status message', required: true, note: 'role="status", present from page load.' },
+    ],
+    states: [
+      { state: 'Idle', looks: 'Button with its label', announced: '“Save route, button”' },
+      { state: 'Busy', looks: 'Spinner and “Saving…”', announced: '“Saving your route”' },
+      { state: 'Done', looks: 'Label returns, message shown', announced: '“Route saved”' },
+    ],
+  },
+  disclosure: {
+    parts: [
+      { name: 'Button', required: true, note: 'With aria-expanded and a label that says what appears.' },
+      { name: 'Chevron', required: false, note: 'Decorative; flips when open.' },
+      { name: 'Content', required: true, note: 'hidden while closed.' },
+    ],
+    states: [
+      { state: 'Collapsed', looks: 'Chevron down, “Show 3 more trails”', announced: '“…button, collapsed”' },
+      { state: 'Expanded', looks: 'Content shown, “Show fewer trails”', announced: '“…button, expanded”' },
+    ],
+  },
 };

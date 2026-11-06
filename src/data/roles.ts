@@ -436,6 +436,30 @@ export const componentRoles: Record<string, Record<RoleId, string[]>> = {
     frontend: ['Use five native radios, visually hidden, with aria-hidden star icons.'],
     qa: ['Check arrow keys work and each rating is announced “of 5”.'],
   },
+  'table-of-contents': {
+    content: ['Make each link match its section heading.'],
+    design: ['Place it after the intro; keep it to two levels.'],
+    frontend: ['Use a labelled nav with real in-page links; headings take focus with tabindex="-1".'],
+    qa: ['Check focus moves to the section after a jump.'],
+  },
+  'summary-list': {
+    content: ['Reuse the original question wording and write hidden text for each Change link.'],
+    design: ['Stack rows on small screens and let long values wrap.'],
+    frontend: ['Use dl, dt and dd, with visually hidden context in links.'],
+    qa: ['Check every Change link is unique in a links list.'],
+  },
+  spinner: {
+    content: ['Write the busy and done messages.'],
+    design: ['Pair the spinner with words, and stop it for reduced motion.'],
+    frontend: ['Hide the icon, announce with an existing status region, and use aria-disabled while busy.'],
+    qa: ['Check start, finish and failure are all announced.'],
+  },
+  disclosure: {
+    content: ['Write button labels that say what appears, like “Show 3 more trails”.'],
+    design: ['Show the state with the chevron and the label.'],
+    frontend: ['Use a button with aria-expanded and aria-controls; move focus to new items.'],
+    qa: ['Check the state is announced and hidden content can’t be tabbed to.'],
+  },
   tooltip: {
     content: ['Keep tooltip text to one short sentence. Never put essential information only in a tooltip.'],
     design: ['Show it on hover and focus, and keep it open while the pointer is over it.'],

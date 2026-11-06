@@ -1068,6 +1068,70 @@ Narrator: Start at the visitor centre car park.
   .stars label:has(input:checked) svg { fill: #f59e0b; }
   .stars input:focus-visible + svg { outline: 2px solid #2563eb; }
 </style>`,
+  'table-of-contents': `<nav aria-labelledby="toc-title">
+  <h2 id="toc-title">Contents</h2>
+  <ol>
+    <li><a href="#getting-there">Getting there</a></li>
+    <li><a href="#the-route">The route</a></li>
+    <li><a href="#facilities">Facilities</a></li>
+  </ol>
+</nav>
+<h2 id="getting-there" tabindex="-1">Getting there</h2>
+
+<style>
+  h2[id] { scroll-margin-top: 5rem; }
+</style>`,
+  'summary-list': `<dl class="summary-list">
+  <div>
+    <dt>Name</dt>
+    <dd>Amara Okafor</dd>
+    <dd><a href="/details/name">Change<span class="sr-only"> name</span></a></dd>
+  </div>
+  <div>
+    <dt>Date of birth</dt>
+    <dd>27 March 1990</dd>
+    <dd><a href="/details/dob">Change<span class="sr-only"> date of birth</span></a></dd>
+  </div>
+</dl>`,
+  spinner: `<button type="button" class="save">Save route</button>
+<p role="status"></p>
+
+<script>
+  const btn = document.querySelector('.save');
+  const status = document.querySelector('[role=status]');
+  btn.addEventListener('click', async () => {
+    if (btn.getAttribute('aria-disabled') === 'true') return;
+    btn.setAttribute('aria-disabled', 'true');
+    btn.innerHTML = '<svg aria-hidden="true" class="spin">…</svg> Saving…';
+    status.textContent = 'Saving your route';
+    await saveRoute();
+    btn.removeAttribute('aria-disabled');
+    btn.textContent = 'Save route';
+    status.textContent = 'Route saved';
+  });
+</script>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) { .spin { animation: spin 1s linear infinite; } }
+</style>`,
+  disclosure: `<ul>…first 3 trails…</ul>
+<ul id="more-trails" hidden>
+  <li><a href="/trails/heron-marsh">Heron marsh</a></li>
+  …
+</ul>
+<button type="button" aria-expanded="false" aria-controls="more-trails">Show 3 more trails</button>
+
+<script>
+  const btn = document.querySelector('[aria-controls=more-trails]');
+  const more = document.getElementById('more-trails');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', open);
+    more.hidden = !open;
+    btn.textContent = open ? 'Show fewer trails' : 'Show 3 more trails';
+    if (open) more.querySelector('a').focus();
+  });
+</script>`,
   skeleton: `<button type="button" id="load">Load files</button>
 
 <!-- In the page from the start, so changes to it are announced -->

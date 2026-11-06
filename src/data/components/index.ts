@@ -52,6 +52,10 @@ import { pageHeader } from './page-header';
 import { pageFooter } from './page-footer';
 import { fieldsetSpec } from './fieldset';
 import { starRating } from './star-rating';
+import { tableOfContents } from './table-of-contents';
+import { summaryList } from './summary-list';
+import { spinner } from './spinner';
+import { disclosure } from './disclosure';
 
 import { buttonVariants } from '../variants/button';
 import { linkVariants } from '../variants/link';
@@ -102,11 +106,13 @@ export const components: ComponentSpec[] = [
   breadcrumbs,
   backLink,
   pagination,
+  tableOfContents,
   stepper,
   skipLink,
   pageFooter,
   tabs,
   accordion,
+  disclosure,
   textInput,
   password,
   searchField,
@@ -135,6 +141,7 @@ export const components: ComponentSpec[] = [
   alert,
   cookieBanner,
   progress,
+  spinner,
   skeleton,
   badge,
   image,
@@ -144,6 +151,7 @@ export const components: ComponentSpec[] = [
   card,
   emptyState,
   table,
+  summaryList,
   dataGrid,
   treeView,
 ];

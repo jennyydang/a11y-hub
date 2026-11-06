@@ -703,6 +703,28 @@ export const worksheets: Record<string, Worksheet> = {
     ],
     design: [target('Each star'), notColorOnly('selected stars'), focus('The focused star'), { text: 'Selected stars have a 3:1 outline.', check: 'Filled and outlined stars both meet non-text contrast.' }],
   },
+  'table-of-contents': {
+    content: [{ id: 'links', label: 'Link text', target: '<a>', kind: 'link', required: true, multiline: true, guidance: 'One per line, matching each section heading exactly.', good: 'Getting there\nThe route\nFacilities' }],
+    design: [{ text: 'It sits after the intro, before the first section.', check: 'Or in a sticky sidebar on wide screens.' }, { text: 'A jump doesn’t hide the heading under a sticky header.', check: 'scroll-margin-top on headings.' }, focus('Contents links')],
+  },
+  'summary-list': {
+    content: [
+      { id: 'keys', label: 'Labels', target: '<dt>', kind: 'label', required: true, multiline: true, guidance: 'Short, matching the original questions.', good: 'Name\nDate of birth\nEmail address' },
+      { id: 'change', label: 'Change link hidden text', target: 'Hidden text', kind: 'name', required: true, guidance: 'The label in lowercase after “Change”.', good: 'Change date of birth', bad: 'Change' },
+    ],
+    design: [{ text: 'Rows stack on small screens.', check: 'At 320px, label above value, no sideways scroll.' }, reflow],
+  },
+  spinner: {
+    content: [
+      { id: 'busy', label: 'Busy message', target: 'role="status"', kind: 'message', required: true, guidance: 'What’s happening, in the present tense.', good: 'Saving your route' },
+      { id: 'done', label: 'Done message', target: 'role="status"', kind: 'message', required: true, guidance: 'What happened.', good: 'Route saved' },
+    ],
+    design: [motion, { text: 'The spinner has 3:1 contrast.', check: 'Against the button or page background.' }, { text: 'It appears after about a second.', check: 'No flash on fast responses.' }],
+  },
+  disclosure: {
+    content: [{ id: 'label', label: 'Button labels', target: '<button>', kind: 'name', required: true, multiline: true, guidance: 'Two lines: closed, open. Say what appears.', good: 'Show 3 more trails\nShow fewer trails', bad: 'More\nLess' }],
+    design: [{ text: 'Open and closed look different.', check: 'Chevron direction and label both change.' }, focus('The button'), target('The button')],
+  },
   table: {
     content: [
       { id: 'caption', label: 'Table caption', target: '<caption>', kind: 'heading', required: true, guidance: 'Names the table. Screen readers announce it on entry.', good: 'Invoices due in March 2026' },

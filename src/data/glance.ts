@@ -59,5 +59,9 @@ export const glance: Record<string, Glance> = {
   footer: { does: 'Holds secondary links, help, contact and legal information on every page.', instead: [{ slug: 'site-navigation', when: 'the links are main sections' }] },
   fieldset: { does: 'Groups related fields under one question.', instead: [{ slug: 'radio-group', when: 'the group is a set of radios' }] },
   'star-rating': { does: 'Lets people score something from 1 to 5.', instead: [{ slug: 'radio-group', when: 'the options are words, not a score' }, { slug: 'segmented-control', when: 'it switches a view' }] },
+  'table-of-contents': { does: 'Lists the sections of a long page as links.', instead: [{ slug: 'site-navigation', when: 'the links go to other pages' }, { slug: 'tabs', when: 'only one section should show at a time' }] },
+  'summary-list': { does: 'Shows labels with values, like answers to check.', instead: [{ slug: 'table', when: 'people compare several items' }] },
+  spinner: { does: 'Shows something is happening during a short wait.', instead: [{ slug: 'progress', when: 'you know how far along it is' }, { slug: 'skeleton', when: 'content is loading into a known layout' }] },
+  disclosure: { does: 'Shows or hides one block of content with one button.', instead: [{ slug: 'accordion', when: 'there are several sections with headings' }, { slug: 'drawer', when: 'the content is a side panel' }] },
   table: { does: 'Shows data in rows and columns so people can compare values.', instead: [{ slug: 'image', when: 'the point is a trend, not exact values (use a chart with a description)' }] },
 };

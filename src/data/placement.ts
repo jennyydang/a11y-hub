@@ -606,6 +606,42 @@ export const placement: Record<string, Placement> = {
     ],
     dontUse: ['For detailed feedback. Ask a question with a text field.'],
   },
+  'table-of-contents': {
+    regions: ['Main content', 'Sidebar'],
+    where: ['After the h1 and intro, before the first section.', 'On wide screens, it can stick in a sidebar beside the content.'],
+    why: [
+      { point: 'People scan pages rather than read them; a contents list shows the shape of the page at a glance.', source: SRC.fPattern },
+      { point: 'In-page links let people skip to what they need.', source: SRC.wcagBypass },
+    ],
+    dontUse: ['On short pages with two or fewer sections.'],
+  },
+  'summary-list': {
+    regions: ['Main content', 'Forms'],
+    where: ['On “Check your answers” pages, before the submit button.', 'Grouped under headings when there are many answers.'],
+    why: [
+      { point: 'Labels next to values read as pairs.', source: SRC.proximity },
+      { point: 'Reviewing before submitting reduces errors.', source: SRC.formErrors },
+    ],
+    dontUse: ['To compare several items. Use a table.'],
+  },
+  spinner: {
+    regions: ['Main content', 'Forms'],
+    where: ['Inside the button that started the action, or where the content will appear.'],
+    why: [
+      { point: 'Any wait over a second needs a sign that something is happening.', source: SRC.progress },
+      { point: 'Responses under about 400ms feel instant, so don’t show a spinner for them.', source: SRC.doherty },
+    ],
+    dontUse: ['For waits over 10 seconds. Show progress.'],
+  },
+  disclosure: {
+    regions: ['Main content', 'Forms'],
+    where: ['Directly after the content it reveals, or just below the short version.'],
+    why: [
+      { point: 'Revealing detail only when asked keeps the page easy to scan.', source: SRC.hick },
+      { point: 'Content stays in the page flow, where people expect it.', source: SRC.govAccordion },
+    ],
+    dontUse: ['For content most people need. Show it.'],
+  },
   table: {
     regions: ['Main content'],
     where: ['In the main content, with a caption or heading above.', 'Right-align numbers so they line up for comparison.'],

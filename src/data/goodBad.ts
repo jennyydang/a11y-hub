@@ -17,6 +17,34 @@ export interface Pair {
 }
 
 export const goodBad: Record<string, Pair[]> = {
+  'table-of-contents': [
+    {
+      topic: 'Use real in-page links',
+      bad: { code: `<div class="toc">\n  <span onclick="scrollTo(0, 1200)">The route</span>\n</div>`, experience: 'Not focusable, and scrolling with a script leaves keyboard focus at the top of the page.' },
+      good: { code: `<nav aria-labelledby="toc">\n  <h2 id="toc">Contents</h2>\n  <ol><li><a href="#the-route">The route</a></li></ol>\n</nav>\n<h2 id="the-route" tabindex="-1">The route</h2>`, experience: '“The route, link.” After Enter: “The route, heading level 2”, and Tab continues from there.' },
+    },
+  ],
+  'summary-list': [
+    {
+      topic: 'Make each Change link unique',
+      bad: { code: `<p><b>Name:</b> Amara Okafor <a href="/name">Change</a></p>\n<p><b>Email:</b> amara@example.com <a href="/email">Change</a></p>`, experience: 'A links list shows “Change, Change, Change” with no way to tell them apart.' },
+      good: { code: `<dl>\n  <div>\n    <dt>Name</dt><dd>Amara Okafor</dd>\n    <dd><a href="/name">Change<span class="sr-only"> name</span></a></dd>\n  </div>\n</dl>`, experience: '“Change name, link.” Each label is paired with its value.' },
+    },
+  ],
+  spinner: [
+    {
+      topic: 'Say what’s happening in words',
+      bad: { code: `<div class="spinner" role="img" aria-label="loading"></div>`, experience: '“Loading, image” is read only if people happen to land on it. Nothing announces when it’s done.' },
+      good: { code: `<button aria-disabled="true">\n  <svg aria-hidden="true" class="spin">…</svg> Saving…\n</button>\n<p role="status">Saving your route</p>`, experience: '“Saving your route”, then “Route saved”, without moving focus.' },
+    },
+  ],
+  disclosure: [
+    {
+      topic: 'Say whether it’s open',
+      bad: { code: `<a href="#" onclick="toggle()">More</a>\n<ul id="more" hidden>…</ul>`, experience: '“More, link.” Nothing says it expands, and new items appear somewhere unannounced.' },
+      good: { code: `<ul id="more" hidden>…</ul>\n<button type="button" aria-expanded="false" aria-controls="more">\n  Show 3 more trails\n</button>`, experience: '“Show 3 more trails, button, collapsed.” On open, focus moves to the first new trail.' },
+    },
+  ],
   header: [
     {
       topic: 'Use a real header and a named nav',
