@@ -7,9 +7,20 @@ import type { WcagRef } from '../data/types';
 import {
   DELIVERABLES,
   SEVERITIES,
+  SOURCES,
+  STATUSES,
   SUPPORT_OPTIONS,
   buildDoc,
   emptyProject,
+  isOutstanding,
+  issueRef,
+  lines,
+  normalizeProject,
+  ownerLabel,
+  responsibility,
+  type IssueOwner,
+  type IssueStatus,
+  type TestRecord,
   toHtml,
   toMarkdown,
   type AgencyProject,
@@ -29,7 +40,7 @@ const wcagList = (Object.values(WCAG) as WcagRef[]).filter((w) => w.level !== 'A
 function load(): AgencyProject {
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (saved && typeof saved === 'object') return { ...emptyProject(), ...saved };
+    if (saved && typeof saved === 'object') return normalizeProject(saved);
   } catch {
     /* ignore */
   }
@@ -108,6 +119,12 @@ function DocPreview({ blocks }: { blocks: Block[] }) {
           }
           case 'p':
             return <p key={i}>{b.text}</p>;
+          case 'code':
+            return (
+              <pre key={i} className="overflow-x-auto whitespace-pre-wrap rounded-lg bg-gray-50 p-3 font-mono text-xs ring-1 ring-gray-200 dark:bg-gray-800/60 dark:ring-gray-700">
+                <code>{b.text.trim()}</code>
+              </pre>
+            );
           case 'note':
             return (
               <p key={i} className="border-l-4 border-primary-600 bg-primary-50 px-3 py-2 dark:border-primary-300 dark:bg-primary-900/30">
@@ -174,9 +191,29 @@ function DocPreview({ blocks }: { blocks: Block[] }) {
   );
 }
 
-const blankFinding = (): Omit<Finding, 'id'> => ({ page: '', issue: '', component: '', wcag: '', severity: 'major', recommendation: '' });
+type NewFinding = Omit<Finding, 'id' | 'n' | 'status' | 'retestDate' | 'retestNote'>;
+const blankFinding = (): NewFinding => ({ source: 'delivery', owner: 'agency', page: '', issue: '', component: '', wcag: '', severity: 'major', recommendation: '' });
 
-function FindingForm({ onAdd }: { onAdd: (f: Finding) => void }) {
+function Radios<T extends string>({ legend, name, value, options, onChange }: { legend: string; name: string; value: T; options: { id: T; label: string; hint?: string }[]; onChange: (v: T) => void }) {
+  return (
+    <fieldset className="space-y-1">
+      <legend className="text-sm font-semibold">{legend}</legend>
+      <div className="space-y-1">
+        {options.map((o) => (
+          <label key={o.id} className="flex items-start gap-2 text-sm">
+            <input type="radio" name={name} className={cx(check, 'mt-1')} checked={value === o.id} onChange={() => onChange(o.id)} />
+            <span>
+              <span className="font-medium">{o.label}</span>
+              {o.hint && <span className="text-muted"> {o.hint}</span>}
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+function FindingForm({ onAdd, owners }: { onAdd: (f: NewFinding) => void; owners: { id: IssueOwner; label: string; hint?: string }[] }) {
   const [f, setF] = useState(blankFinding);
   const [error, setError] = useState('');
   const issueRef = useRef<HTMLTextAreaElement>(null);
@@ -193,15 +230,19 @@ function FindingForm({ onAdd }: { onAdd: (f: Finding) => void }) {
           issueRef.current?.focus();
           return;
         }
-        onAdd({ ...f, id: `${Date.now()}` });
-        setF((x) => ({ ...blankFinding(), page: x.page }));
+        onAdd(f);
+        setF((x) => ({ ...blankFinding(), page: x.page, source: x.source, owner: x.owner }));
         setError('');
         issueRef.current?.focus();
       }}
     >
       <h3 id={`${id}-title`} className="font-semibold">
-        Add a finding
+        Log an issue
       </h3>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Radios legend="Found during" name={`${id}-src`} value={f.source} options={SOURCES} onChange={(v) => set('source', v)} />
+        <Radios legend="Owner" name={`${id}-own`} value={f.owner} options={owners} onChange={(v) => set('owner', v)} />
+      </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Text label="Page or URL" value={f.page} onChange={(v) => set('page', v)} />
         <div className="space-y-1">
@@ -259,23 +300,11 @@ function FindingForm({ onAdd }: { onAdd: (f: Finding) => void }) {
             ))}
           </select>
         </div>
-        <fieldset className="space-y-1">
-          <legend className="text-sm font-semibold">Severity</legend>
-          <div className="space-y-1">
-            {SEVERITIES.map((s) => (
-              <label key={s.id} className="flex items-start gap-2 text-sm">
-                <input type="radio" name={`${id}-sev`} className={cx(check, 'mt-1')} checked={f.severity === s.id} onChange={() => set('severity', s.id as Severity)} />
-                <span>
-                  <span className="font-medium">{s.label}</span> <span className="text-muted">{s.hint}</span>
-                </span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        <Radios legend="Severity" name={`${id}-sev`} value={f.severity} options={SEVERITIES} onChange={(v) => set('severity', v as Severity)} />
       </div>
-      <Text label="Recommendation" value={f.recommendation} onChange={(v) => set('recommendation', v)} hint="How the redesign should fix it. Link to the component spec where one exists." />
+      <Text label="Remediation" value={f.recommendation} onChange={(v) => set('recommendation', v)} hint="How to fix it. Point to the component documentation where one exists." />
       <Button as="button" type="submit" size="sm" className="btn-bold-primary">
-        Add finding
+        Add to the log
       </Button>
     </form>
   );
@@ -283,8 +312,8 @@ function FindingForm({ onAdd }: { onAdd: (f: Finding) => void }) {
 
 export function DeliverablesBuilder() {
   const [p, setP] = useState<AgencyProject>(load);
-  const [chosen, setChosen] = useState<DeliverableId[]>(DELIVERABLES.map((d) => d.id));
-  const [preview, setPreview] = useState<DeliverableId>('scope');
+  const [chosen, setChosen] = useState<DeliverableId[]>(DELIVERABLES.filter((d) => d.required).map((d) => d.id));
+  const [preview, setPreview] = useState<DeliverableId>('components');
   const [status, setStatus] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
   const previewId = useId();
@@ -304,6 +333,12 @@ export function DeliverablesBuilder() {
   };
   const toggleIn = <T,>(list: T[], v: T) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
   const addComponents = (slugs: string[]) => set('components', [...new Set([...p.components, ...slugs])]);
+  const pages = lines(p.pages);
+  const owners: { id: IssueOwner; label: string }[] = (['agency', 'client', 'shared'] as IssueOwner[]).map((o) => ({ id: o, label: ownerLabel(o, p) }));
+  const setTest = (key: string, patch: Partial<TestRecord>) =>
+    setP((x) => ({ ...x, tests: { ...x.tests, [key]: { automated: false, manual: false, date: '', ...(x.tests[key] as TestRecord | undefined), ...patch } } }));
+  const updateFinding = (id: string, patch: Partial<Finding>) => setP((x) => ({ ...x, findings: x.findings.map((f) => (f.id === id ? { ...f, ...patch } : f)) }));
+  const testedCount = [...p.components, ...pages.map((pg) => `page:${pg}`)].filter((k) => p.tests[k]?.automated && p.tests[k]?.manual).length;
   const docs = DELIVERABLES.filter((d) => chosen.includes(d.id)).map((d) => buildDoc(d.id, p));
   const current = buildDoc(preview, p);
   const name = fileSlug(p);
@@ -417,87 +452,188 @@ export function DeliverablesBuilder() {
 
       <Step
         n={3}
-        title="Baseline findings"
-        intro={
-          <p>
-            Optional. Log what’s wrong with the current site as you audit it. Findings feed the baseline audit report and the known limitations in the accessibility statement.
-          </p>
-        }
+        title="Test results"
+        intro={<p>Record which delivered components and templates have had automated and manual testing. Results feed the testing summary and the conformance summary. A component passes when it’s fully tested and has no outstanding issues.</p>}
       >
-        <FindingForm
-          onAdd={(f) => {
-            set('findings', [...p.findings, f]);
-            flash(`Finding added. ${p.findings.length + 1} recorded.`);
-          }}
-        />
-        {p.findings.length > 0 && (
+        {p.components.length + pages.length === 0 ? (
+          <p className="text-sm text-muted">Add components in step 2 and templates in step 1 to record their testing.</p>
+        ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <caption className="mb-2 text-left font-semibold">{p.findings.length} finding{p.findings.length === 1 ? '' : 's'} recorded</caption>
+              <caption className="mb-2 text-left font-semibold">
+                {testedCount} of {p.components.length + pages.length} fully tested
+              </caption>
               <thead>
                 <tr className="border-b border-gray-300 dark:border-gray-600">
-                  <th scope="col" className="py-2 pr-3">Severity</th>
-                  <th scope="col" className="py-2 pr-3">Page</th>
-                  <th scope="col" className="py-2 pr-3">Issue</th>
-                  <th scope="col" className="py-2 pr-3">WCAG</th>
-                  <th scope="col" className="py-2"><span className="sr-only">Actions</span></th>
+                  <th scope="col" className="py-2 pr-3">Component or template</th>
+                  <th scope="col" className="py-2 pr-3">Automated (axe-core)</th>
+                  <th scope="col" className="py-2 pr-3">Manual (keyboard, screen reader, zoom)</th>
+                  <th scope="col" className="py-2 pr-3">Date tested</th>
                 </tr>
               </thead>
               <tbody>
-                {p.findings.map((f, i) => (
-                  <tr key={f.id} className="border-b border-gray-100 align-top dark:border-gray-800">
-                    <td className="py-2 pr-3 font-medium">{SEVERITIES.find((s) => s.id === f.severity)?.label}</td>
-                    <td className="py-2 pr-3">{f.page || '—'}</td>
-                    <td className="py-2 pr-3">{f.issue}</td>
-                    <td className="py-2 pr-3">{f.wcag || '—'}</td>
-                    <td className="py-2">
-                      <button
-                        type="button"
-                        className="link"
-                        onClick={() => {
-                          set('findings', p.findings.filter((x) => x.id !== f.id));
-                          flash('Finding removed.');
-                        }}
-                      >
-                        Remove<span className="sr-only"> finding {i + 1}</span>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {[
+                  ...components.filter((c) => p.components.includes(c.slug)).map((c) => [c.slug, c.name] as const),
+                  ...pages.map((pg) => [`page:${pg}`, `${pg} (template)`] as const),
+                ].map(([key, label]) => {
+                  const t = p.tests[key] ?? { automated: false, manual: false, date: '' };
+                  return (
+                    <tr key={key} className="border-b border-gray-100 dark:border-gray-800">
+                      <th scope="row" className="py-2 pr-3 font-medium">
+                        {label}
+                      </th>
+                      <td className="py-2 pr-3">
+                        <input type="checkbox" className={check} aria-label={`Automated testing done: ${label}`} checked={t.automated} onChange={() => setTest(key, { automated: !t.automated })} />
+                      </td>
+                      <td className="py-2 pr-3">
+                        <input type="checkbox" className={check} aria-label={`Manual testing done: ${label}`} checked={t.manual} onChange={() => setTest(key, { manual: !t.manual })} />
+                      </td>
+                      <td className="py-2 pr-3">
+                        <input type="date" className={cx(field, 'w-auto py-1')} aria-label={`Date tested: ${label}`} value={t.date} onChange={(e) => setTest(key, { date: e.target.value })} />
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         )}
       </Step>
 
-      <Step n={4} title="Preview and export" intro={<p>Choose the documents to export. HTML files open in any browser and print to a clean PDF. Markdown pastes into Confluence, Notion, GitHub or Google Docs.</p>}>
-        <fieldset className="space-y-2">
-          <legend className="text-sm font-semibold">Documents to export</legend>
-          <ul className="grid gap-2 sm:grid-cols-2">
-            {DELIVERABLES.map((d) => (
-              <li key={d.id}>
-                <div className="surface flex h-full gap-3 p-3 text-sm">
-                  <input
-                    id={`${previewId}-${d.id}`}
-                    type="checkbox"
-                    className={cx(check, 'mt-0.5')}
-                    checked={chosen.includes(d.id)}
-                    onChange={() => setChosen(toggleIn(chosen, d.id))}
-                    aria-describedby={`${previewId}-${d.id}-desc`}
-                  />
-                  <div>
-                    <label htmlFor={`${previewId}-${d.id}`} className="block cursor-pointer font-semibold">
-                      {d.name}
-                    </label>
-                    <p id={`${previewId}-${d.id}-desc`} className="text-muted">
-                      <span className="font-medium">{d.when}.</span> {d.description}
-                    </p>
-                  </div>
-                </div>
-              </li>
+      <Step
+        n={4}
+        title="Issue log"
+        intro={
+          <p>
+            Log each defect, who owns it and where its fix stands. Issues from testing delivered work go into the issue and remediation log, testing summary and conformance summary. Issues from the
+            baseline audit of the current site go into the baseline audit report.
+          </p>
+        }
+      >
+        <div className="surface space-y-1 p-4 text-sm leading-6">
+          <p className="font-semibold">Who owns what</p>
+          <ul className="list-disc pl-5">
+            {responsibility(p).map((r) => (
+              <li key={r}>{r}</li>
             ))}
           </ul>
-        </fieldset>
+        </div>
+        <FindingForm
+          owners={owners}
+          onAdd={(f) => {
+            const n = Math.max(0, ...p.findings.map((x) => x.n)) + 1;
+            set('findings', [...p.findings, { ...f, id: `${Date.now()}`, n, status: 'open', retestDate: '', retestNote: '' }]);
+            flash(`A11Y-${String(n).padStart(3, '0')} added to the log.`);
+          }}
+        />
+        {p.findings.length > 0 && (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <caption className="mb-2 text-left font-semibold">
+                {p.findings.length} issue{p.findings.length === 1 ? '' : 's'} logged, {p.findings.filter((f) => f.source === 'delivery' && isOutstanding(f)).length} outstanding in delivered work
+              </caption>
+              <thead>
+                <tr className="border-b border-gray-300 dark:border-gray-600">
+                  <th scope="col" className="py-2 pr-3">Issue</th>
+                  <th scope="col" className="py-2 pr-3">Owner</th>
+                  <th scope="col" className="py-2 pr-3">Status</th>
+                  <th scope="col" className="py-2 pr-3">Retest</th>
+                  <th scope="col" className="py-2"><span className="sr-only">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {p.findings.map((f) => {
+                  const ref = issueRef(f);
+                  return (
+                    <tr key={f.id} className="border-b border-gray-100 align-top dark:border-gray-800">
+                      <th scope="row" className="max-w-xs py-2 pr-3 font-normal">
+                        <span className="block font-semibold">
+                          {ref} · {SEVERITIES.find((x) => x.id === f.severity)?.label}
+                          {f.source === 'baseline' && <span className="font-normal text-muted"> · baseline</span>}
+                        </span>
+                        {f.issue}
+                        <span className="block text-muted">{[f.page, components.find((c) => c.slug === f.component)?.name, f.wcag && `WCAG ${f.wcag}`].filter(Boolean).join(' · ')}</span>
+                      </th>
+                      <td className="py-2 pr-3">
+                        <select className={cx(field, 'w-auto py-1')} aria-label={`Owner of ${ref}`} value={f.owner} onChange={(e) => updateFinding(f.id, { owner: e.target.value as IssueOwner })}>
+                          {owners.map((o) => (
+                            <option key={o.id} value={o.id}>
+                              {o.label}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="py-2 pr-3">
+                        <select className={cx(field, 'w-auto py-1')} aria-label={`Status of ${ref}`} value={f.status} onChange={(e) => updateFinding(f.id, { status: e.target.value as IssueStatus })}>
+                          {STATUSES.map((st) => (
+                            <option key={st.id} value={st.id}>
+                              {st.label}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="space-y-1 py-2 pr-3">
+                        <input type="date" className={cx(field, 'w-auto py-1')} aria-label={`Retest date for ${ref}`} value={f.retestDate} onChange={(e) => updateFinding(f.id, { retestDate: e.target.value })} />
+                        <input className={cx(field, 'py-1')} aria-label={`Retest result for ${ref}`} placeholder="Retest result" value={f.retestNote} onChange={(e) => updateFinding(f.id, { retestNote: e.target.value })} />
+                      </td>
+                      <td className="py-2">
+                        <button
+                          type="button"
+                          className="link"
+                          onClick={() => {
+                            if (window.confirm(`Delete ${ref} from the log? To close an issue, set its status instead.`)) {
+                              set('findings', p.findings.filter((x) => x.id !== f.id));
+                              flash(`${ref} deleted.`);
+                            }
+                          }}
+                        >
+                          Delete<span className="sr-only"> {ref}</span>
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Step>
+
+      <Step n={5} title="Preview and export" intro={<p>Choose the documents to export. HTML files open in any browser and print to a clean PDF. Markdown pastes into Confluence, Notion, GitHub or Google Docs.</p>}>
+        {[
+          { title: 'Required at delivery', list: DELIVERABLES.filter((d) => d.required) },
+          { title: 'Supporting documents', list: DELIVERABLES.filter((d) => !d.required) },
+        ].map((g) => (
+          <fieldset key={g.title} className="space-y-2">
+            <legend className="text-sm font-semibold">
+              {g.title} <span className="font-normal text-muted">({g.list.filter((d) => chosen.includes(d.id)).length} of {g.list.length} chosen)</span>
+            </legend>
+            <ul className="grid gap-2 sm:grid-cols-2">
+              {g.list.map((d) => (
+                <li key={d.id}>
+                  <div className="surface flex h-full gap-3 p-3 text-sm">
+                    <input
+                      id={`${previewId}-${d.id}`}
+                      type="checkbox"
+                      className={cx(check, 'mt-0.5')}
+                      checked={chosen.includes(d.id)}
+                      onChange={() => setChosen(toggleIn(chosen, d.id))}
+                      aria-describedby={`${previewId}-${d.id}-desc`}
+                    />
+                    <div>
+                      <label htmlFor={`${previewId}-${d.id}`} className="block cursor-pointer font-semibold">
+                        {d.name}
+                      </label>
+                      <p id={`${previewId}-${d.id}-desc`} className="text-muted">
+                        {d.description}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </fieldset>
+        ))}
         <div className="flex flex-wrap gap-2">
           <Button
             className="btn-bold-primary"
@@ -531,10 +667,14 @@ export function DeliverablesBuilder() {
                 Preview
               </label>
               <select id={previewId} className={cx(field, 'w-auto')} value={preview} onChange={(e) => setPreview(e.target.value as DeliverableId)}>
-                {DELIVERABLES.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.name}
-                  </option>
+                {[true, false].map((req) => (
+                  <optgroup key={String(req)} label={req ? 'Required at delivery' : 'Supporting documents'}>
+                    {DELIVERABLES.filter((d) => d.required === req).map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
             </div>
@@ -591,7 +731,7 @@ export function DeliverablesBuilder() {
                 try {
                   const data = JSON.parse(await file.text());
                   if (data?.app !== 'a11y-hub' || data.kind !== 'agency-project') throw new Error('not ours');
-                  setP({ ...emptyProject(), ...data.project });
+                  setP(normalizeProject(data.project ?? {}));
                   flash(`Opened ${data.project?.project || data.project?.client || 'the project'}.`);
                 } catch {
                   flash('Couldn’t read that file. Choose a project file saved from this page.');

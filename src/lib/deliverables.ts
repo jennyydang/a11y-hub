@@ -1,25 +1,45 @@
+import { anatomy } from '../data/anatomy';
 import { components, findComponent } from '../data/components';
+import { glance } from '../data/glance';
+import { htmlExamples } from '../data/html';
 import { pageChecks } from '../data/pageChecks';
+import { worksheets } from '../data/requirements';
 import { roles } from '../data/roles';
 import type { ComponentSpec, WcagRef } from '../data/types';
 import { WCAG, wcagUrl } from '../data/wcag';
 
 /**
- * Agency deliverables: client-ready documents generated from a project scope
- * and the specs on this site. One document model renders to the on-page
- * preview, Markdown and standalone HTML (print to PDF).
+ * Agency deliverables: client-ready documents generated from a project scope,
+ * test results, the issue log and the specs on this site. One document model
+ * renders to the on-page preview, Markdown and standalone HTML (print to PDF).
  */
 
 export type Severity = 'blocker' | 'major' | 'minor';
+export type IssueSource = 'baseline' | 'delivery';
+export type IssueOwner = 'agency' | 'client' | 'shared';
+export type IssueStatus = 'open' | 'in-progress' | 'fixed' | 'verified' | 'retest-failed' | 'accepted';
 
 export interface Finding {
   id: string;
+  /** Sequential number, shown as A11Y-001. */
+  n: number;
+  source: IssueSource;
   page: string;
   issue: string;
   component: string;
   wcag: string;
   severity: Severity;
   recommendation: string;
+  owner: IssueOwner;
+  status: IssueStatus;
+  retestDate: string;
+  retestNote: string;
+}
+
+export interface TestRecord {
+  automated: boolean;
+  manual: boolean;
+  date: string;
 }
 
 export interface AgencyProject {
@@ -32,6 +52,8 @@ export interface AgencyProject {
   outOfScope: string;
   support: string[];
   components: string[];
+  /** Keyed by component slug, or `page:<template name>`. */
+  tests: Record<string, TestRecord>;
   findings: Finding[];
 }
 
@@ -52,6 +74,32 @@ export const SEVERITIES: { id: Severity; label: string; hint: string }[] = [
   { id: 'minor', label: 'Minor', hint: 'An annoyance that doesn’t stop the task.' },
 ];
 
+export const STATUSES: { id: IssueStatus; label: string; outstanding: boolean }[] = [
+  { id: 'open', label: 'Open', outstanding: true },
+  { id: 'in-progress', label: 'In progress', outstanding: true },
+  { id: 'fixed', label: 'Fixed, awaiting retest', outstanding: true },
+  { id: 'retest-failed', label: 'Retest failed', outstanding: true },
+  { id: 'verified', label: 'Retest passed (closed)', outstanding: false },
+  { id: 'accepted', label: 'Accepted as known limitation', outstanding: false },
+];
+
+export const SOURCES: { id: IssueSource; label: string }[] = [
+  { id: 'delivery', label: 'Testing of delivered work' },
+  { id: 'baseline', label: 'Baseline audit of the current site' },
+];
+
+export const ownerLabel = (o: IssueOwner, p: Pick<AgencyProject, 'agency' | 'client'>) =>
+  o === 'agency' ? or(p.agency, 'Agency') : o === 'client' ? or(p.client, 'Client') : 'Shared';
+export const statusLabel = (s: IssueStatus) => STATUSES.find((x) => x.id === s)?.label ?? s;
+export const isOutstanding = (f: Finding) => STATUSES.find((x) => x.id === f.status)?.outstanding ?? true;
+export const issueRef = (f: Finding) => `A11Y-${String(f.n).padStart(3, '0')}`;
+
+/** The agreed split of who fixes what. */
+export const responsibility = (p: Pick<AgencyProject, 'agency' | 'client'>) => [
+  `${or(p.agency, 'The agency')} addresses accessibility defects attributable to its design specifications, code and deliverables, within the agreed project scope.`,
+  `${or(p.client, 'The client')} validates the integrated website and addresses issues introduced during its own implementation and content integration.`,
+];
+
 export const emptyProject = (): AgencyProject => ({
   client: '',
   project: '',
@@ -62,46 +110,96 @@ export const emptyProject = (): AgencyProject => ({
   outOfScope: '',
   support: SUPPORT_OPTIONS.slice(0, 5),
   components: [],
+  tests: {},
   findings: [],
 });
 
-export type DeliverableId = 'scope' | 'specs' | 'matrix' | 'testplan' | 'audit' | 'statement';
+/** Fill in fields added since a project was saved, so older project files still open. */
+export function normalizeProject(raw: Partial<AgencyProject>): AgencyProject {
+  const base = { ...emptyProject(), ...raw, tests: raw.tests ?? {} };
+  const saved = (raw.findings ?? []) as Partial<Finding>[];
+  let next = Math.max(0, ...saved.map((f) => f.n ?? 0));
+  base.findings = saved.map((f) => ({
+    source: 'baseline',
+    owner: 'agency',
+    status: 'open',
+    retestDate: '',
+    retestNote: '',
+    recommendation: '',
+    page: '',
+    component: '',
+    wcag: '',
+    severity: 'major',
+    ...f,
+    n: f.n ?? ++next,
+  })) as Finding[];
+  return base;
+}
 
-export const DELIVERABLES: { id: DeliverableId; name: string; when: string; description: string }[] = [
+export type DeliverableId = 'components' | 'testsummary' | 'issuelog' | 'conformance' | 'devhandoff' | 'audit' | 'scope' | 'testplan' | 'statement';
+
+export const DELIVERABLES: { id: DeliverableId; name: string; when: string; required: boolean; description: string }[] = [
+  {
+    id: 'components',
+    name: 'Component accessibility documentation',
+    when: 'Delivery',
+    required: true,
+    description: 'WCAG requirements, interaction behavior, keyboard and focus, semantic HTML and ARIA, and acceptance criteria for every component, ready for the pattern library.',
+  },
+  {
+    id: 'testsummary',
+    name: 'Accessibility testing summary',
+    when: 'Delivery',
+    required: true,
+    description: 'Automated and manual testing performed on delivered components and templates: methods, coverage, results and issues found.',
+  },
+  {
+    id: 'issuelog',
+    name: 'Accessibility issue and remediation log',
+    when: 'Delivery',
+    required: true,
+    description: 'Every defect found in delivered work, with severity, owner, remediation status, retest results and what’s still outstanding.',
+  },
+  {
+    id: 'conformance',
+    name: 'WCAG conformance summary',
+    when: 'Delivery',
+    required: true,
+    description: 'Each applicable success criterion evaluated against the delivered components and templates, with results and known limitations.',
+  },
+  {
+    id: 'devhandoff',
+    name: 'Developer handoff documentation',
+    when: 'Delivery',
+    required: true,
+    description: 'Implementation guidance, what not to break, regression checks and open issues, so the client’s frontend team can keep components accessible.',
+  },
   {
     id: 'audit',
     name: 'Baseline audit report',
     when: 'Discovery',
+    required: false,
     description: 'What’s wrong with the current site, by severity and WCAG criterion, with a recommendation for each finding.',
   },
   {
     id: 'scope',
     name: 'Accessibility requirements and scope',
     when: 'Kickoff',
+    required: false,
     description: 'Conformance target, supported browsers and assistive tech, pages and components in scope, and who owns what.',
-  },
-  {
-    id: 'specs',
-    name: 'Component accessibility specs',
-    when: 'Design and build',
-    description: 'Keyboard, ARIA, focus and screen reader behavior for every component in scope, with acceptance criteria.',
-  },
-  {
-    id: 'matrix',
-    name: 'WCAG coverage matrix',
-    when: 'Design and build',
-    description: 'Every success criterion in play, the components it applies to, and how it will be verified.',
   },
   {
     id: 'testplan',
     name: 'Test plan and sign-off sheet',
-    when: 'QA and launch',
+    when: 'QA',
+    required: false,
     description: 'Test environments, page-level and per-component checks with result columns, and a sign-off table.',
   },
   {
     id: 'statement',
     name: 'Accessibility statement (draft)',
     when: 'Launch',
+    required: false,
     description: 'A starting draft of the public accessibility statement for the client’s new site.',
   },
 ];
@@ -115,6 +213,7 @@ export type Block =
   | { t: 'ul'; items: string[] }
   | { t: 'ol'; items: string[] }
   | { t: 'table'; head: string[]; rows: string[][] }
+  | { t: 'code'; lang: string; text: string }
   | { t: 'note'; text: string };
 
 export interface Doc {
@@ -128,8 +227,10 @@ const wcagById = (id: string) => allWcag.find((w) => w.id === id);
 const PAGE_LEVEL_WCAG = ['1.3.1', '1.4.3', '1.4.10', '1.4.11', '2.1.1', '2.4.1', '2.4.2', '2.4.3', '2.4.7', '2.4.11', '3.1.1', '4.1.2'];
 const TBD = '[to be confirmed]';
 
-const or = (v: string, fallback: string) => (v.trim() ? v.trim() : fallback);
-const lines = (v: string) =>
+function or(v: string, fallback: string) {
+  return v.trim() ? v.trim() : fallback;
+}
+export const lines = (v: string) =>
   v
     .split('\n')
     .map((l) => l.replace(/^[-*•]\s*/, '').trim())
@@ -140,6 +241,27 @@ const specsFor = (p: AgencyProject): ComponentSpec[] =>
 /** Criteria that are new in WCAG 2.2, so out of scope for a 2.1 target. */
 const NEW_IN_22 = ['2.4.11', '2.5.7', '2.5.8', '3.2.6', '3.3.8'];
 const inTarget = (p: AgencyProject, w: WcagRef) => w.level !== 'AAA' && !(p.target === 'WCAG 2.1 AA' && NEW_IN_22.includes(w.id));
+const wcagText = (id: string) => {
+  const w = wcagById(id);
+  return w ? `${w.id} ${w.name}` : id || '—';
+};
+const sevLabel = (s: Severity) => SEVERITIES.find((x) => x.id === s)?.label ?? s;
+const location = (f: Finding) => [f.page, findComponent(f.component)?.name].filter(Boolean).join(' · ') || '—';
+const delivery = (p: AgencyProject) => p.findings.filter((f) => f.source === 'delivery');
+const yes = (b: boolean) => (b ? 'Yes' : 'No');
+
+type Result = 'Not tested' | 'Partly tested' | 'Pass' | 'Pass after fixes' | 'Fail';
+/** A component or template's result, from its test record and the delivery issues logged against it. */
+function resultFor(p: AgencyProject, key: string, match: (f: Finding) => boolean): Result {
+  const t = p.tests[key];
+  if (!t || (!t.automated && !t.manual)) return 'Not tested';
+  if (!t.automated || !t.manual) return 'Partly tested';
+  const issues = delivery(p).filter(match);
+  if (issues.some(isOutstanding)) return 'Fail';
+  return issues.length ? 'Pass after fixes' : 'Pass';
+}
+const componentResult = (p: AgencyProject, slug: string) => resultFor(p, slug, (f) => f.component === slug);
+const pageResult = (p: AgencyProject, page: string) => resultFor(p, `page:${page}`, (f) => !f.component && f.page.trim().toLowerCase() === page.toLowerCase());
 
 function header(p: AgencyProject, title: string, extra: [string, string][] = []): Block[] {
   return [
@@ -183,6 +305,7 @@ function scopeDoc(p: AgencyProject): Doc {
       { t: 'h', level: 2, text: '5. Out of scope' },
       { t: 'ul', items: out.length ? out : ['Third-party embeds and services the client does not control, unless listed above.'] },
       { t: 'h', level: 2, text: '6. Responsibilities' },
+      { t: 'ul', items: responsibility(p) },
       {
         t: 'table',
         head: ['Role', 'Owns'],
@@ -199,77 +322,331 @@ function scopeDoc(p: AgencyProject): Doc {
           'No open Blocker or Major accessibility issues.',
         ],
       },
+      { t: 'h', level: 2, text: '8. Deliverables at handoff' },
+      { t: 'ol', items: DELIVERABLES.filter((d) => d.required).map((d) => `${d.name}: ${d.description}`) },
     ],
   };
 }
 
-function specsDoc(p: AgencyProject): Doc {
+function componentsDoc(p: AgencyProject): Doc {
   const specs = specsFor(p);
   const blocks: Block[] = [
-    ...header(p, 'Component accessibility specs', [['Components', String(specs.length)]]),
-    { t: 'p', text: 'One spec per component in scope. Each lists what it must be built on, the keys it must support, the ARIA it needs, focus and screen reader behavior, and the acceptance criteria QA will test.' },
+    ...header(p, 'Component accessibility documentation', [['Components', String(specs.length)]]),
+    {
+      t: 'p',
+      text: `Accessibility requirements for every component delivered in this project, aligned to ${p.target}. Each section is written to drop into the component and pattern library documentation: purpose, expected interaction behavior, keyboard and focus, semantic HTML and ARIA, content and design requirements, the success criteria it supports, and acceptance criteria.`,
+    },
   ];
   if (!specs.length) blocks.push({ t: 'note', text: 'No components selected yet.' });
   specs.forEach((s) => {
+    const g = glance[s.slug];
+    const a = anatomy[s.slug];
+    const ws = worksheets[s.slug];
+    const html = htmlExamples[s.slug];
     blocks.push(
       { t: 'h', level: 2, text: s.name },
       { t: 'p', text: s.summary },
       { t: 'meta', rows: [['Category', s.category], ['Built on', s.semantics]] },
+      { t: 'h', level: 3, text: 'When to use' },
+      { t: 'ul', items: [...s.whenToUse, ...(g?.instead ?? []).map((i) => `Use ${findComponent(i.slug)?.name ?? i.slug} instead when ${i.when}.`)] },
+    );
+    if (a) {
+      blocks.push(
+        { t: 'h', level: 3, text: 'Interaction behavior and states' },
+        { t: 'table', head: ['State', 'What people see', 'What a screen reader announces'], rows: a.states.map((x) => [x.state, x.looks, x.announced]) },
+        { t: 'h', level: 3, text: 'Anatomy' },
+        { t: 'table', head: ['Part', 'Required', 'Notes'], rows: a.parts.map((x) => [x.name, yes(x.required), x.note]) },
+      );
+    }
+    blocks.push(
       { t: 'h', level: 3, text: 'Keyboard' },
       { t: 'table', head: ['Keys', 'Action'], rows: s.keyboard.map((k) => [k.keys.join(' / '), k.action]) },
-      { t: 'h', level: 3, text: 'ARIA' },
-      { t: 'table', head: ['Attribute', 'Where', 'Usage'], rows: s.aria.map((a) => [a.attr, a.where, a.usage]) },
       { t: 'h', level: 3, text: 'Focus' },
       { t: 'ul', items: s.focus },
-      { t: 'h', level: 3, text: 'Screen readers' },
+      { t: 'h', level: 3, text: 'Semantic HTML and ARIA' },
+      { t: 'table', head: ['Attribute or element', 'Where', 'Usage'], rows: s.aria.map((x) => [x.attr, x.where, x.usage]) },
+      ...(html ? [{ t: 'code' as const, lang: 'html', text: html }] : []),
+      { t: 'h', level: 3, text: 'Screen reader behavior' },
       { t: 'ul', items: s.screenReader },
-      { t: 'h', level: 3, text: 'WCAG criteria' },
-      { t: 'ul', items: s.wcag.filter((w) => inTarget(p, w)).map((w) => `${w.id} ${w.name} (${w.level})`) },
+    );
+    if (ws?.content.length) {
+      blocks.push(
+        { t: 'h', level: 3, text: 'Content requirements' },
+        { t: 'table', head: ['Content', 'Goes in', 'Required', 'Guidance'], rows: ws.content.map((c) => [c.label, c.target, yes(c.required), c.guidance]) },
+      );
+    }
+    if (ws?.design.length) {
+      blocks.push({ t: 'h', level: 3, text: 'Design requirements' }, { t: 'table', head: ['Requirement', 'How to check'], rows: ws.design.map((d) => [d.text, d.check]) });
+    }
+    blocks.push(
+      { t: 'h', level: 3, text: 'Do and don’t' },
+      { t: 'table', head: ['Do', 'Don’t'], rows: Array.from({ length: Math.max(s.dos.length, s.donts.length) }, (_, i) => [s.dos[i] ?? '', s.donts[i] ?? '']) },
+      { t: 'h', level: 3, text: 'WCAG success criteria' },
+      { t: 'ul', items: s.wcag.filter((w) => inTarget(p, w)).map((w) => `${w.id} ${w.name} (Level ${w.level})`) },
       { t: 'h', level: 3, text: 'Acceptance criteria' },
       { t: 'ol', items: s.testing },
     );
   });
-  return { id: 'specs', title: 'Component accessibility specs', blocks };
+  return { id: 'components', title: 'Component accessibility documentation', blocks };
 }
 
-function matrixDoc(p: AgencyProject): Doc {
+function testSummaryDoc(p: AgencyProject): Doc {
   const specs = specsFor(p);
-  const ids = new Set<string>(PAGE_LEVEL_WCAG);
-  specs.forEach((s) => s.wcag.forEach((w) => ids.add(w.id)));
-  const rows = [...ids]
-    .map(wcagById)
-    .filter((w): w is WcagRef => Boolean(w) && inTarget(p, w!))
-    .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
-    .map((w) => {
-      const used = specs.filter((s) => s.wcag.some((x) => x.id === w.id)).map((s) => s.name);
-      const page = PAGE_LEVEL_WCAG.includes(w.id);
-      return [
-        `${w.id} ${w.name}`,
-        w.level,
-        [page ? 'Every page' : '', ...used].filter(Boolean).join(', '),
-        ['2.1.1', '2.1.2', '2.4.3', '2.4.7', '2.4.11'].includes(w.id)
-          ? 'Manual: keyboard'
-          : ['4.1.2', '4.1.3', '1.3.1', '2.5.3'].includes(w.id)
-            ? 'Manual: screen reader; automated: axe-core'
-            : ['1.4.3', '1.4.11'].includes(w.id)
-              ? 'Automated: axe-core; manual: contrast checker'
-              : 'Manual review',
-        '',
-      ];
-    });
+  const pages = lines(p.pages);
+  const issues = delivery(p);
+  const cRes = specs.map((s) => componentResult(p, s.slug));
+  const pRes = pages.map((pg) => pageResult(p, pg));
+  const all = [...cRes, ...pRes];
+  const n = (r: Result) => all.filter((x) => x === r).length;
+  const tested = all.length - n('Not tested');
+  const row = (name: string, key: string, res: Result, open: number) => {
+    const t = p.tests[key];
+    return [name, yes(Boolean(t?.automated)), yes(Boolean(t?.manual)), t?.date || '—', res, String(open)];
+  };
+  const blocks: Block[] = [
+    ...header(p, 'Accessibility testing summary'),
+    { t: 'h', level: 2, text: 'Summary' },
+    {
+      t: 'p',
+      text: `${tested} of ${all.length} delivered components and templates were tested. ${n('Pass') + n('Pass after fixes')} pass, ${n('Fail')} fail, ${n('Partly tested')} are partly tested and ${n('Not tested')} are not yet tested. Testing found ${issues.length} issue${issues.length === 1 ? '' : 's'} in delivered work, of which ${issues.filter(isOutstanding).length} ${issues.filter(isOutstanding).length === 1 ? 'is' : 'are'} outstanding.`,
+    },
+    { t: 'h', level: 2, text: 'Methods' },
+    {
+      t: 'table',
+      head: ['Method', 'What it covers'],
+      rows: [
+        ['Automated: axe-core (WCAG 2.2 A and AA rules)', 'Missing names and labels, invalid ARIA, color contrast of text, duplicate IDs, landmark and heading structure. Catches roughly a third of issues.'],
+        ['Manual: keyboard only', 'Every interaction works with Tab, Shift+Tab, Enter, Space, arrows and Escape; focus order, visibility and no traps.'],
+        ['Manual: screen readers', 'Names, roles, states and announcements in each supported screen reader and browser pairing.'],
+        ['Manual: zoom, reflow and text spacing', 'Content at 200% and 400% zoom and 320px wide, with WCAG text-spacing overrides.'],
+        ['Manual: visual review', 'Contrast of icons, borders and focus rings; states that don’t rely on color; target sizes.'],
+      ],
+    },
+    { t: 'h', level: 2, text: 'Environments' },
+    { t: 'ul', items: p.support.length ? p.support : [TBD] },
+    { t: 'h', level: 2, text: 'Coverage and results: components' },
+    specs.length
+      ? {
+          t: 'table',
+          head: ['Component', 'Automated', 'Manual', 'Date', 'Result', 'Outstanding issues'],
+          rows: specs.map((s, i) => row(s.name, s.slug, cRes[i], issues.filter((f) => f.component === s.slug && isOutstanding(f)).length)),
+        }
+      : { t: 'note', text: 'No components in scope yet.' },
+    { t: 'h', level: 2, text: 'Coverage and results: templates' },
+    pages.length
+      ? {
+          t: 'table',
+          head: ['Template', 'Automated', 'Manual', 'Date', 'Result', 'Outstanding issues'],
+          rows: pages.map((pg, i) => row(pg, `page:${pg}`, pRes[i], issues.filter((f) => !f.component && f.page.trim().toLowerCase() === pg.toLowerCase() && isOutstanding(f)).length)),
+        }
+      : { t: 'note', text: 'No templates listed yet.' },
+    { t: 'p', text: 'Result key: Pass means automated and manual testing found no issues. Pass after fixes means every issue found was fixed and passed retest. Fail means at least one issue is outstanding.' },
+    { t: 'h', level: 2, text: 'Issues identified' },
+  ];
+  blocks.push(
+    issues.length
+      ? {
+          t: 'table',
+          head: ['ID', 'Severity', 'Location', 'Issue', 'WCAG', 'Status'],
+          rows: issues.map((f) => [issueRef(f), sevLabel(f.severity), location(f), f.issue, wcagText(f.wcag), statusLabel(f.status)]),
+        }
+      : { t: 'note', text: 'No issues logged from testing of delivered work.' },
+    { t: 'p', text: 'Full remediation detail, owners and retest results are in the accessibility issue and remediation log.' },
+  );
+  return { id: 'testsummary', title: 'Accessibility testing summary', blocks };
+}
+
+function issueLogDoc(p: AgencyProject): Doc {
+  const issues = delivery(p);
+  const outstanding = issues.filter(isOutstanding);
+  const owners: IssueOwner[] = ['agency', 'client', 'shared'];
   return {
-    id: 'matrix',
-    title: 'WCAG coverage matrix',
+    id: 'issuelog',
+    title: 'Accessibility issue and remediation log',
     blocks: [
-      ...header(p, 'WCAG coverage matrix'),
+      ...header(p, 'Accessibility issue and remediation log', [['Issues', String(issues.length)], ['Outstanding', String(outstanding.length)]]),
+      { t: 'h', level: 2, text: 'Ownership' },
+      { t: 'ul', items: responsibility(p) },
+      { t: 'h', level: 2, text: 'Status summary' },
+      { t: 'table', head: ['Status', 'Issues'], rows: STATUSES.map((s) => [s.label, String(issues.filter((f) => f.status === s.id).length)]) },
       {
-        t: 'p',
-        text: `The ${p.target} success criteria that apply to the pages and components in scope, where each applies, and how it will be verified. The Status column is filled in during QA.`,
+        t: 'table',
+        head: ['Owner', 'Outstanding', 'Blocker', 'Major', 'Minor'],
+        rows: owners.map((o) => {
+          const mine = outstanding.filter((f) => f.owner === o);
+          return [ownerLabel(o, p), String(mine.length), ...(['blocker', 'major', 'minor'] as Severity[]).map((s) => String(mine.filter((f) => f.severity === s).length))];
+        }),
       },
-      { t: 'table', head: ['Success criterion', 'Level', 'Applies to', 'How it’s verified', 'Status'], rows },
-      { t: 'note', text: 'Criteria not listed (for example, captions when there is no video) are not applicable to the current scope. Re-check this list when scope changes.' },
+      { t: 'h', level: 2, text: 'Outstanding issues' },
+      outstanding.length
+        ? {
+            t: 'table',
+            head: ['ID', 'Severity', 'Location', 'Issue', 'Owner', 'Status'],
+            rows: outstanding.map((f) => [issueRef(f), sevLabel(f.severity), location(f), f.issue, ownerLabel(f.owner, p), statusLabel(f.status)]),
+          }
+        : { t: 'note', text: 'No outstanding issues.' },
+      { t: 'h', level: 2, text: 'Full log' },
+      issues.length
+        ? {
+            t: 'table',
+            head: ['ID', 'Severity', 'Location', 'Issue', 'WCAG', 'Remediation', 'Owner', 'Status', 'Retest'],
+            rows: issues.map((f) => [
+              issueRef(f),
+              sevLabel(f.severity),
+              location(f),
+              f.issue,
+              wcagText(f.wcag),
+              f.recommendation || '—',
+              ownerLabel(f.owner, p),
+              statusLabel(f.status),
+              [f.retestDate, f.retestNote].filter(Boolean).join(': ') || '—',
+            ]),
+          }
+        : { t: 'note', text: 'No issues logged from testing of delivered work yet.' },
     ],
   };
+}
+
+type Support = 'Supports' | 'Partially supports' | 'Does not support' | 'Not evaluated';
+
+function conformanceDoc(p: AgencyProject): Doc {
+  const specs = specsFor(p);
+  const pages = lines(p.pages);
+  const issues = delivery(p);
+  const ids = new Set<string>(PAGE_LEVEL_WCAG);
+  specs.forEach((s) => s.wcag.forEach((w) => ids.add(w.id)));
+  const criteria = [...ids]
+    .map(wcagById)
+    .filter((w): w is WcagRef => Boolean(w) && inTarget(p, w!))
+    .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
+  const limitations: string[] = [];
+  const rows = criteria.map((w) => {
+    const used = specs.filter((s) => s.wcag.some((x) => x.id === w.id));
+    const page = PAGE_LEVEL_WCAG.includes(w.id);
+    const against = issues.filter((f) => f.wcag === w.id);
+    const live = against.filter((f) => isOutstanding(f) || f.status === 'accepted');
+    const fullyTested = used.every((s) => p.tests[s.slug]?.manual) && (!page || pages.some((pg) => p.tests[`page:${pg}`]?.manual));
+    let level: Support;
+    if (live.some((f) => f.severity === 'blocker' && f.status !== 'accepted')) level = 'Does not support';
+    else if (live.length) level = 'Partially supports';
+    else if (fullyTested && (used.length || page)) level = 'Supports';
+    else level = 'Not evaluated';
+    live.forEach((f) => limitations.push(`${w.id}: ${location(f)}: ${f.issue.trim().replace(/\.$/, '')} (${issueRef(f)}, ${statusLabel(f.status).toLowerCase()}).`));
+    return [
+      `${w.id} ${w.name}`,
+      w.level,
+      [page ? 'All templates' : '', ...used.map((s) => s.name)].filter(Boolean).join(', '),
+      level,
+      live.length ? live.map(issueRef).join(', ') : '—',
+    ];
+  });
+  const count = (l: Support) => rows.filter((r) => r[3] === l).length;
+  return {
+    id: 'conformance',
+    title: `${p.target.replace(' AA', '')} AA conformance summary`,
+    blocks: [
+      ...header(p, `${p.target} conformance summary`),
+      { t: 'h', level: 2, text: 'Summary' },
+      {
+        t: 'p',
+        text: `${rows.length} success criteria apply to the delivered components and templates. ${count('Supports')} supported, ${count('Partially supports')} partially supported, ${count('Does not support')} not supported and ${count('Not evaluated')} not yet evaluated.`,
+      },
+      {
+        t: 'p',
+        text: `Scope: this summary covers the components and templates delivered by ${or(p.agency, 'the agency')}. It does not cover the integrated website, which ${or(p.client, 'the client')} validates after implementation and content integration.`,
+      },
+      {
+        t: 'table',
+        head: ['Result', 'Meaning'],
+        rows: [
+          ['Supports', 'Tested by hand and automatically, with no outstanding issues.'],
+          ['Partially supports', 'Some content or functionality does not meet the criterion. See known limitations.'],
+          ['Does not support', 'A blocker means the criterion is not met.'],
+          ['Not evaluated', 'Not all of the components or templates it applies to have been tested by hand yet.'],
+        ],
+      },
+      { t: 'h', level: 2, text: 'Results by success criterion' },
+      { t: 'table', head: ['Success criterion', 'Level', 'Applies to', 'Result', 'Related issues'], rows },
+      { t: 'h', level: 2, text: 'Known limitations' },
+      limitations.length ? { t: 'ul', items: limitations } : { t: 'p', text: 'None recorded.' },
+      { t: 'note', text: 'Criteria not listed (for example, captions when there is no video) do not apply to the delivered scope. Re-check this list if scope changes.' },
+    ],
+  };
+}
+
+function devHandoffDoc(p: AgencyProject): Doc {
+  const specs = specsFor(p);
+  const issues = delivery(p);
+  const contentRole = roles.find((r) => r.id === 'content');
+  const blocks: Block[] = [
+    ...header(p, 'Developer handoff documentation'),
+    {
+      t: 'p',
+      text: `How ${or(p.client, 'the client')}’s frontend team can implement, integrate and maintain the delivered components without losing accessibility. Read it with the component accessibility documentation, which has the full requirements for each component.`,
+    },
+    { t: 'h', level: 2, text: 'Who owns what after handoff' },
+    { t: 'ul', items: responsibility(p) },
+    { t: 'h', level: 2, text: 'Principles to keep' },
+    {
+      t: 'ol',
+      items: [
+        'Use the native element named under “Built on” before reaching for ARIA. A <button> already handles focus, Enter, Space and its role.',
+        'Never remove focus outlines without replacing them with an indicator of at least 2px and 3:1 contrast.',
+        'Keep accessible names in sync with visible labels, so voice control users can say what they see.',
+        'Keep ARIA states (aria-expanded, aria-selected, aria-invalid, aria-current) updated in code whenever the visual state changes.',
+        'Announce async results and errors with the live region pattern in each spec; don’t move focus unless the spec says to.',
+        'Respect prefers-reduced-motion for any animation longer than a fade.',
+        'Don’t add tabindex greater than 0. Change DOM order instead.',
+      ],
+    },
+    { t: 'h', level: 2, text: 'Regression testing' },
+    {
+      t: 'ul',
+      items: [
+        'Automated: run axe-core in CI on every template, for example with @axe-core/playwright or jest-axe, and fail the build on new violations.',
+        'Manual, every release: the page-level checks below, with a keyboard and at least one screen reader.',
+        'Manual, when a component changes: its acceptance criteria in the component documentation.',
+        `Environments: ${p.support.join('; ') || TBD}.`,
+      ],
+    },
+    { t: 'h', level: 3, text: 'Page-level checks' },
+    { t: 'ol', items: pageChecks },
+    { t: 'h', level: 2, text: 'Content integration' },
+    { t: 'p', text: 'Most issues introduced after handoff come from content. Check these whenever content is added or edited:' },
+    { t: 'ul', items: contentRole?.checklist ?? [] },
+    { t: 'h', level: 2, text: 'Component implementation notes' },
+  ];
+  if (!specs.length) blocks.push({ t: 'note', text: 'No components selected yet.' });
+  specs.forEach((s) => {
+    const ws = worksheets[s.slug];
+    const open = issues.filter((f) => f.component === s.slug && (isOutstanding(f) || f.status === 'accepted'));
+    blocks.push(
+      { t: 'h', level: 3, text: s.name },
+      { t: 'meta', rows: [['Built on', s.semantics], ['Keys to support', s.keyboard.map((k) => k.keys.join(' / ')).join(', ')]] },
+      { t: 'p', text: 'Don’t break:' },
+      { t: 'ul', items: [...s.donts, ...s.focus.slice(0, 2)] },
+    );
+    const required = ws?.content.filter((c) => c.required) ?? [];
+    if (required.length) blocks.push({ t: 'p', text: 'Content the component needs every time it’s used:' }, { t: 'ul', items: required.map((c) => `${c.label} → ${c.target}`) });
+    if (open.length) {
+      blocks.push(
+        { t: 'p', text: 'Open issues handed over:' },
+        { t: 'ul', items: open.map((f) => `${issueRef(f)} (${sevLabel(f.severity)}, ${ownerLabel(f.owner, p)}): ${f.issue}`) },
+      );
+    }
+  });
+  const handed = issues.filter((f) => isOutstanding(f) || f.status === 'accepted');
+  blocks.push(
+    { t: 'h', level: 2, text: 'Outstanding issues at handoff' },
+    handed.length
+      ? {
+          t: 'table',
+          head: ['ID', 'Severity', 'Location', 'Issue', 'Owner', 'Status'],
+          rows: handed.map((f) => [issueRef(f), sevLabel(f.severity), location(f), f.issue, ownerLabel(f.owner, p), statusLabel(f.status)]),
+        }
+      : { t: 'note', text: 'None. Every logged issue passed retest.' },
+  );
+  return { id: 'devhandoff', title: 'Developer handoff documentation', blocks };
 }
 
 function testplanDoc(p: AgencyProject): Doc {
@@ -305,7 +682,7 @@ function testplanDoc(p: AgencyProject): Doc {
 }
 
 function auditDoc(p: AgencyProject): Doc {
-  const f = p.findings;
+  const f = p.findings.filter((x) => x.source === 'baseline');
   const count = (s: Severity) => f.filter((x) => x.severity === s).length;
   const byPrinciple = ['1 Perceivable', '2 Operable', '3 Understandable', '4 Robust'].map((name, i) => [
     name,
@@ -318,7 +695,7 @@ function auditDoc(p: AgencyProject): Doc {
       t: 'p',
       text: f.length
         ? `We found ${f.length} accessibility issue${f.length === 1 ? '' : 's'} on the current site: ${count('blocker')} blocker, ${count('major')} major and ${count('minor')} minor. Blockers stop someone completing a task, so the redesign must fix them first.`
-        : 'No findings recorded yet. Add findings in the deliverables builder as you audit the current site.',
+        : 'No baseline findings recorded yet. Log issues from the current site in the deliverables builder, with the source set to the baseline audit.',
     },
     { t: 'table', head: ['Severity', 'Meaning', 'Count'], rows: SEVERITIES.map((s) => [s.label, s.hint, String(count(s.id))]) },
     { t: 'h', level: 3, text: 'By WCAG principle' },
@@ -361,7 +738,7 @@ function auditDoc(p: AgencyProject): Doc {
 }
 
 function statementDoc(p: AgencyProject): Doc {
-  const open = p.findings.filter((x) => x.severity !== 'minor');
+  const open = delivery(p).filter((x) => isOutstanding(x) || x.status === 'accepted');
   const site = or(p.client, '[Organization]');
   return {
     id: 'statement',
@@ -392,16 +769,22 @@ export function buildDoc(id: DeliverableId, p: AgencyProject): Doc {
   switch (id) {
     case 'scope':
       return scopeDoc(p);
-    case 'specs':
-      return specsDoc(p);
-    case 'matrix':
-      return matrixDoc(p);
     case 'testplan':
       return testplanDoc(p);
     case 'audit':
       return auditDoc(p);
     case 'statement':
       return statementDoc(p);
+    case 'components':
+      return componentsDoc(p);
+    case 'testsummary':
+      return testSummaryDoc(p);
+    case 'issuelog':
+      return issueLogDoc(p);
+    case 'conformance':
+      return conformanceDoc(p);
+    case 'devhandoff':
+      return devHandoffDoc(p);
   }
 }
 
@@ -419,6 +802,8 @@ export function toMarkdown(doc: Doc): string {
           return b.text;
         case 'note':
           return `> ${b.text}`;
+        case 'code':
+          return '```' + b.lang + '\n' + b.text.trim() + '\n```';
         case 'meta':
           return b.rows.map(([k, v]) => `**${k}:** ${v}  `).join('\n');
         case 'ul':
@@ -446,6 +831,8 @@ function blockHtml(b: Block, shift: number): string {
       return `<p>${esc(b.text)}</p>`;
     case 'note':
       return `<p class="note">${esc(b.text)}</p>`;
+    case 'code':
+      return `<pre><code>${esc(b.text.trim())}</code></pre>`;
     case 'meta':
       return `<dl class="meta">${b.rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`;
     case 'ul':
@@ -490,6 +877,7 @@ export function toHtml(docs: Doc[], p: AgencyProject): string {
   .note { border-left: 4px solid #2f5bd3; padding: .4rem .8rem; background: #f0f4ff; }
   section.doc { page-break-before: always; } section.doc:first-of-type { page-break-before: auto; }
   a { color: #1d4ed8; }
+  pre { background: #f5f6f8; border: 1px solid #c8ccd2; border-radius: .4rem; padding: .75rem; overflow-x: auto; font-size: .82rem; white-space: pre-wrap; }
   @media print { body { margin: 0; max-width: none; } nav { page-break-after: always; } }
 </style>
 </head>

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@fluid-design/fluid-ui';
 import { Section } from '../components/Section';
-import { DELIVERABLES, type DeliverableId } from '../lib/deliverables';
+import { DELIVERABLES, responsibility, type DeliverableId } from '../lib/deliverables';
 import { PageHeader } from './PageHeader';
 import { usePageTitle } from './usePageTitle';
 
@@ -44,7 +44,7 @@ const phases: Phase[] = [
       ['/roles/design', 'Design guide: contrast, focus, target size and states'],
       ['/tools/copy-patterns', 'Copy patterns: proven wording for labels, errors and messages'],
     ],
-    deliver: ['specs'],
+    deliver: [],
     alsoDeliver: ['Annotated design files', 'Content and design tabs of each component’s handoff worksheet'],
   },
   {
@@ -55,7 +55,7 @@ const phases: Phase[] = [
       ['/foundations/semantics', 'Semantics & ARIA: when native HTML is enough and when ARIA is needed'],
       ['/roles/frontend', 'Frontend guide: what developers own'],
     ],
-    deliver: ['matrix'],
+    deliver: ['components', 'devhandoff'],
     alsoDeliver: ['Frontend tab of each component’s handoff worksheet'],
   },
   {
@@ -65,7 +65,7 @@ const phases: Phase[] = [
       ['/roles/qa', 'QA guide: how to test, and the QA tab of every worksheet with bug reports'],
       ['/progress', 'Team progress: see which components are tested'],
     ],
-    deliver: ['testplan', 'statement'],
+    deliver: ['testplan', 'testsummary', 'issuelog', 'conformance', 'statement'],
   },
 ];
 
@@ -83,8 +83,7 @@ export function AgencyPage() {
       <div className="mb-12 rounded-2xl bg-primary-50 p-6 ring-1 ring-primary-200 dark:bg-primary-900/20 dark:ring-primary-800/60">
         <h2 className="text-lg font-semibold">Client deliverables builder</h2>
         <p className="mt-1 leading-7">
-          Enter the client, pages and components in scope, and any audit findings. Export up to six documents as HTML (print to PDF) or Markdown, with your client’s name on
-          each one.
+          Enter the client, the pages and components in scope, your test results and your issue log. Export the five required delivery documents, plus four supporting ones, as HTML (print to PDF) or Markdown.
         </p>
         <div className="mt-4 flex">
           <Button as={Link} to="/tools/deliverables" className="btn-bold-primary">
@@ -94,9 +93,33 @@ export function AgencyPage() {
       </div>
 
       <div className="space-y-12">
-        <Section title="What you can hand to the client" intro={<p>Each document is generated from the specs on this site and the scope you enter.</p>}>
+        <Section
+          title="Required at delivery"
+          intro={<p>The five documents agencies must hand over, with WCAG 2.2 AA as the baseline. The builder generates each one from the specs on this site, your test results and your issue log.</p>}
+        >
+          <ol className="grid gap-3 sm:grid-cols-2">
+            {DELIVERABLES.filter((d) => d.required).map((d, i) => (
+              <li key={d.id} className="surface p-4">
+                <p className="font-semibold">
+                  <span className="text-primary-700 dark:text-primary-300">{i + 1}.</span> {d.name}
+                </p>
+                <p className="mt-1 text-sm leading-6 text-muted">{d.description}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="surface space-y-2 p-5 text-sm leading-6">
+            <h3 className="font-semibold">Who fixes what</h3>
+            <ul className="list-disc space-y-1 pl-5">
+              {responsibility({ agency: 'The agency', client: 'The client' }).map((r) => (
+                <li key={r}>{r}</li>
+              ))}
+            </ul>
+          </div>
+        </Section>
+
+        <Section title="Supporting documents" intro={<p>Useful earlier in the project. The builder makes these too.</p>}>
           <ul className="grid gap-3 sm:grid-cols-2">
-            {DELIVERABLES.map((d) => (
+            {DELIVERABLES.filter((d) => !d.required).map((d) => (
               <li key={d.id} className="surface p-4">
                 <p className="text-xs font-semibold uppercase tracking-wide text-primary-700 dark:text-primary-300">{d.when}</p>
                 <p className="mt-1 font-semibold">{d.name}</p>
