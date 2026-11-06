@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { go } from './helpers';
+import { expectNoViolations, go } from './helpers';
 
 test('skip link moves focus to the main content', async ({ page }) => {
   await go(page, '/');
@@ -54,4 +54,14 @@ test('deliverables builder imports issues and exports an ACR', async ({ page }) 
   const media = page.getByRole('row', { name: /1\.2\.1 Audio-only and Video-only \(Prerecorded\) \(Level A\)/ }).last();
   await expect(media).toContainText('Not Applicable');
   await expect(media).toContainText('The product has no content of this kind.');
+  await expectNoViolations(page, 'builder with ACR editor open');
+});
+
+test('learning resources filter by role and show a certification path', async ({ page }) => {
+  await go(page, '/resources?role=content');
+  await expect(page.getByText('Suggested path for content: CPACC, then ADS.')).toBeVisible();
+  await page.getByRole('radio', { name: 'Frontend' }).check({ force: true });
+  await expect(page.getByText('Suggested path for frontend: CPACC, then WAS, then CPWA.')).toBeVisible();
+  await expect(page.getByRole('link', { name: /Learn Accessibility/ })).toBeVisible();
+  await expectNoViolations(page, '/resources (frontend)');
 });

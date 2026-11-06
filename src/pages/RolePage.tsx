@@ -1,3 +1,4 @@
+import { certPaths } from '../data/resources';
 import { Link, useParams } from 'react-router-dom';
 import { Checklist } from '../components/Checklist';
 import { Section } from '../components/Section';
@@ -146,6 +147,15 @@ export function RolePage() {
 
         <Section title="WCAG criteria to know">
           <WcagList refs={guide.wcag} />
+        </Section>
+
+        <Section title="Keep learning" intro={<p>Courses, videos and references picked for {guide.name === 'QA' ? 'QA' : guide.name.toLowerCase()} work.</p>}>
+          <p className="leading-7">
+            <strong>Suggested certifications:</strong> {certPaths[guide.id].join(', then ')}.{' '}
+            <Link to={`/resources?role=${guide.id}`} className="link">
+              See learning resources and certifications for {guide.name === 'QA' ? 'QA' : guide.name.toLowerCase()}
+            </Link>
+          </p>
         </Section>
       </div>
     </article>

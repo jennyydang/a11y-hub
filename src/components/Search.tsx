@@ -64,6 +64,7 @@ function buildIndex(): Entry[] {
     },
     ...basicsTasks.map((t) => ({ title: t.title, kind: 'Basics', to: `/basics#${t.id}`, fields: [{ label: 'Basics', text: `${t.why} ${t.dos.join(' ')}` }] })),
     ...fixes.map((f) => ({ title: f.symptom, kind: 'Problem and fix', to: `/fixes#${slugify(f.symptom)}`, fields: [{ label: 'Fix', text: `${f.cause} ${f.fix}` }] })),
+    { title: 'Keep learning', kind: 'Page', to: '/resources', fields: [{ label: 'Page', text: 'Learning resources, courses, training, videos, YouTube, references, certifications, CPACC, WAS, CPWA, ADS, Trusted Tester, IAAP' }] },
     { title: 'What’s new', kind: 'Page', to: '/changelog', fields: [{ label: 'Page', text: 'Changelog, recent updates, new pages and tools' }] },
     { title: 'Agency playbook', kind: 'Page', to: '/agency', fields: [{ label: 'Page', text: 'Client redesign, agency deliverables, conformance summary, testing summary, issue log, handoff' }] },
     { title: 'Glossary', kind: 'Page', to: '/glossary', fields: [{ label: 'Page', text: 'Definitions: accessible name, landmark, live region, focus trap, alt text, ARIA, WCAG' }] },

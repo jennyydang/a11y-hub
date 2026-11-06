@@ -16,6 +16,7 @@ import { AgencyPage } from './pages/AgencyPage';
 import { BasicsPage } from './pages/BasicsPage';
 import { FixesPage } from './pages/FixesPage';
 import { ChangelogPage } from './pages/ChangelogPage';
+import { ResourcesPage } from './pages/ResourcesPage';
 
 export function App() {
   return (
@@ -30,6 +31,7 @@ export function App() {
           <Route path="basics" element={<BasicsPage />} />
           <Route path="fixes" element={<FixesPage />} />
           <Route path="changelog" element={<ChangelogPage />} />
+          <Route path="resources" element={<ResourcesPage />} />
           <Route path="agency" element={<AgencyPage />} />
           <Route path="checklist" element={<ChecklistPage />} />
           <Route path="tools" element={<ToolsIndex />} />

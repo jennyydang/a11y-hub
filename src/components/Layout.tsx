@@ -86,7 +86,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   if (pathname.startsWith('/roles')) currentGroups.add('roles');
   if (pathname.startsWith('/foundations')) currentGroups.add('foundations');
   if (pathname.startsWith('/tools')) currentGroups.add('tools');
-  if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
+  if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog', '/resources'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
   if (pathname.startsWith('/components')) {
     currentGroups.add('components');
     const c = findComponent(pathname.split('/')[2] ?? '');
@@ -132,6 +132,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
     ['/progress', 'Team progress'],
     ['/examples', 'Page examples'],
     ['/glossary', 'Glossary'],
+    ['/resources', 'Keep learning: courses and certifications'],
     ['/changelog', 'What’s new'],
   ];
   const referenceItems = reference.filter(([, l]) => match(l));
