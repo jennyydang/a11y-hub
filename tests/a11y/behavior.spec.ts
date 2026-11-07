@@ -65,3 +65,13 @@ test('learning resources filter by role and show a certification path', async ({
   await expect(page.getByRole('link', { name: /Learn Accessibility/ })).toBeVisible();
   await expectNoViolations(page, '/resources (frontend)');
 });
+
+test('component pages cite their sources, and the process page links stages', async ({ page }) => {
+  await go(page, '/components/button');
+  const sources = page.getByRole('region', { name: 'Sources and review' }).or(page.locator('section', { has: page.getByRole('heading', { name: 'Sources and review' }) }));
+  await expect(sources.getByRole('link', { name: /Button component/ })).toBeVisible();
+  await expect(sources.getByRole('link', { name: /ARIA Authoring Practices/ })).toBeVisible();
+  await go(page, '/process');
+  await page.getByRole('link', { name: /Research and cite/ }).first().click();
+  await expect(page.getByRole('heading', { name: /Research and cite/, level: 2 })).toBeFocused();
+});

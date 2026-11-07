@@ -15,6 +15,7 @@ import { useScrollSpy } from '../components/useScrollSpy';
 import { RoleFilter } from '../components/RoleFilter';
 import { withTerms } from '../components/TermTip';
 import { YourPart } from '../components/YourPart';
+import { Sources } from '../components/Sources';
 import { showsSection, type SectionKey } from '../data/roleSections';
 import { findRole } from '../data/roles';
 import { useRole } from '../lib/useRole';
@@ -222,6 +223,12 @@ export function ComponentPage() {
             title: 'Testing checklist',
             intro: <p>Your progress is saved in this browser.</p>,
             node: <Checklist scope={spec.slug} items={spec.testing} title={`${spec.name} testing checklist`} />,
+          },
+          {
+            key: 'sources',
+            title: 'Sources and review',
+            intro: <p>Where this guidance comes from, so you can check it and go deeper.</p>,
+            node: <Sources spec={spec} />,
           },
         ],
       },

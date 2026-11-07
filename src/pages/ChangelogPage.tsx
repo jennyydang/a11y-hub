@@ -4,6 +4,7 @@ import { usePageTitle } from './usePageTitle';
 
 /** Newest first. Add an entry whenever guidance, a page or a tool changes. */
 const CHANGES: { date: string; title: string; detail: string; to?: string }[] = [
+  { date: '2026-11-07', title: 'How we build the hub', detail: 'A shared process for the accessibility lead and SMEs to add components and sections, with a definition of done. Every component page now lists its sources and review date.', to: '/process' },
   { date: '2026-11-06', title: 'Keep learning', detail: 'Courses, videos, references and certifications for content, design, frontend and QA SMEs, with a suggested certification path for each role.', to: '/resources' },
   { date: '2026-11-06', title: 'Subtle motion', detail: 'Pages fade in, cards lift on hover, focus rings settle into place and panels ease open. All of it turns off when your device is set to reduce motion.', to: '/foundations/motion' },
   { date: '2026-11-06', title: 'Common problems and fixes', detail: 'Search by what you noticed, like “I can’t see where I am when I press Tab”, and get the cause and fix.', to: '/fixes' },
