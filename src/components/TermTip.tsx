@@ -40,7 +40,8 @@ export function TermTip({ term, children }: { term: Term; children: ReactNode })
         type="button"
         aria-expanded={open}
         aria-describedby={open ? id : undefined}
-        onClick={() => setOpen((o) => !o)}
+        // Hover already opens it, so a click keeps it open rather than toggling it shut. Escape or clicking elsewhere closes it.
+        onClick={show}
         onBlur={(e) => !root.current?.contains(e.relatedTarget as Node) && hide()}
         className="cursor-help rounded-sm underline decoration-primary-600 decoration-dotted decoration-2 underline-offset-4 focus-ring dark:decoration-primary-300"
       >
@@ -50,7 +51,7 @@ export function TermTip({ term, children }: { term: Term; children: ReactNode })
         {open && (
           <span
             id={id}
-            className="absolute left-0 top-full z-50 mt-1 block w-72 rounded-lg bg-gray-900 p-3 text-left text-sm font-normal normal-case leading-6 tracking-normal text-white shadow-lg dark:bg-gray-100 dark:text-gray-900"
+            className="pop-in absolute left-0 top-full z-50 mt-1 block w-72 rounded-lg bg-gray-900 p-3 text-left text-sm font-normal normal-case leading-6 tracking-normal text-white shadow-lg dark:bg-gray-100 dark:text-gray-900"
           >
             <span className="font-semibold">{term.term}: </span>
             {term.plain}{' '}

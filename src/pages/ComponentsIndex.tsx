@@ -28,7 +28,7 @@ export function ComponentsIndex() {
             <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {byCategory(cat).map((c) => (
                 <li key={c.slug}>
-                  <Link to={`/components/${c.slug}`} className="surface group flex h-full flex-col p-5 transition hover:-translate-y-0.5 hover:shadow-md focus-ring motion-reduce:transform-none">
+                  <Link to={`/components/${c.slug}`} className="surface group flex h-full flex-col p-5 focus-ring">
                     <span className="flex items-start justify-between gap-2">
                       <span className="text-base font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">{c.name}</span>
                       <span className="chip flex-none bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">{c.keyboard.length} keys</span>

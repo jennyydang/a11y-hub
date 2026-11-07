@@ -55,6 +55,15 @@ export interface AgencyProject {
   /** Keyed by component slug, or `page:<template name>`. */
   tests: Record<string, TestRecord>;
   findings: Finding[];
+  /** ACR rows the agency has adjusted by hand, keyed by success criterion id. */
+  acr: Record<string, AcrOverride>;
+}
+
+export const ACR_LEVELS = ['Supports', 'Partially Supports', 'Does Not Support', 'Not Applicable', 'Not Evaluated'] as const;
+export type AcrLevel = (typeof ACR_LEVELS)[number];
+export interface AcrOverride {
+  level?: AcrLevel;
+  remark?: string;
 }
 
 export const SUPPORT_OPTIONS = [
@@ -112,11 +121,12 @@ export const emptyProject = (): AgencyProject => ({
   components: [],
   tests: {},
   findings: [],
+  acr: {},
 });
 
 /** Fill in fields added since a project was saved, so older project files still open. */
 export function normalizeProject(raw: Partial<AgencyProject>): AgencyProject {
-  const base = { ...emptyProject(), ...raw, tests: raw.tests ?? {} };
+  const base = { ...emptyProject(), ...raw, tests: raw.tests ?? {}, acr: raw.acr ?? {} };
   const saved = (raw.findings ?? []) as Partial<Finding>[];
   let next = Math.max(0, ...saved.map((f) => f.n ?? 0));
   base.findings = saved.map((f) => ({
@@ -612,24 +622,55 @@ const ACR_TERM: Record<Support, string> = {
   'Not evaluated': 'Not Evaluated',
 };
 
-function acrDoc(p: AgencyProject): Doc {
+export interface AcrRow {
+  id: string;
+  name: string;
+  level: 'A' | 'AA';
+  /** What the builder works out from test results and issues. */
+  auto: AcrLevel;
+  autoRemark: string;
+  /** What goes in the report, after any adjustment. */
+  result: AcrLevel;
+  remark: string;
+  adjusted: boolean;
+}
+
+/** Every ACR row for the project's target, worked out from test results and issues, then any hand adjustments. */
+export function acrRows(p: AgencyProject): AcrRow[] {
   const is21 = p.target === 'WCAG 2.1 AA';
   const list = WCAG_ALL.filter(([id]) => (is21 ? !NEW_IN_22.includes(id) : id !== '4.1.1'));
   const specs = specsFor(p);
   const covered = new Set<string>([...PAGE_LEVEL_WCAG, ...specs.flatMap((s) => s.wcag.map((w) => w.id)), ...delivery(p).map((f) => f.wcag)]);
-  const row = ([id, name, level]: (typeof WCAG_ALL)[number]) => {
-    const w: WcagRef = { id, name, level };
-    if (is21 && id === '4.1.1') return [`${id} ${name} (Level ${level})`, 'Supports', 'Obsolete in WCAG 2.2 and treated as always satisfied for HTML.'];
-    if (!covered.has(id)) return [`${id} ${name} (Level ${level})`, 'Not Evaluated', 'Not covered by the delivered component specifications. Evaluate on the integrated site, or mark Not Applicable if no such content exists.'];
-    const e = evaluate(p, w);
-    const remark =
-      e.level === 'Supports'
-        ? `Tested on: ${e.appliesTo}. No outstanding issues.`
-        : e.level === 'Not evaluated'
-          ? `Applies to: ${e.appliesTo}. Manual testing not yet complete.`
-          : limitationText(e).join(' ');
-    return [`${id} ${name} (Level ${level})`, ACR_TERM[e.level], remark];
-  };
+  return list.map(([id, name, level]) => {
+    let auto: AcrLevel;
+    let autoRemark: string;
+    if (is21 && id === '4.1.1') {
+      auto = 'Supports';
+      autoRemark = 'Obsolete in WCAG 2.2 and treated as always satisfied for HTML.';
+    } else if (!covered.has(id)) {
+      auto = 'Not Evaluated';
+      autoRemark = 'Not covered by the delivered component specifications. Evaluate on the integrated site, or mark Not Applicable if no such content exists.';
+    } else {
+      const e = evaluate(p, { id, name, level });
+      auto = ACR_TERM[e.level] as AcrLevel;
+      autoRemark =
+        e.level === 'Supports'
+          ? `Tested on: ${e.appliesTo}. No outstanding issues.`
+          : e.level === 'Not evaluated'
+            ? `Applies to: ${e.appliesTo}. Manual testing not yet complete.`
+            : limitationText(e).join(' ');
+    }
+    const o = p.acr?.[id] ?? {};
+    const result = o.level ?? auto;
+    const remark = o.remark?.trim() || (o.level === 'Not Applicable' ? 'The product has no content of this kind.' : o.level && o.level !== auto ? '' : autoRemark);
+    return { id, name, level, auto, autoRemark, result, remark, adjusted: Boolean(o.level || o.remark?.trim()) };
+  });
+}
+
+function acrDoc(p: AgencyProject): Doc {
+  const rows = acrRows(p);
+  const table = (lvl: 'A' | 'AA') => rows.filter((r) => r.level === lvl).map((r) => [`${r.id} ${r.name} (Level ${r.level})`, r.result, r.remark]);
+  const unevaluated = rows.filter((r) => r.result === 'Not Evaluated').length;
   return {
     id: 'acr',
     title: 'Accessibility Conformance Report (VPAT 2.5 format)',
@@ -649,7 +690,7 @@ function acrDoc(p: AgencyProject): Doc {
       { t: 'h', level: 2, text: 'Evaluation methods used' },
       { t: 'p', text: `Automated testing with axe-core, and manual testing with: ${p.support.join('; ') || TBD}.` },
       { t: 'h', level: 2, text: 'Applicable standards and guidelines' },
-      { t: 'table', head: ['Standard/Guideline', 'Included in report'], rows: [[`Web Content Accessibility Guidelines ${is21 ? '2.1' : '2.2'}`, 'Level A (Yes), Level AA (Yes), Level AAA (No)']] },
+      { t: 'table', head: ['Standard/Guideline', 'Included in report'], rows: [[`Web Content Accessibility Guidelines ${p.target === 'WCAG 2.1 AA' ? '2.1' : '2.2'}`, 'Level A (Yes), Level AA (Yes), Level AAA (No)']] },
       { t: 'h', level: 2, text: 'Terms' },
       {
         t: 'ul',
@@ -661,11 +702,11 @@ function acrDoc(p: AgencyProject): Doc {
           'Not Evaluated: the product has not been evaluated against the criterion.',
         ],
       },
-      { t: 'note', text: 'Review every “Not Evaluated” row before publishing. Change it to Not Applicable only when the product has no content of that kind.' },
+      ...(unevaluated ? [{ t: 'note', text: `${unevaluated} criteria are Not Evaluated. Review them before publishing, and mark a criterion Not Applicable only when the product has no content of that kind.` } as Block] : []),
       { t: 'h', level: 2, text: 'Table 1: Success Criteria, Level A' },
-      { t: 'table', head: ['Criteria', 'Conformance Level', 'Remarks and Explanations'], rows: list.filter((c) => c[2] === 'A').map(row) },
+      { t: 'table', head: ['Criteria', 'Conformance Level', 'Remarks and Explanations'], rows: table('A') },
       { t: 'h', level: 2, text: 'Table 2: Success Criteria, Level AA' },
-      { t: 'table', head: ['Criteria', 'Conformance Level', 'Remarks and Explanations'], rows: list.filter((c) => c[2] === 'AA').map(row) },
+      { t: 'table', head: ['Criteria', 'Conformance Level', 'Remarks and Explanations'], rows: table('AA') },
       { t: 'p', text: '“Voluntary Product Accessibility Template” and “VPAT” are registered service marks of the Information Technology Industry Council (ITI).' },
     ],
   };

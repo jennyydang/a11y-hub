@@ -64,6 +64,7 @@ function buildIndex(): Entry[] {
     },
     ...basicsTasks.map((t) => ({ title: t.title, kind: 'Basics', to: `/basics#${t.id}`, fields: [{ label: 'Basics', text: `${t.why} ${t.dos.join(' ')}` }] })),
     ...fixes.map((f) => ({ title: f.symptom, kind: 'Problem and fix', to: `/fixes#${slugify(f.symptom)}`, fields: [{ label: 'Fix', text: `${f.cause} ${f.fix}` }] })),
+    { title: 'Keep learning', kind: 'Page', to: '/resources', fields: [{ label: 'Page', text: 'Learning resources, courses, training, videos, YouTube, references, certifications, CPACC, WAS, CPWA, ADS, Trusted Tester, IAAP' }] },
     { title: 'What’s new', kind: 'Page', to: '/changelog', fields: [{ label: 'Page', text: 'Changelog, recent updates, new pages and tools' }] },
     { title: 'Agency playbook', kind: 'Page', to: '/agency', fields: [{ label: 'Page', text: 'Client redesign, agency deliverables, conformance summary, testing summary, issue log, handoff' }] },
     { title: 'Glossary', kind: 'Page', to: '/glossary', fields: [{ label: 'Page', text: 'Definitions: accessible name, landmark, live region, focus trap, alt text, ARIA, WCAG' }] },
@@ -180,7 +181,8 @@ export function Search() {
         <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
           <path fillRule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.45 4.39l3.08 3.08a.75.75 0 1 1-1.06 1.06l-3.08-3.08A7 7 0 0 1 2 9Z" clipRule="evenodd" />
         </svg>
-        <span>Search</span>
+        {/* Icon only on the narrowest screens so the header fits at 320px; the name stays for screen readers. */}
+        <span className="max-[379px]:sr-only">Search</span>
         <kbd className="kbd ml-auto hidden sm:inline-flex" aria-hidden="true">
           {isMac ? '⌘' : 'Ctrl'} K
         </kbd>

@@ -6,7 +6,10 @@ import { WCAG } from '../data/wcag';
 import { importIssues } from '../lib/importIssues';
 import type { WcagRef } from '../data/types';
 import {
+  ACR_LEVELS,
   DELIVERABLES,
+  acrRows,
+  type AcrLevel,
   SEVERITIES,
   SOURCES,
   STATUSES,
@@ -684,6 +687,7 @@ export function DeliverablesBuilder() {
             </ul>
           </fieldset>
         ))}
+        {chosen.includes('acr') && <AcrEditor p={p} setP={setP} />}
         <div className="flex flex-wrap gap-2">
           <Button
             className="btn-bold-primary"
@@ -805,5 +809,97 @@ export function DeliverablesBuilder() {
         </div>
       </Step>
     </div>
+  );
+}
+
+/** Lets the agency mark criteria Not Applicable, correct a result, or add a remark before exporting the ACR. */
+function AcrEditor({ p, setP }: { p: AgencyProject; setP: (fn: (x: AgencyProject) => AgencyProject) => void }) {
+  const id = useId();
+  const [onlyOpen, setOnlyOpen] = useState(true);
+  const rows = acrRows(p);
+  const unevaluated = rows.filter((r) => r.result === 'Not Evaluated').length;
+  const shown = onlyOpen ? rows.filter((r) => r.auto === 'Not Evaluated' || r.adjusted) : rows;
+  const update = (key: string, patch: { level?: AcrLevel | ''; remark?: string }) =>
+    setP((x) => {
+      const cur = { ...(x.acr[key] ?? {}), ...patch };
+      if (!cur.level) delete cur.level;
+      if (!cur.remark) delete cur.remark;
+      const acr = { ...x.acr };
+      if (cur.level || cur.remark) acr[key] = cur as { level?: AcrLevel; remark?: string };
+      else delete acr[key];
+      return { ...x, acr };
+    });
+  return (
+    <details className="surface p-4">
+      <summary className="cursor-pointer rounded-sm font-semibold focus-ring">
+        Adjust ACR rows <span className="font-normal text-muted">({unevaluated} not evaluated, {rows.filter((r) => r.adjusted).length} adjusted)</span>
+      </summary>
+      <div className="mt-3 space-y-3">
+        <p className="text-sm leading-6 text-muted">
+          Results come from your test results and issue log. Mark a criterion Not Applicable when the product has no content of that kind, for example no video or no time limits. Add a remark to
+          explain any change.
+        </p>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" className={check} checked={onlyOpen} onChange={(e) => setOnlyOpen(e.target.checked)} />
+          Only show criteria not covered by testing, and ones I’ve adjusted
+        </label>
+        <div className="overflow-x-auto" role="region" aria-labelledby={`${id}-cap`} tabIndex={0}>
+          <table className="w-full min-w-[40rem] text-left text-sm">
+            <caption id={`${id}-cap`} className="sr-only">
+              ACR rows, {shown.length} shown
+            </caption>
+            <thead>
+              <tr className="border-b border-gray-300 dark:border-gray-600">
+                <th scope="col" className="py-2 pr-3">Criterion</th>
+                <th scope="col" className="py-2 pr-3">Conformance level</th>
+                <th scope="col" className="py-2">Remark</th>
+              </tr>
+            </thead>
+            <tbody>
+              {shown.map((r) => {
+                const o = p.acr[r.id] ?? {};
+                return (
+                  <tr key={r.id} className="border-b border-gray-200 align-top dark:border-gray-700">
+                    <th scope="row" id={`${id}-${r.id}`} className="py-2 pr-3 font-medium">
+                      {r.id} {r.name} <span className="font-normal text-muted">({r.level})</span>
+                    </th>
+                    <td className="py-2 pr-3">
+                      <select
+                        aria-labelledby={`${id}-${r.id} ${id}-lvl`}
+                        className="w-full rounded-md border border-gray-400 bg-white px-2 py-1.5 dark:border-gray-500 dark:bg-gray-900"
+                        value={o.level ?? ''}
+                        onChange={(e) => update(r.id, { level: e.target.value as AcrLevel | '' })}
+                      >
+                        <option value="">From testing: {r.auto}</option>
+                        {ACR_LEVELS.filter((l) => l !== r.auto).map((l) => (
+                          <option key={l} value={l}>
+                            {l}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="py-2">
+                      <input
+                        aria-labelledby={`${id}-${r.id} ${id}-rmk`}
+                        className="w-full rounded-md border border-gray-400 bg-white px-2 py-1.5 placeholder:text-gray-600 dark:border-gray-500 dark:bg-gray-900 dark:placeholder:text-gray-400"
+                        placeholder={r.remark || 'Explain the result'}
+                        value={o.remark ?? ''}
+                        onChange={(e) => update(r.id, { remark: e.target.value })}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <span id={`${id}-lvl`} hidden>
+          conformance level
+        </span>
+        <span id={`${id}-rmk`} hidden>
+          remark
+        </span>
+      </div>
+    </details>
   );
 }

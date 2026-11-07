@@ -1,3 +1,4 @@
+import { certPaths } from '../data/resources';
 import { Link, useParams } from 'react-router-dom';
 import { Checklist } from '../components/Checklist';
 import { Section } from '../components/Section';
@@ -89,7 +90,7 @@ export function RolePage() {
           <ul className="grid gap-4 sm:grid-cols-2">
             {toolsFor(guide.id).map((t) => (
               <li key={t.id}>
-                <Link to={toolPath(t.id)} className="surface group flex h-full flex-col p-5 transition hover:shadow-md focus-ring">
+                <Link to={toolPath(t.id)} className="surface group flex h-full flex-col p-5 focus-ring">
                   <span className="font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-200">{t.name}</span>
                   <span className="mt-1 text-sm leading-6 text-muted">{t.why[guide.id] ?? t.description}</span>
                 </Link>
@@ -146,6 +147,15 @@ export function RolePage() {
 
         <Section title="WCAG criteria to know">
           <WcagList refs={guide.wcag} />
+        </Section>
+
+        <Section title="Keep learning" intro={<p>Courses, videos and references picked for {guide.name === 'QA' ? 'QA' : guide.name.toLowerCase()} work.</p>}>
+          <p className="leading-7">
+            <strong>Suggested certifications:</strong> {certPaths[guide.id].join(', then ')}.{' '}
+            <Link to={`/resources?role=${guide.id}`} className="link">
+              See learning resources and certifications for {guide.name === 'QA' ? 'QA' : guide.name.toLowerCase()}
+            </Link>
+          </p>
         </Section>
       </div>
     </article>

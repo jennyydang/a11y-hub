@@ -66,7 +66,7 @@ function NavGroup({
           {count !== undefined && <span className="text-xs font-normal normal-case tracking-normal text-muted">{count}</span>}
         </button>
       </h2>
-      <div id={panel} hidden={!open} className={cx('mt-0.5', nested ? 'pl-4' : 'pl-3')}>
+      <div id={panel} hidden={!open} className={cx('reveal mt-0.5', nested ? 'pl-4' : 'pl-3')}>
         {children}
       </div>
     </div>
@@ -86,7 +86,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   if (pathname.startsWith('/roles')) currentGroups.add('roles');
   if (pathname.startsWith('/foundations')) currentGroups.add('foundations');
   if (pathname.startsWith('/tools')) currentGroups.add('tools');
-  if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
+  if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog', '/resources'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
   if (pathname.startsWith('/components')) {
     currentGroups.add('components');
     const c = findComponent(pathname.split('/')[2] ?? '');
@@ -132,6 +132,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
     ['/progress', 'Team progress'],
     ['/examples', 'Page examples'],
     ['/glossary', 'Glossary'],
+    ['/resources', 'Keep learning: courses and certifications'],
     ['/changelog', 'What’s new'],
   ];
   const referenceItems = reference.filter(([, l]) => match(l));
@@ -269,7 +270,7 @@ export function Layout() {
         Skip to main content
       </a>
       <header className="sticky top-0 z-40 border-b border-gray-200/80 bg-white/90 backdrop-blur dark:border-gray-800 dark:bg-[#0f1113]/90">
-        <div className="mx-auto flex h-16 max-w-[90rem] items-center gap-3 px-4 sm:px-6">
+        <div className="mx-auto flex h-16 max-w-[90rem] items-center gap-2 px-3 sm:gap-3 sm:px-6">
           <button
             ref={menuButtonRef}
             type="button"
@@ -289,7 +290,7 @@ export function Layout() {
           </button>
           <NavLink to="/" className="flex items-center gap-2.5 rounded-md focus-ring">
             <Logo />
-            <span className="whitespace-nowrap text-lg font-bold tracking-tight">A11y Hub</span>
+            <span className="whitespace-nowrap text-base font-bold tracking-tight sm:text-lg">A11y Hub</span>
           </NavLink>
           <span className="chip hidden bg-gray-100 text-gray-700 xl:inline-flex dark:bg-gray-800 dark:text-gray-200">Styled with Fluid UI</span>
           <nav aria-label="Primary" className="ml-auto hidden items-center gap-1 lg:flex">
@@ -334,7 +335,9 @@ export function Layout() {
           </nav>
         )}
         <main id="main" ref={mainRef} tabIndex={-1} className="min-w-0 flex-1 px-4 py-8 outline-none sm:px-8 lg:px-12 lg:py-12">
-          <Outlet />
+          <div key={location.pathname} className="page-enter">
+            <Outlet />
+          </div>
         </main>
       </div>
       <footer className="border-t border-gray-200/80 px-4 py-8 text-center text-sm text-muted dark:border-gray-800">

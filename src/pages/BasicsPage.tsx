@@ -22,9 +22,9 @@ export function BasicsPage() {
         <ul className="mt-3 grid gap-2 sm:grid-cols-3">
           {basicsTasks.map((t) => (
             <li key={t.id}>
-              <Link to={`#${t.id}`} className="surface flex h-full items-center justify-between gap-2 px-4 py-3 text-sm font-medium transition hover:shadow-md focus-ring">
+              <Link to={`#${t.id}`} className="surface flex h-full items-center justify-between gap-2 px-4 py-3 text-sm font-medium focus-ring">
                 {t.title}
-                <span aria-hidden="true">↓</span>
+                <span aria-hidden="true" className="nudge-down inline-block">↓</span>
               </Link>
             </li>
           ))}
