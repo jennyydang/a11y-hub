@@ -17,6 +17,7 @@ import { BasicsPage } from './pages/BasicsPage';
 import { FixesPage } from './pages/FixesPage';
 import { ChangelogPage } from './pages/ChangelogPage';
 import { ResourcesPage } from './pages/ResourcesPage';
+import { ProcessPage } from './pages/ProcessPage';
 
 export function App() {
   return (
@@ -32,6 +33,7 @@ export function App() {
           <Route path="fixes" element={<FixesPage />} />
           <Route path="changelog" element={<ChangelogPage />} />
           <Route path="resources" element={<ResourcesPage />} />
+          <Route path="process" element={<ProcessPage />} />
           <Route path="agency" element={<AgencyPage />} />
           <Route path="checklist" element={<ChecklistPage />} />
           <Route path="tools" element={<ToolsIndex />} />

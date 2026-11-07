@@ -86,7 +86,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   if (pathname.startsWith('/roles')) currentGroups.add('roles');
   if (pathname.startsWith('/foundations')) currentGroups.add('foundations');
   if (pathname.startsWith('/tools')) currentGroups.add('tools');
-  if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog', '/resources'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
+  if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog', '/resources', '/process'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
   if (pathname.startsWith('/components')) {
     currentGroups.add('components');
     const c = findComponent(pathname.split('/')[2] ?? '');
@@ -133,6 +133,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
     ['/examples', 'Page examples'],
     ['/glossary', 'Glossary'],
     ['/resources', 'Keep learning: courses and certifications'],
+    ['/process', 'How we build the hub'],
     ['/changelog', 'What’s new'],
   ];
   const referenceItems = reference.filter(([, l]) => match(l));
@@ -344,6 +345,10 @@ export function Layout() {
         A11y Hub ·{' '}
         <NavLink className="link" to="/changelog">
           What’s new
+        </NavLink>{' '}
+        ·{' '}
+        <NavLink className="link" to="/process">
+          How we build the hub
         </NavLink>{' '}
         · Built with React, Vite and{' '}
         <a className="link" href="https://fluid-design.io/" target="_blank" rel="noreferrer">

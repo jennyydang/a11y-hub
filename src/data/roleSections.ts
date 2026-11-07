@@ -21,13 +21,14 @@ export type SectionKey =
   | 'fluid'
   | 'owners'
   | 'worksheet'
-  | 'testing';
+  | 'testing'
+  | 'sources';
 
 export const roleSections: Record<RoleId, SectionKey[]> = {
-  content: ['live', 'when', 'placement', 'practices', 'goodbad', 'tool', 'worksheet'],
-  design: ['live', 'when', 'anatomy', 'keyboard', 'focus', 'placement', 'practices', 'goodbad', 'tool', 'wcag', 'worksheet'],
-  frontend: ['live', 'code', 'when', 'anatomy', 'keyboard', 'aria', 'focus', 'practices', 'goodbad', 'tool', 'wcag', 'fluid', 'worksheet', 'testing'],
-  qa: ['live', 'anatomy', 'keyboard', 'aria', 'focus', 'goodbad', 'tool', 'wcag', 'worksheet', 'testing'],
+  content: ['live', 'when', 'placement', 'practices', 'goodbad', 'tool', 'worksheet', 'sources'],
+  design: ['live', 'when', 'anatomy', 'keyboard', 'focus', 'placement', 'practices', 'goodbad', 'tool', 'wcag', 'worksheet', 'sources'],
+  frontend: ['live', 'code', 'when', 'anatomy', 'keyboard', 'aria', 'focus', 'practices', 'goodbad', 'tool', 'wcag', 'fluid', 'worksheet', 'testing', 'sources'],
+  qa: ['live', 'anatomy', 'keyboard', 'aria', 'focus', 'goodbad', 'tool', 'wcag', 'worksheet', 'testing', 'sources'],
 };
 
 /** With a role chosen, "Who owns what" ('owners') is left out: the "Your part" panel near the top replaces it. */

@@ -1,0 +1,62 @@
+name: New component or section
+description: Propose a component, page or section for A11y Hub. This is stage 1 of the process at /process.
+title: "[New] "
+labels: ["new content"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping the hub grow. The accessibility lead will review this, check for overlap and name one SME per role.
+        The full process is on the hub under **Testing & reference → How we build the hub**.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is it?
+      options:
+        - A new component
+        - A variation of an existing component
+        - A foundation, guide or other page
+        - A new section on component pages
+        - A tool
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      placeholder: For example, Date range picker
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does it solve, and for whom?
+      description: Who will use this guidance (content, design, frontend, QA, everyday authors, agencies) and what will they do with it?
+    validations:
+      required: true
+  - type: textarea
+    id: where
+    attributes:
+      label: Where is it used?
+      description: Products, pages or designs where it appears. Screenshots help.
+  - type: textarea
+    id: existing
+    attributes:
+      label: What did you find in the hub already?
+      description: Search the hub first. If an existing page nearly covers it, say which one.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources you know of
+      description: ARIA Authoring Practices pattern, WCAG criteria, design systems, articles or test results. Links are fine.
+  - type: checkboxes
+    id: roles
+    attributes:
+      label: Roles that need to contribute
+      options:
+        - label: Design
+        - label: Content
+        - label: Frontend
+        - label: QA

@@ -1,0 +1,23 @@
+name: Something is out of date or wrong
+description: Report guidance that's inaccurate, unclear or no longer matches standards or browser support.
+title: "[Update] "
+labels: ["guidance update"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Which page?
+      placeholder: For example, /components/tabs
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: What shows the current guidance is wrong? A spec, the APG, a test result with screen reader and browser versions, or an article.
