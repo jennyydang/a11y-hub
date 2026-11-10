@@ -1,3 +1,4 @@
+import { LOCALIZATION_RULES } from '../lib/translation';
 import { ContrastChecker } from '../tools/ContrastChecker';
 import { MotionDemo } from '../tools/MotionDemo';
 import { PageLayoutMap } from '../tools/PageLayoutMap';
@@ -154,6 +155,13 @@ export const foundations: FoundationSpec[] = [
         body: [
           'Landmarks (<header>, <nav>, <main>, <footer>, <aside>) and a logical heading outline let screen reader users jump straight to what they need. Use one <h1> per page and don’t skip levels.',
         ],
+      },
+      {
+        heading: 'Translation and language',
+        body: [
+          'On a translated page, screen reader users hear every string you give them, including ones nobody sees. If the visible copy is translated but an aria-label isn’t, they hear a mix of languages. Each component’s ARIA table has a Translate column, and its handoff worksheet marks which copy is screen reader only.',
+        ],
+        bullets: LOCALIZATION_RULES,
       },
     ],
   },

@@ -114,6 +114,13 @@ export const fixes: Fix[] = [
     link: { label: 'Motion & animation', to: '/foundations/motion' },
   },
   {
+    symptom: 'On a translated page, the screen reader switches to English for some buttons',
+    noticedBy: 'Screen reader testing in another language',
+    cause: 'Visible copy was translated, but aria-label, alt, aria-valuetext or visually hidden text wasn’t, because nobody sees it.',
+    fix: 'Send every string a screen reader reads to translation. Each component’s ARIA table and worksheet mark which ones, and the deliverables builder exports them as a CSV. Never translate ARIA tokens like aria-expanded="true".',
+    link: { label: 'Translation and language', to: '/foundations/semantics' },
+  },
+  {
     symptom: 'Hashtags or emoji sound like nonsense with a screen reader',
     noticedBy: 'Screen reader users on social media',
     cause: 'Lowercase hashtags run together, and every emoji is read by name.',

@@ -1,3 +1,4 @@
+import { fieldTranslation } from '../lib/translation';
 import { Fragment, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { Tab } from '@headlessui/react';
 import { Button } from '@fluid-design/fluid-ui';
@@ -30,7 +31,8 @@ function toMarkdown(spec: ComponentSpec, variant: Variant | undefined, e: Worksh
   fields.forEach((f) => {
     const v = (e.fields[f.id] ?? '').trim();
     const status = v ? '' : f.required ? ' ⚠️ MISSING' : ' (optional, left blank)';
-    lines.push(`- **${f.label}** → \`${f.target}\`${status}`);
+    const tr = fieldTranslation(f);
+    lines.push(`- **${f.label}** → \`${f.target}\`${status} _(${tr.translate ? `translate; ${tr.audience.toLowerCase()}` : 'don’t translate'})_`);
     if (v) v.split('\n').forEach((l) => lines.push(`  - ${l}`));
   });
 
@@ -158,6 +160,16 @@ function QaCase({ check, result, note, onResult, onNote, report }: { check: Chec
   );
 }
 
+function TranslateChip({ field }: { field: ContentField }) {
+  const t = fieldTranslation(field);
+  const label = !t.translate ? 'Don’t translate' : t.audience === 'Visible' ? 'Translate' : `Translate · ${t.audience.toLowerCase()}`;
+  return (
+    <span className={cx('chip', t.translate ? 'bg-sky-100 text-sky-900 dark:bg-sky-900/60 dark:text-sky-100' : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200')}>
+      {label}
+    </span>
+  );
+}
+
 function FieldInput({ field, value, onChange }: { field: ContentField; value: string; onChange: (v: string) => void }) {
   const id = useId();
   const lints = lintField(field.kind, value);
@@ -171,6 +183,7 @@ function FieldInput({ field, value, onChange }: { field: ContentField; value: st
           {field.label}
         </label>
         <span className="chip bg-gray-100 font-mono font-normal text-gray-800 dark:bg-gray-800 dark:text-gray-100">{field.target}</span>
+        <TranslateChip field={field} />
         {field.required ? (
           <span className={cx('chip', filled ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/60 dark:text-emerald-100' : 'bg-amber-100 text-amber-900 dark:bg-amber-900/60 dark:text-amber-100')}>
             {filled ? '✓ Filled' : 'Required'}
@@ -181,6 +194,7 @@ function FieldInput({ field, value, onChange }: { field: ContentField; value: st
       </div>
       <p id={`${id}-guide`} className="text-sm leading-6 text-muted">
         {field.guidance}
+        {fieldTranslation(field).audience !== 'Visible' || !fieldTranslation(field).translate ? ` ${fieldTranslation(field).note}` : ''}
       </p>
       {field.multiline ? (
         <textarea id={id} rows={3} value={value} onChange={(e) => onChange(e.target.value)} aria-describedby={describedBy} className={inputClass} />

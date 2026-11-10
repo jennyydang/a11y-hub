@@ -4,6 +4,7 @@ import { glance } from '../data/glance';
 import { htmlExamples } from '../data/html';
 import { pageChecks } from '../data/pageChecks';
 import { worksheets } from '../data/requirements';
+import { LOCALIZATION_RULES, ariaTranslation, fieldTranslation } from './translation';
 import { roles } from '../data/roles';
 import type { ComponentSpec, WcagRef } from '../data/types';
 import { WCAG, wcagUrl } from '../data/wcag';
@@ -381,7 +382,7 @@ function componentsDoc(p: AgencyProject): Doc {
       { t: 'h', level: 3, text: 'Focus' },
       { t: 'ul', items: s.focus },
       { t: 'h', level: 3, text: 'Semantic HTML and ARIA' },
-      { t: 'table', head: ['Attribute or element', 'Where', 'Usage'], rows: s.aria.map((x) => [x.attr, x.where, x.usage]) },
+      { t: 'table', head: ['Attribute or element', 'Where', 'Usage', 'Translate?'], rows: s.aria.map((x) => [x.attr, x.where, x.usage, ariaTranslation(x).action]) },
       ...(html ? [{ t: 'code' as const, lang: 'html', text: html }] : []),
       { t: 'h', level: 3, text: 'Screen reader behavior' },
       { t: 'ul', items: s.screenReader },
@@ -389,7 +390,7 @@ function componentsDoc(p: AgencyProject): Doc {
     if (ws?.content.length) {
       blocks.push(
         { t: 'h', level: 3, text: 'Content requirements' },
-        { t: 'table', head: ['Content', 'Goes in', 'Required', 'Guidance'], rows: ws.content.map((c) => [c.label, c.target, yes(c.required), c.guidance]) },
+        { t: 'table', head: ['Content', 'Goes in', 'Required', 'Translate?', 'Guidance'], rows: ws.content.map((c) => [c.label, c.target, yes(c.required), translateLabel(c), c.guidance]) },
       );
     }
     if (ws?.design.length) {
@@ -712,6 +713,48 @@ function acrDoc(p: AgencyProject): Doc {
   };
 }
 
+const translateLabel = (c: { target: string }) => {
+  const t = fieldTranslation(c);
+  return t.translate ? (t.audience === 'Visible' ? 'Yes' : `Yes, ${t.audience.toLowerCase()}`) : 'No, fixed token';
+};
+
+export interface TranslationRow {
+  component: string;
+  string: string;
+  goesIn: string;
+  seenBy: string;
+  translate: string;
+  note: string;
+  example: string;
+}
+
+/** Every string in the selected components that translators need to see, including ARIA values and hidden text. */
+export function translationRows(p: AgencyProject): TranslationRow[] {
+  return specsFor(p).flatMap((s) => {
+    const fields = (worksheets[s.slug]?.content ?? []).map((c) => {
+      const t = fieldTranslation(c);
+      return { component: s.name, string: c.label, goesIn: c.target, seenBy: t.audience, translate: translateLabel(c), note: `${t.note} ${c.guidance}`.trim(), example: c.good };
+    });
+    const covered = new Set(fields.map((f) => f.goesIn));
+    const aria = s.aria
+      .filter((a) => ariaTranslation(a).action === 'Translate the value' && !covered.has(a.attr))
+      .map((a) => {
+        const t = ariaTranslation(a);
+        return { component: s.name, string: `${a.attr} on ${a.where}`, goesIn: a.attr, seenBy: 'Screen reader only', translate: 'Yes, screen reader only', note: `${t.note} ${a.usage}`, example: '' };
+      });
+    return [...fields, ...aria];
+  });
+}
+
+const csvCell = (v: string) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
+
+/** A spreadsheet for translators: one row per string, with context and an empty column for the translation. */
+export function translationCsv(p: AgencyProject): string {
+  const head = ['Component', 'String', 'Goes in', 'Seen by', 'Translate?', 'Context for translators', 'Example (English)', 'Translation'];
+  const rows = translationRows(p).map((r) => [r.component, r.string, r.goesIn, r.seenBy, r.translate, r.note, r.example, '']);
+  return [head, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n') + '\r\n';
+}
+
 function devHandoffDoc(p: AgencyProject): Doc {
   const specs = specsFor(p);
   const issues = delivery(p);
@@ -752,6 +795,15 @@ function devHandoffDoc(p: AgencyProject): Doc {
     { t: 'h', level: 2, text: 'Content integration' },
     { t: 'p', text: 'Most issues introduced after handoff come from content. Check these whenever content is added or edited:' },
     { t: 'ul', items: contentRole?.checklist ?? [] },
+    { t: 'h', level: 2, text: 'Translation and localization' },
+    { t: 'p', text: 'Screen reader users hear every string the components expose, including text nobody sees. Translate these with the visible copy, and leave ARIA tokens alone.' },
+    { t: 'ul', items: LOCALIZATION_RULES },
+    ...(specs.length
+      ? [
+          { t: 'table' as const, head: ['Component', 'String', 'Goes in', 'Seen by', 'Translate?'], rows: translationRows(p).map((r) => [r.component, r.string, r.goesIn, r.seenBy, r.translate]) },
+          { t: 'note' as const, text: 'The deliverables builder exports this table as a CSV for translators, with a column for the translation.' },
+        ]
+      : []),
     { t: 'h', level: 2, text: 'Component implementation notes' },
   ];
   if (!specs.length) blocks.push({ t: 'note', text: 'No components selected yet.' });

@@ -50,6 +50,10 @@ The first time, run `npx playwright install chromium`.
 - Wrap jargon with the glossary: `withTerms()` adds a tip to the first mention of a glossary term.
 - Never name a client organization in content, samples or notes. Use "Example Client".
 
+## Translation
+
+Every string a screen reader reads needs translating, not just visible copy. Add aria-label, aria-valuetext, aria-roledescription, alt and visually hidden text to the worksheet's content fields, so they appear in the translation export. ARIA tokens (`role`, `aria-expanded="true"`, `aria-live="polite"`, `autocomplete`) are never translated. The rules are in `src/lib/translation.ts`.
+
 ## Citing sources
 
 Every requirement should trace back to a source. Prefer, in order: standards (WCAG, HTML, ARIA), the ARIA Authoring Practices Guide, design systems that publish research with disabled users, expert testing with named screen readers and versions, and our own recorded tests. WCAG criteria and the APG pattern on a spec appear on the page automatically; add everything else to `src/data/sources.ts`.

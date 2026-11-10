@@ -73,7 +73,7 @@ export const stages: Stage[] = [
     goal: 'Each SME writes their part at the same time, on one branch.',
     steps: [
       'Design: anatomy, states, focus indicator, contrast, target size and placement.',
-      'Content: when to use it, labels, messages and the handoff worksheet’s content fields.',
+      'Content: when to use it, labels, messages and the handoff worksheet’s content fields, including screen reader only text that needs translating.',
       'Frontend: semantics, keyboard map, ARIA table, the live demo, code and Fluid UI notes.',
       'QA: the testing checklist and acceptance criteria, written so they can pass or fail.',
       'Write in plain language. Define new jargon in the glossary.',
@@ -175,6 +175,7 @@ export const definitionOfDone: string[] = [
   'Anatomy, states and placement guidance from design',
   'Do and don’t examples, and good and bad examples',
   'Handoff worksheet entry with content fields and design requirements (src/data/requirements.ts)',
+  'Every string that needs translation is a worksheet content field, including aria-label, aria-valuetext, alt and visually hidden text',
   'Role notes for content, design, frontend and QA (componentRoles in src/data/roles.ts)',
   'Testing checklist with pass/fail acceptance criteria',
   'WCAG 2.2 criteria listed',

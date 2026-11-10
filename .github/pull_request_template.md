@@ -34,6 +34,7 @@
 - [ ] Anatomy, states and placement guidance
 - [ ] Do and don't, and good and bad examples
 - [ ] Handoff worksheet entry (`src/data/requirements.ts`)
+- [ ] Every string that needs translation is a content field, including ARIA values and visually hidden text
 - [ ] Role notes (`componentRoles` in `src/data/roles.ts`)
 - [ ] Testing checklist with pass/fail acceptance criteria
 - [ ] WCAG 2.2 criteria listed

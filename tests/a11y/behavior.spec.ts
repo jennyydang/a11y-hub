@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import { expectNoViolations, go } from './helpers';
 
@@ -74,4 +75,21 @@ test('component pages cite their sources, and the process page links stages', as
   await go(page, '/process');
   await page.getByRole('link', { name: /Research and cite/ }).first().click();
   await expect(page.getByRole('heading', { name: /Research and cite/, level: 2 })).toBeFocused();
+});
+
+test('translation: ARIA values and hidden copy are marked, and the builder exports them', async ({ page }) => {
+  await go(page, '/components/button');
+  const aria = page.getByRole('table', { name: /Button roles, states and properties/ });
+  await expect(aria.getByRole('row', { name: /aria-label icon-only button/ })).toContainText('Translate the value');
+  await expect(aria.getByRole('row', { name: /aria-expanded/ })).toContainText('Don’t translate');
+
+  await go(page, '/tools/deliverables');
+  await page.getByRole('button', { name: /Add Sign-up form components/ }).click();
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download translation strings (.csv)' }).click();
+  const file = await (await download).path();
+  const csv = readFileSync(file, 'utf8');
+  expect(csv).toContain('Component,String,Goes in,Seen by,Translate?');
+  expect(csv).toMatch(/Screen reader only/);
+  expect(csv).not.toMatch(/aria-expanded/);
 });
