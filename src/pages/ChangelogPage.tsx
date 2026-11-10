@@ -4,6 +4,7 @@ import { usePageTitle } from './usePageTitle';
 
 /** Newest first. Add an entry whenever guidance, a page or a tool changes. */
 const CHANGES: { date: string; title: string; detail: string; to?: string }[] = [
+  { date: '2026-11-10', title: 'Patterns: whole sections of a page', detail: 'Main navigation, hero banner, product listing with filters, product gallery and add to cart. Each has a live example, its structure, keyboard and ARIA, every string to translate, and who does what.', to: '/patterns' },
   { date: '2026-11-10', title: 'Translation marked everywhere, including ARIA', detail: 'ARIA tables say which values to translate and which never to. Worksheets mark screen reader only copy, and the deliverables builder exports every string for translators as a CSV.', to: '/foundations/semantics' },
   { date: '2026-11-07', title: 'How we build the hub', detail: 'A shared process for the accessibility lead and SMEs to add components and sections, with a definition of done. Every component page now lists its sources and review date.', to: '/process' },
   { date: '2026-11-06', title: 'Keep learning', detail: 'Courses, videos, references and certifications for content, design, frontend and QA SMEs, with a suggested certification path for each role.', to: '/resources' },

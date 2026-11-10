@@ -192,6 +192,7 @@ export const sectionSteps: string[] = [
   'Cite the sources the guidance is based on, on the page itself.',
   'Write for the audience: plain language for everyone, technical detail where specialists need it.',
   'If it adds a section to component pages, add it to src/data/roleSections.ts for the roles who need it.',
+  'For a pattern (a whole section, like main navigation), add a file in src/patterns and list it in src/patterns/index.ts. Patterns follow the same definition of done as components.',
   'Link it from the sidebar so the automated tests scan it.',
   'Have one SME from another role and the accessibility lead review it.',
   'Add a What’s new entry.',

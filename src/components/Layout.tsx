@@ -4,6 +4,7 @@ import { categories, byCategory, findComponent } from '../data/components';
 import { useRole } from '../lib/useRole';
 import { foundations } from '../data/foundations';
 import { roles } from '../data/roles';
+import { patterns } from '../patterns';
 import { cx } from '../ui';
 import { Search } from './Search';
 import { tools, toolPath } from '../data/tools';
@@ -85,6 +86,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const currentGroups = new Set<string>();
   if (pathname.startsWith('/roles')) currentGroups.add('roles');
   if (pathname.startsWith('/foundations')) currentGroups.add('foundations');
+  if (pathname.startsWith('/patterns')) currentGroups.add('patterns');
   if (pathname.startsWith('/tools')) currentGroups.add('tools');
   if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog', '/resources', '/process'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
   if (pathname.startsWith('/components')) {
@@ -110,7 +112,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
     <li key={to}>
       <NavLink
         to={to}
-        end={to === '/' || to === '/components' || to === '/tools'}
+        end={to === '/' || to === '/components' || to === '/tools' || to === '/patterns'}
         onClick={onNavigate}
         className={({ isActive }) =>
           cx(
@@ -138,6 +140,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   ];
   const referenceItems = reference.filter(([, l]) => match(l));
   const foundationItems = foundations.filter((f) => match(f.name));
+  const patternItems = patterns.filter((p) => match(p.name));
   const roleItems = roles.filter((r) => match(`${r.name} guide`));
   const toolItems = tools.filter((t) => match(t.name));
   const componentGroups = categories.map((cat) => [cat, byCategory(cat).filter((c) => match(c.name))] as const).filter(([, list]) => list.length);
@@ -185,6 +188,14 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
                 </NavGroup>
               </li>
             ))}
+          </ul>
+        </NavGroup>
+      )}
+      {patternItems.length > 0 && (
+        <NavGroup id="patterns" title="Patterns" count={patternItems.length} open={isOpen('patterns')} onToggle={() => toggle('patterns')}>
+          <ul className="space-y-0.5">
+            {!q && item('/patterns', 'All patterns')}
+            {patternItems.map((p) => item(`/patterns/${p.slug}`, p.name))}
           </ul>
         </NavGroup>
       )}

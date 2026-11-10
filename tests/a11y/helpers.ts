@@ -6,7 +6,7 @@ export const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 /** Every route the hub links to, collected from the sidebar, the tools index and the examples index. */
 export async function allRoutes(page: Page): Promise<string[]> {
   const found = new Set<string>(['/']);
-  for (const start of ['/', '/tools', '/examples']) {
+  for (const start of ['/', '/tools', '/examples', '/patterns']) {
     await page.goto(`#${start}`);
     await page.locator('main h1').waitFor();
     const hrefs = await page.locator('a[href^="#/"]').evaluateAll((as) => as.map((a) => a.getAttribute('href') ?? ''));

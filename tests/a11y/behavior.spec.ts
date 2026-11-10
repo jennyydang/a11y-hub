@@ -93,3 +93,32 @@ test('translation: ARIA values and hidden copy are marked, and the builder expor
   expect(csv).toMatch(/Screen reader only/);
   expect(csv).not.toMatch(/aria-expanded/);
 });
+
+test('patterns: main navigation submenus and the buy box error', async ({ page }) => {
+  await go(page, '/patterns/main-navigation');
+  const nav = page.getByRole('navigation', { name: 'Main' });
+  const shop = nav.getByRole('button', { name: 'Shop' });
+  await shop.focus();
+  await page.keyboard.press('Enter');
+  await expect(shop).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Tab');
+  await expect(nav.getByRole('link', { name: 'New arrivals' })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(shop).toHaveAttribute('aria-expanded', 'false');
+  await expect(shop).toBeFocused();
+
+  await go(page, '/patterns/product-gallery');
+  const thumbs = page.getByRole('list', { name: 'Choose an image' }).getByRole('button');
+  await thumbs.nth(1).click();
+  await expect(thumbs.nth(1)).toHaveAttribute('aria-pressed', 'true');
+  await expect(thumbs.nth(0)).toHaveAttribute('aria-pressed', 'false');
+
+  await go(page, '/patterns/buy-box');
+  await page.getByRole('button', { name: 'Add to bag' }).click();
+  await expect(page.getByRole('group', { name: 'Size (US)' })).toHaveAccessibleDescription('Choose a size');
+  await expect(page.getByRole('radio', { name: '7' })).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('radio', { name: '8' })).toBeChecked();
+  await page.getByRole('button', { name: 'Add to bag' }).click();
+  await expect(page.getByRole('status').filter({ hasText: 'Added 1' })).toContainText('size 8');
+});

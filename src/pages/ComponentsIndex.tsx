@@ -16,6 +16,10 @@ export function ComponentsIndex() {
           <Link to="/tools/component-picker" className="link">
             Answer a few questions to find out
           </Link>
+          . Building a whole section, like main navigation or a product gallery?{' '}
+          <Link to="/patterns" className="link">
+            See patterns
+          </Link>
           .
         </p>
       </PageHeader>
