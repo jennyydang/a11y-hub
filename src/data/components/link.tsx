@@ -79,18 +79,4 @@ export const link: ComponentSpec = {
     'Confirm links that open new tabs or download files say so.',
   ],
   Demo,
-  code: `<a className="link" href="/guidelines/color">color and contrast guidelines</a>
-
-<a className="link" href="https://example.com" target="_blank" rel="noreferrer">
-  WCAG overview
-  <ExternalIcon aria-hidden="true" />
-  <span className="sr-only"> (opens in a new tab)</span>
-</a>`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI has no link component. Its Button supports weight="link", but that still renders a <button>, so use it only for actions.',
-      'This site uses a .link utility built on Fluid’s primary palette, with an underline and a focus ring.',
-    ],
-  },
 };

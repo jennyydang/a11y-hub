@@ -32,19 +32,12 @@ export const selectVariants: Variant[] = [
   <option>Large</option>
   <option>Extra large</option>
 </select>`,
-    code: `<label htmlFor="size">T-shirt size</label>
-<select id="size" defaultValue="Medium">
-  <option>Small</option>
-  <option>Medium</option>
-  …
-</select>`,
   },
   {
     id: 'custom',
-    label: 'Custom listbox (Fluid)',
-    description: 'Fluid UI’s Select: a button that opens a listbox. Use it when options need custom content like icons or descriptions.',
+    label: 'Custom listbox',
+    description: 'A button that opens a listbox. Use it when options need custom content like icons or descriptions.',
     Demo: select.Demo,
     html: (htmlExamples.select ?? '').split('<!-- Custom listbox')[1] ? `<!-- Custom listbox${htmlExamples.select.split('<!-- Custom listbox')[1]}` : '',
-    code: select.code.split('\n\n{/*')[0],
   },
 ];

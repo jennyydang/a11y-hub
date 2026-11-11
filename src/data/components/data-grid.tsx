@@ -136,37 +136,6 @@ function Demo() {
   );
 }
 
-const code = `const [pos, setPos] = useState({ r: 0, c: 0 });
-
-const onKeyDown = (e) => {
-  const moves = {
-    ArrowRight: [r, c + 1], ArrowLeft: [r, c - 1],
-    ArrowDown: [r + 1, c],  ArrowUp: [r - 1, c],
-    Home: e.ctrlKey ? [0, 0] : [r, 0],
-    End: e.ctrlKey ? [lastRow, lastCol] : [r, lastCol],
-  };
-  if (moves[e.key]) { e.preventDefault(); focusCell(...clamp(moves[e.key])); }
-};
-
-<table role="grid" aria-labelledby="grid-cap" onKeyDown={onKeyDown}>
-  <caption id="grid-cap">Invoices</caption>
-  <thead>
-    <tr>
-      <th scope="col" aria-sort={sortKey === 'due' ? sortDir : undefined}>
-        {/* Only the active cell has tabIndex 0: one tab stop for the whole grid */}
-        <button tabIndex={isActive(0, 2) ? 0 : -1} onClick={() => toggleSort('due')}>Due date</button>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    {rows.map((row, i) => (
-      <tr key={row.id}>
-        <td role="gridcell" tabIndex={isActive(i + 1, 0) ? 0 : -1}>{row.id}</td>
-        …
-      </tr>
-    ))}
-  </tbody>
-</table>`;
 
 export const dataGrid: ComponentSpec = {
   slug: 'data-grid',
@@ -218,12 +187,4 @@ export const dataGrid: ComponentSpec = {
     'Zoom to 400% and confirm the grid scrolls in its own box.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI doesn’t ship a data grid. This uses a native <table> with role="grid" so headers and cells stay associated.',
-      'Focus rings are inset (ring-inset) so the table’s rounded border doesn’t clip them.',
-    ],
-  },
 };

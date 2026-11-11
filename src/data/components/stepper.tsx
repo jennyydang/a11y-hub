@@ -77,21 +77,6 @@ function Demo() {
   );
 }
 
-const code = `<nav aria-label="Checkout progress">
-  <ol>
-    {steps.map((s, i) => (
-      <li key={s} aria-current={i === step ? 'step' : undefined}>
-        <span aria-hidden="true">{i < step ? '✓' : i + 1}</span>
-        {i < step && <span className="sr-only">Completed: </span>}
-        {s}
-      </li>
-    ))}
-  </ol>
-</nav>
-
-<p>Step {step + 1} of {steps.length}</p>
-{/* Focus moves here when the step changes */}
-<h2 ref={headingRef} tabIndex={-1}>{steps[step]}</h2>`;
 
 export const stepper: ComponentSpec = {
   slug: 'stepper',
@@ -124,9 +109,4 @@ export const stepper: ComponentSpec = {
     'At 320px, confirm the steps wrap and stay readable.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI doesn’t ship a step indicator. This is an ordered list in a nav with Fluid’s primary color tokens.', 'Completed steps use a check mark and a filled circle, so the state isn’t carried by color alone.'],
-  },
 };

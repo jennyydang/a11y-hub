@@ -16,11 +16,6 @@ function Demo() {
   );
 }
 
-const code = `<a href="/checkout/delivery" className="inline-flex items-center gap-1 underline">
-  <ChevronLeft aria-hidden="true" />
-  Back<span className="sr-only"> to delivery</span>
-</a>
-<h1>Payment</h1>`;
 
 export const backLink: ComponentSpec = {
   slug: 'back-link',
@@ -46,6 +41,4 @@ export const backLink: ComponentSpec = {
   wcag: [WCAG.linkPurpose, WCAG.focusOrder, WCAG.consistentNav],
   testing: ['Confirm it goes to the previous step and keeps answers.', 'Open a step in a new tab and confirm Back still works.', 'With a screen reader, list links and confirm the destination is clear.'],
   Demo,
-  code,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['A native link with an inline chevron, using the same underline style as other links on this site.'] },
 };

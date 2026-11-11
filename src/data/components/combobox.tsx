@@ -51,16 +51,4 @@ export const combobox: ComponentSpec = {
     'Check Escape closes the list.',
   ],
   Demo,
-  code: `import { ComboBox, Form } from '@fluid-design/fluid-ui';
-
-<Form initialValues={{ country: '' }} onSubmit={save}>
-  <ComboBox name="country" label="Country" list={countries} />
-</Form>`,
-  fluid: {
-    source: 'Fluid UI component',
-    notes: [
-      'Fluid UI’s ComboBox is built on Headless UI’s Combobox, which manages aria-activedescendant and the expanded state.',
-      'It doesn’t announce the number of results. Add a visually hidden role="status" region if your users need it.',
-    ],
-  },
 };

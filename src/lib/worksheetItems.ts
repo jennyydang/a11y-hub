@@ -48,7 +48,7 @@ export function designRequirements(spec: ComponentSpec, variant?: Variant): Desi
 /** What frontend needs to build, including the text content handed over. */
 export function frontendChecks(spec: ComponentSpec, variant: Variant | undefined, entry: WorksheetEntry): Check[] {
   const checks: Check[] = [
-    { id: 'semantics', group: 'Structure', text: `Build it on ${spec.semantics}.`, detail: `Fluid UI approach: ${spec.fluid.source}.` },
+    { id: 'semantics', group: 'Structure', text: `Build it on ${spec.semantics}.` },
   ];
   contentFields(spec, variant).forEach((f) => {
     const value = (entry.fields[f.id] ?? '').trim();

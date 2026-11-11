@@ -9,6 +9,8 @@ import {
   ACR_LEVELS,
   DELIVERABLES,
   acrRows,
+  translationCsv,
+  translationRows,
   type AcrLevel,
   SEVERITIES,
   SOURCES,
@@ -708,6 +710,18 @@ export function DeliverablesBuilder() {
             }}
           >
             Download as Markdown
+          </Button>
+          <Button
+            weight="light"
+            disabled={!p.components.length}
+            onClick={() => {
+              const n = translationRows(p).length;
+              // A byte order mark so Excel opens accented characters correctly.
+              download(`${name}-translation-strings.csv`, `\uFEFF${translationCsv(p)}`, 'text/csv');
+              flash(`Downloaded ${n} strings for translation, including ARIA values and screen reader only text.`);
+            }}
+          >
+            Download translation strings (.csv)
           </Button>
         </div>
         <p role="status" className="text-sm font-medium">

@@ -83,14 +83,6 @@ export const passwordVariants: Variant[] = [
     status.textContent = show ? 'Your password is visible' : 'Your password is hidden';
   });
 </script>`,
-    code: `const [shown, setShown] = useState(false);
-
-<label htmlFor="password">Password</label>
-<input id="password" type={shown ? 'text' : 'password'} autoComplete="current-password" spellCheck={false} />
-<button type="button" aria-controls="password" onClick={() => setShown(!shown)}>
-  {shown ? 'Hide' : 'Show'}<span className="sr-only"> password</span>
-</button>
-<p role="status" className="sr-only">{shown ? 'Your password is visible' : 'Your password is hidden'}</p>`,
   },
   {
     id: 'new',
@@ -104,16 +96,6 @@ export const passwordVariants: Variant[] = [
 <ul id="pw-rules">
   <li><span aria-hidden="true">○</span> At least 12 characters<span class="sr-only"> (not yet)</span></li>
   <li><span aria-hidden="true">○</span> At least one number<span class="sr-only"> (not yet)</span></li>
-</ul>`,
-    code: `<input id="new-password" type={shown ? 'text' : 'password'} autoComplete="new-password"
-       aria-describedby="pw-hint pw-rules" />
-<ul id="pw-rules">
-  {rules.map((r) => (
-    <li key={r.text}>
-      <span aria-hidden="true">{r.ok ? '✓' : '○'}</span> {r.text}
-      <span className="sr-only">{r.ok ? ' (done)' : ' (not yet)'}</span>
-    </li>
-  ))}
 </ul>`,
   },
 ];
@@ -152,10 +134,5 @@ export const password: ComponentSpec = {
     'With the new password variation, confirm each rule announces done or not yet.',
   ],
   Demo: passwordVariants[0].Demo,
-  code: passwordVariants[0].code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI’s input styles are applied to a native password input; the Show button is a native button.', 'The button text changes between Show and Hide, so aria-pressed isn’t used (it would announce a different state from the label).'],
-  },
 };
 

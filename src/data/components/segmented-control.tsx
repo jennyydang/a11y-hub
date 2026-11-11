@@ -35,19 +35,6 @@ function Demo() {
   );
 }
 
-const code = `<fieldset>
-  <legend>View trails as</legend>
-  {options.map((o) => (
-    <label key={o.value}>
-      {/* The real radio is visually hidden; the span is styled with peer-checked */}
-      <input type="radio" name="view" value={o.value} checked={view === o.value}
-             onChange={() => setView(o.value)} className="peer sr-only" />
-      <span className="peer-checked:bg-white peer-checked:shadow peer-focus-visible:ring-2">
-        <Icon aria-hidden="true" /> {o.label}
-      </span>
-    </label>
-  ))}
-</fieldset>`;
 
 export const segmentedControl: ComponentSpec = {
   slug: 'segmented-control',
@@ -82,9 +69,4 @@ export const segmentedControl: ComponentSpec = {
     'Check the selected segment in grayscale.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI doesn’t ship a segmented control. This styles native radios using Tailwind’s peer variants, so behavior comes from the browser.'],
-  },
 };

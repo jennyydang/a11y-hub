@@ -54,13 +54,13 @@ export const button: ComponentSpec = {
   aria: [
     { attr: 'aria-pressed', where: 'button', usage: 'Makes it a toggle button. Keep the label constant and let the pressed state carry the meaning.' },
     { attr: 'aria-expanded', where: 'button', usage: 'Use when the button shows and hides another region, such as a menu or disclosure.' },
-    { attr: 'aria-label', where: 'icon-only button', usage: 'Gives an icon-only button a name. Visually hidden text (Fluid UI’s sr prop) works just as well.' },
+    { attr: 'aria-label', where: 'icon-only button', usage: 'Gives an icon-only button a name. Visually hidden text works just as well.' },
     { attr: 'aria-disabled="true"', where: 'button', usage: 'Keeps a temporarily unavailable button focusable so users can still discover it and read why it is unavailable.' },
     { attr: 'aria-hidden="true"', where: 'decorative icon', usage: 'Hides the SVG so it does not add noise to the accessible name.' },
   ],
   focus: [
     'Use a native <button>. It is focusable, activates with Enter and Space, and announces itself as a button with no extra work.',
-    'Show a focus indicator with at least 3:1 contrast against the background. Fluid UI buttons use a focus-visible ring, so keyboard users get it and mouse users do not.',
+    'Show a focus indicator with at least 3:1 contrast against the background. A focus-visible ring shows for keyboard users without appearing on every mouse click.',
     'When a button opens something (dialog, menu), move focus into it. When that thing closes, return focus to the button.',
   ],
   screenReader: [
@@ -87,24 +87,4 @@ export const button: ComponentSpec = {
     'Zoom to 200% and confirm labels don’t truncate or overlap.',
   ],
   Demo,
-  code: `import { Button } from '@fluid-design/fluid-ui';
-
-<Button className="btn-bold-primary" onClick={save}>Save changes</Button>
-
-{/* Toggle button: the label stays the same and the state changes */}
-<Button weight="light" aria-pressed={muted} onClick={toggle}>
-  Mute notifications
-</Button>
-
-{/* Icon-only: Fluid's \`sr\` prop renders visually hidden text */}
-<Button iconOnly icon={TrashIcon} color="red" sr="Delete draft" />`,
-  fluid: {
-    source: 'Fluid UI component',
-    notes: [
-      'Fluid UI’s Button renders a native <button>, so keyboard and role support come for free.',
-      'The sr prop adds visually hidden text, which is the easiest way to name an icon-only button.',
-      'Fluid UI’s Button always renders type="button" unless you also pass as="button". To make a submit button, write <Button as="button" type="submit">.',
-      'isLoading sets aria-busy on the button. Also change the visible label, because aria-busy alone is not announced reliably.',
-    ],
-  },
 };

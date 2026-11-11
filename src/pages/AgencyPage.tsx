@@ -51,7 +51,7 @@ const phases: Phase[] = [
     name: 'Build',
     goal: 'Build every component to spec, in whatever stack the client uses.',
     use: [
-      ['/components', 'Component pages: the HTML tab is framework-free, so it works with any design system, not just Fluid UI'],
+      ['/components', 'Component pages: the HTML example is framework-free, so it works with any design system'],
       ['/foundations/semantics', 'Semantics & ARIA: when native HTML is enough and when ARIA is needed'],
       ['/roles/frontend', 'Frontend guide: what developers own'],
     ],
@@ -174,10 +174,9 @@ export function AgencyPage() {
         <Section title="Working with another design system">
           <div className="surface space-y-2 p-5 leading-7">
             <p>
-              The live examples here are built with Fluid UI, but the accessibility requirements are the same in any stack. Use each component’s HTML tab, keyboard table and ARIA
-              table as the spec, and check that the client’s own components behave the same way.
+              The accessibility requirements here are the same in any stack. Use each component’s HTML example, keyboard table and ARIA table as the spec, and check that the
+              client’s own components behave the same way.
             </p>
-            <p>The “Fluid UI notes” section on each component page only applies to this site’s build. You can leave it out of client documents. The builder already does.</p>
           </div>
         </Section>
       </div>

@@ -45,18 +45,6 @@ function Demo() {
   );
 }
 
-const code = `<figure>
-  <video controls preload="metadata" aria-describedby="video-cap">
-    <source src={video} type="video/webm" />
-    <track kind="captions" src="/captions/trail-tip.en.vtt" srcLang="en" label="English" default />
-  </video>
-  <figcaption id="video-cap">Riverside loop: how to find the start (9 seconds)</figcaption>
-  <details>
-    <summary>Transcript</summary>
-    <p>Narrator: Start at the visitor centre car park.</p>
-    …
-  </details>
-</figure>`;
 
 export const video: ComponentSpec = {
   slug: 'video',
@@ -93,10 +81,5 @@ export const video: ComponentSpec = {
     'Confirm the video doesn’t play on load.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI doesn’t ship a player. The native <video> element gives accessible controls, captions menu and keyboard support for free.', 'The transcript uses a native <details>, styled to match Fluid’s disclosure.'],
-  },
 };
 

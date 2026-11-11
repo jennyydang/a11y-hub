@@ -30,7 +30,6 @@ export const textInputVariants: Variant[] = [
     if (bad) input.focus();
   });
 </script>`,
-    code: textInput.code,
   },
   {
     id: 'hint',
@@ -42,8 +41,6 @@ export const textInputVariants: Variant[] = [
     html: `<label for="phone">Phone number</label>
 <p id="phone-hint">Include your country code, like +44 20 7946 0000.</p>
 <input id="phone" type="tel" autocomplete="tel" aria-describedby="phone-hint">`,
-    code: `<TextField label="Phone number" type="tel" autoComplete="tel"
-  hint="Include your country code, like +44 20 7946 0000." />`,
   },
   {
     id: 'error',
@@ -59,8 +56,6 @@ export const textInputVariants: Variant[] = [
   <svg aria-hidden="true" focusable="false">…</svg>
   <span class="sr-only">Error: </span>Enter a full postcode, like SW1A 1AA.
 </p>`,
-    code: `<TextField label="Postcode" defaultValue="SW1A" autoComplete="postal-code"
-  error="Enter a full postcode, like SW1A 1AA." />`,
   },
   {
     id: 'read-only',
@@ -70,6 +65,5 @@ export const textInputVariants: Variant[] = [
     html: `<label for="account">Account ID</label>
 <p id="account-hint">Contact support to change this.</p>
 <input id="account" value="ACC-48213" readonly aria-describedby="account-hint">`,
-    code: `<TextField label="Account ID" readOnly defaultValue="ACC-48213" hint="Contact support to change this." />`,
   },
 ];

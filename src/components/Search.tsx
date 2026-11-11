@@ -9,6 +9,7 @@ import { examples } from '../examples';
 import { basicsTasks } from '../data/basics';
 import { fixes } from '../data/fixes';
 import { slugify } from './Section';
+import { patterns } from '../patterns';
 
 interface Entry {
   title: string;
@@ -53,6 +54,8 @@ function buildIndex(): Entry[] {
   );
   entries.push(
     ...tools.map((t) => ({ title: t.name, kind: 'Tool', to: toolPath(t.id), fields: [{ label: 'Tool', text: t.description }] })),
+    ...patterns.map((p) => ({ title: p.name, kind: `Pattern · ${p.category}`, to: `/patterns/${p.slug}`, fields: [{ label: 'Pattern', text: `${p.summary} Section, template` }, ...p.mistakes.map((m) => ({ label: 'Mistake', text: m }))] })),
+    { title: 'Patterns', kind: 'Page', to: '/patterns', fields: [{ label: 'Page', text: 'Section and template patterns: main navigation, mega menu, header, hero banner, product listing, filters, product gallery, add to cart, buy box' }] },
     { title: 'Team progress', kind: 'Page', to: '/progress', fields: [{ label: 'Page', text: 'Dashboard of worksheet progress for every role, export and import all worksheets' }] },
     { title: 'Page examples', kind: 'Page', to: '/examples', fields: [{ label: 'Page', text: 'Annotated example pages: content page, sign-up form, search results, dashboard. Layout, placement, wireframe' }] },
     ...examples.map((e) => ({ title: `${e.name} example`, kind: 'Page example', to: `/examples/${e.id}`, fields: [{ label: 'Example', text: e.summary }, ...e.notes.map((n) => ({ label: 'Note', text: `${n.title}. ${n.why}` }))] })),
@@ -64,6 +67,7 @@ function buildIndex(): Entry[] {
     },
     ...basicsTasks.map((t) => ({ title: t.title, kind: 'Basics', to: `/basics#${t.id}`, fields: [{ label: 'Basics', text: `${t.why} ${t.dos.join(' ')}` }] })),
     ...fixes.map((f) => ({ title: f.symptom, kind: 'Problem and fix', to: `/fixes#${slugify(f.symptom)}`, fields: [{ label: 'Fix', text: `${f.cause} ${f.fix}` }] })),
+    { title: 'How we build the hub', kind: 'Page', to: '/process', fields: [{ label: 'Page', text: 'Contributing, process, new component, add a section, accessibility lead, definition of done, review, citing sources, workflow' }] },
     { title: 'Keep learning', kind: 'Page', to: '/resources', fields: [{ label: 'Page', text: 'Learning resources, courses, training, videos, YouTube, references, certifications, CPACC, WAS, CPWA, ADS, Trusted Tester, IAAP' }] },
     { title: 'What’s new', kind: 'Page', to: '/changelog', fields: [{ label: 'Page', text: 'Changelog, recent updates, new pages and tools' }] },
     { title: 'Agency playbook', kind: 'Page', to: '/agency', fields: [{ label: 'Page', text: 'Client redesign, agency deliverables, conformance summary, testing summary, issue log, handoff' }] },

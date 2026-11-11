@@ -1,13 +1,15 @@
 import type { AriaRow, KeyBinding, WcagRef } from '../data/types';
 import { wcagUrl } from '../data/wcag';
 import { cx } from '../ui';
+import { ariaTranslation } from '../lib/translation';
 
 const th = 'px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200';
 const td = 'px-4 py-3 align-top text-sm';
 
 export function TableShell({ caption, children }: { caption: string; children: React.ReactNode }) {
   return (
-    <div className="surface overflow-x-auto">
+    // Focusable so keyboard users can scroll it sideways on narrow screens (WCAG 2.1.1).
+    <div className="surface overflow-x-auto focus-ring" role="region" aria-label={caption} tabIndex={0}>
       <table className="w-full min-w-[32rem] border-collapse">
         <caption className="sr-only">{caption}</caption>
         {children}
@@ -55,6 +57,20 @@ export function KeyboardTable({ rows, name }: { rows: KeyBinding[]; name: string
   );
 }
 
+function TranslateCell({ row }: { row: AriaRow }) {
+  const t = ariaTranslation(row);
+  const tone =
+    t.action === 'Don’t translate'
+      ? 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100'
+      : 'bg-sky-100 text-sky-900 dark:bg-sky-900/60 dark:text-sky-100';
+  return (
+    <span className="block min-w-[9rem] space-y-1">
+      <span className={cx('chip', tone)}>{t.action}</span>
+      <span className="block text-xs leading-5 text-muted">{t.note}</span>
+    </span>
+  );
+}
+
 export function AriaTable({ rows, name }: { rows: AriaRow[]; name: string }) {
   return (
     <TableShell caption={`${name} roles, states and properties`}>
@@ -63,6 +79,7 @@ export function AriaTable({ rows, name }: { rows: AriaRow[]; name: string }) {
           <th scope="col" className={th}>Attribute</th>
           <th scope="col" className={th}>Applied to</th>
           <th scope="col" className={th}>Usage</th>
+          <th scope="col" className={th}>Translate?</th>
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -71,6 +88,9 @@ export function AriaTable({ rows, name }: { rows: AriaRow[]; name: string }) {
             <td className={td}><code className="whitespace-nowrap font-mono text-[13px] text-primary-800 dark:text-primary-200">{r.attr}</code></td>
             <td className={cx(td, 'text-muted')}>{r.where}</td>
             <td className={td}>{r.usage}</td>
+            <td className={td}>
+              <TranslateCell row={r} />
+            </td>
           </tr>
         ))}
       </tbody>

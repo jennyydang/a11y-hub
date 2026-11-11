@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import { expectNoViolations, go } from './helpers';
 
@@ -64,4 +65,71 @@ test('learning resources filter by role and show a certification path', async ({
   await expect(page.getByText('Suggested path for frontend: CPACC, then WAS, then CPWA.')).toBeVisible();
   await expect(page.getByRole('link', { name: /Learn Accessibility/ })).toBeVisible();
   await expectNoViolations(page, '/resources (frontend)');
+});
+
+test('component pages cite their sources, and the process page links stages', async ({ page }) => {
+  await go(page, '/components/button');
+  const sources = page.getByRole('region', { name: 'Sources and review' }).or(page.locator('section', { has: page.getByRole('heading', { name: 'Sources and review' }) }));
+  await expect(sources.getByRole('link', { name: /Button component/ })).toBeVisible();
+  await expect(sources.getByRole('link', { name: /ARIA Authoring Practices/ })).toBeVisible();
+  await go(page, '/process');
+  await page.getByRole('link', { name: /Research and cite/ }).first().click();
+  await expect(page.getByRole('heading', { name: /Research and cite/, level: 2 })).toBeFocused();
+});
+
+test('translation: ARIA values and hidden copy are marked, and the builder exports them', async ({ page }) => {
+  await go(page, '/components/button');
+  const aria = page.getByRole('table', { name: /Button roles, states and properties/ });
+  await expect(aria.getByRole('row', { name: /aria-label icon-only button/ })).toContainText('Translate the value');
+  await expect(aria.getByRole('row', { name: /aria-expanded/ })).toContainText('Don’t translate');
+
+  await go(page, '/tools/deliverables');
+  await page.getByRole('button', { name: /Add Sign-up form components/ }).click();
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download translation strings (.csv)' }).click();
+  const file = await (await download).path();
+  const csv = readFileSync(file, 'utf8');
+  expect(csv).toContain('Component,String,Goes in,Seen by,Translate?');
+  expect(csv).toMatch(/Screen reader only/);
+  expect(csv).not.toMatch(/aria-expanded/);
+});
+
+test('patterns: main navigation submenus and the buy box error', async ({ page }) => {
+  await go(page, '/patterns/main-navigation');
+  const nav = page.getByRole('navigation', { name: 'Main' });
+  const shop = nav.getByRole('button', { name: 'Shop' });
+  await shop.focus();
+  await page.keyboard.press('Enter');
+  await expect(shop).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Tab');
+  await expect(nav.getByRole('link', { name: 'New arrivals' })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(shop).toHaveAttribute('aria-expanded', 'false');
+  await expect(shop).toBeFocused();
+
+  await go(page, '/patterns/product-gallery');
+  const thumbs = page.getByRole('list', { name: 'Choose an image' }).getByRole('button');
+  await thumbs.nth(1).click();
+  await expect(thumbs.nth(1)).toHaveAttribute('aria-pressed', 'true');
+  await expect(thumbs.nth(0)).toHaveAttribute('aria-pressed', 'false');
+
+  await go(page, '/patterns/buy-box');
+  await page.getByRole('button', { name: 'Add to bag' }).click();
+  await expect(page.getByRole('group', { name: 'Size (US)' })).toHaveAccessibleDescription('Choose a size');
+  await expect(page.getByRole('radio', { name: '7' })).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('radio', { name: '8' })).toBeChecked();
+  await page.getByRole('button', { name: 'Add to bag' }).click();
+  await expect(page.getByRole('status').filter({ hasText: 'Added 1' })).toContainText('size 8');
+});
+
+test('"On this page" jumps to the section, marks it current and focuses its heading', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await go(page, '/components/button');
+  const toc = page.getByRole('navigation', { name: 'On this page' });
+  const link = toc.getByRole('link', { name: 'WCAG criteria' });
+  await link.click();
+  await expect(link).toHaveAttribute('aria-current', 'location');
+  await expect(page.locator('#wcag-criteria')).toBeFocused();
+  await expect(page.getByRole('heading', { name: 'Fluid UI notes' })).toHaveCount(0);
 });

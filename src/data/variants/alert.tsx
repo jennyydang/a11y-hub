@@ -26,9 +26,6 @@ const staticVariant = (intent: Intent): Variant => ({
   <p><strong><span class="sr-only">${label[intent]}: </span>${copy[intent][0]}</strong></p>
   <p>${copy[intent][1]}</p>
 </div>`,
-  code: `<Alert intent="${intent}" title="${copy[intent][0]}">
-  ${copy[intent][1]}
-</Alert>`,
 });
 
 function Live() {
@@ -69,10 +66,5 @@ export const alertVariants: Variant[] = [
       '<p><strong>Error: Payment declined.</strong> Try a different card or contact your bank.</p>';
   });
 </script>`,
-    code: `{show && (
-  <Alert intent="error" title="Payment declined" live>
-    Your card was declined. Try a different card or contact your bank.
-  </Alert>
-)}`,
   },
 ];

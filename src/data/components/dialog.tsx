@@ -72,37 +72,4 @@ export const dialog: ComponentSpec = {
     'With a screen reader, confirm the title and description are read on open.',
   ],
   Demo,
-  code: `import { useEffect } from 'react';
-import { Button, Dialog, useModal } from '@fluid-design/fluid-ui';
-
-function ConfirmDelete({ dismiss, returnFocusTo }) {
-  // Restore focus to the trigger when the dialog closes
-  useEffect(() => () => setTimeout(() => returnFocusTo?.focus()), []);
-  return (
-    <Dialog>
-      <Dialog.Header><Dialog.Title>Delete “Q3 report”?</Dialog.Title></Dialog.Header>
-      <Dialog.Body>
-        <Dialog.Description>This permanently removes the file.</Dialog.Description>
-      </Dialog.Body>
-      <Dialog.Footer>
-        <Button onClick={dismiss}>Cancel</Button>
-        <Button color="red" onClick={dismiss}>Delete file</Button>
-      </Dialog.Footer>
-    </Dialog>
-  );
-}
-
-const [present] = useModal(ConfirmDelete);
-<Button onClick={(e) => present({ returnFocusTo: e.currentTarget })}>
-  Delete report…
-</Button>`,
-  fluid: {
-    source: 'Fluid UI component',
-    notes: [
-      'Fluid UI’s Dialog is built on Headless UI’s Dialog: it traps focus, closes on Escape, sets aria-modal and links Dialog.Title and Dialog.Description.',
-      'Wrap your app in FluidProvider so useModal can render dialogs.',
-      'Because the dialog is rendered by the provider rather than next to its trigger, focus is not returned to the trigger on close. Pass the trigger into present() and focus it when the dialog unmounts, as shown in the code.',
-      'Its motion respects prefers-reduced-motion through framer-motion’s useReducedMotion.',
-    ],
-  },
 };

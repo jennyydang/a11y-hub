@@ -41,9 +41,6 @@ export const tooltipVariants: Variant[] = [
 </span>
 
 ${script}`,
-    code: `<Tooltip content="Copy link" relationship="label">
-  <Button iconOnly icon={CopyIcon} />
-</Tooltip>`,
   },
   {
     id: 'description',
@@ -60,8 +57,5 @@ ${script}`,
 </span>
 
 ${script}`,
-    code: `<Tooltip content="Drafts are deleted after 30 days" relationship="description">
-  <Button>Save draft</Button>
-</Tooltip>`,
   },
 ];

@@ -17,6 +17,9 @@ import { BasicsPage } from './pages/BasicsPage';
 import { FixesPage } from './pages/FixesPage';
 import { ChangelogPage } from './pages/ChangelogPage';
 import { ResourcesPage } from './pages/ResourcesPage';
+import { ProcessPage } from './pages/ProcessPage';
+import { PatternPage } from './pages/PatternPage';
+import { PatternsIndex } from './pages/PatternsIndex';
 
 export function App() {
   return (
@@ -26,12 +29,15 @@ export function App() {
           <Route index element={<Home />} />
           <Route path="components" element={<ComponentsIndex />} />
           <Route path="components/:slug" element={<ComponentPage />} />
+          <Route path="patterns" element={<PatternsIndex />} />
+          <Route path="patterns/:slug" element={<PatternPage />} />
           <Route path="foundations/:slug" element={<FoundationPage />} />
           <Route path="roles/:role" element={<RolePage />} />
           <Route path="basics" element={<BasicsPage />} />
           <Route path="fixes" element={<FixesPage />} />
           <Route path="changelog" element={<ChangelogPage />} />
           <Route path="resources" element={<ResourcesPage />} />
+          <Route path="process" element={<ProcessPage />} />
           <Route path="agency" element={<AgencyPage />} />
           <Route path="checklist" element={<ChecklistPage />} />
           <Route path="tools" element={<ToolsIndex />} />

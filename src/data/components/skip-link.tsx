@@ -64,11 +64,4 @@ export const skipLink: ComponentSpec = {
     'Press Enter, then Tab again, and confirm focus continues inside the main content.',
   ],
   Demo,
-  code: `<a href="#main" class="skip-link">Skip to main content</a>
-<header>…</header>
-<main id="main" tabindex="-1">…</main>
-
-.skip-link { position: absolute; transform: translateY(-120%); }
-.skip-link:focus { transform: none; }`,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['Fluid UI doesn’t include a skip link. This site adds one in its layout; press Tab after loading any page to try it.'] },
 };

@@ -100,13 +100,4 @@ export const pagination: ComponentSpec = {
     'Change pages and confirm focus goes somewhere sensible.',
   ],
   Demo,
-  code: `<nav aria-label="Search results pages">
-  <ul>
-    <li><a href="?page=2">Previous<span class="sr-only"> page</span></a></li>
-    <li><a href="?page=1"><span class="sr-only">Page </span>1</a></li>
-    <li><a href="?page=3" aria-current="page"><span class="sr-only">Page </span>3</a></li>
-    <li><a href="?page=4">Next<span class="sr-only"> page</span></a></li>
-  </ul>
-</nav>`,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['Fluid UI has no pagination component. The current page uses Fluid’s primary 700 fill with white text (6.9:1).'] },
 };

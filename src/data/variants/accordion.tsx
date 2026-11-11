@@ -26,7 +26,6 @@ export const accordionVariants: Variant[] = [
     });
   });
 </script>`,
-    code: accordion.code,
   },
   {
     id: 'details',
@@ -52,10 +51,6 @@ export const accordionVariants: Variant[] = [
 <details>
   <summary>Do you ship internationally?</summary>
   <p>Yes, to over 40 countries.</p>
-</details>`,
-    code: `<details>
-  <summary>What is your return policy?</summary>
-  <p>Return unused items within 30 days for a full refund.</p>
 </details>`,
   },
 ];

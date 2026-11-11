@@ -142,23 +142,6 @@ export const popoverVariants: Variant[] = [
   document.addEventListener('click', (e) => !e.target.closest('.popover-wrap') && open(false));
   pop.addEventListener('focusout', (e) => !pop.contains(e.relatedTarget) && e.relatedTarget !== btn && open(false));
 </script>`,
-    code: `import { Popover } from '@headlessui/react';
-import { Button } from '@fluid-design/fluid-ui';
-
-<Popover className="relative">
-  <Popover.Button as={Button}>Share</Popover.Button>
-  {/* focus: move focus into the panel when it opens */}
-  <Popover.Panel focus role="dialog" aria-label="Share" className="popover-panel">
-    {({ close }) => (
-      <>
-        <label htmlFor="share-link">Page link</label>
-        <input id="share-link" readOnly value={url} />
-        <Button onClick={() => close()}>Close</Button>
-        <Button onClick={copy}>Copy link</Button>
-      </>
-    )}
-  </Popover.Panel>
-</Popover>`,
   },
   {
     id: 'toggletip',
@@ -189,15 +172,6 @@ import { Button } from '@fluid-design/fluid-ui';
   document.addEventListener('keydown', (e) => e.key === 'Escape' && set(false));
   document.addEventListener('click', (e) => !e.target.closest('.toggletip') && set(false));
 </script>`,
-    code: `const [open, setOpen] = useState(false);
-
-<button aria-expanded={open} aria-controls="tip" onClick={() => setOpen(!open)}>
-  <span aria-hidden="true">i</span>
-  <span className="sr-only">More about billing date</span>
-</button>
-<span id="tip" role="status">
-  {open && <span className="popover-panel">You’re billed on the same day each month.</span>}
-</span>`,
   },
   {
     id: 'native',
@@ -213,11 +187,6 @@ import { Button } from '@fluid-design/fluid-ui';
     <li><kbd>/</kbd> Search</li>
     <li><kbd>?</kbd> Show this list</li>
   </ul>
-</div>`,
-    code: `// React 18 passes these lowercase attributes through to the DOM
-<button type="button" popovertarget="shortcuts">Keyboard shortcuts</button>
-<div id="shortcuts" popover="auto" role="dialog" aria-label="Keyboard shortcuts" className="popover-panel">
-  …
 </div>`,
   },
 ];
@@ -269,13 +238,4 @@ export const popover: ComponentSpec = {
     'Zoom to 200% and confirm the popover stays on screen.',
   ],
   Demo: InteractiveDemo,
-  code: popoverVariants[0].code,
-  fluid: {
-    source: 'Headless UI + Fluid styles',
-    notes: [
-      'Fluid UI’s own Popover is still marked as in progress, so this uses Headless UI’s Popover with Fluid’s popover-panel styles.',
-      'Headless UI sets aria-expanded, closes on Escape and outside click, and returns focus to the button. Add the focus prop so focus moves into the panel.',
-      'Headless UI doesn’t give the panel a role. Add role="dialog" and a name when it contains controls.',
-    ],
-  },
 };

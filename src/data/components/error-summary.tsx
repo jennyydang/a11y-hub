@@ -121,21 +121,4 @@ export const errorSummary: ComponentSpec = {
     'Fix the errors, submit again and confirm the summary disappears.',
   ],
   Demo,
-  code: `<div tabindex="-1" role="alert" aria-labelledby="summary-title" ref={summaryRef}>
-  <h2 id="summary-title">There are 2 problems with your details</h2>
-  <ul>
-    <li><a href="#name">Enter your full name.</a></li>
-    <li><a href="#email">Enter an email address in the format name@example.com.</a></li>
-  </ul>
-</div>
-
-// After a failed submit
-summaryRef.current.focus();`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI’s Form (a Formik wrapper) shows errors inline only, by replacing each field’s label. It has no summary.',
-      'This example uses the site’s TextField and a Fluid submit Button, which needs as="button" to keep type="submit".',
-    ],
-  },
 };

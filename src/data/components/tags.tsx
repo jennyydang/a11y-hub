@@ -89,25 +89,6 @@ function Demo() {
   );
 }
 
-const code = `<ul aria-labelledby="topics-label">
-  {tags.map((t, i) => (
-    <li key={t}>
-      {t}
-      <button ref={(el) => (refs.current[i] = el)} onClick={() => remove(i)}>
-        <XIcon aria-hidden="true" />
-        <span className="sr-only">Remove {t}</span>
-      </button>
-    </li>
-  ))}
-</ul>
-<p role="status" className="sr-only">{message}</p>
-
-const remove = (i) => {
-  setTags(tags.filter((_, j) => j !== i));
-  setMessage(\`\${tags[i]} removed\`);
-  // Next tag, previous tag, or the input when none are left
-  requestAnimationFrame(() => (refs.current[Math.min(i, tags.length - 2)] ?? inputRef.current)?.focus());
-};`;
 
 export const tags: ComponentSpec = {
   slug: 'tags',
@@ -145,9 +126,4 @@ export const tags: ComponentSpec = {
     'Confirm adding and removing are announced.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI doesn’t ship tags. These are list items with a native button, styled with Fluid’s primary tokens.'],
-  },
 };

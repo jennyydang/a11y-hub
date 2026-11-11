@@ -4,6 +4,7 @@ import { categories, byCategory, findComponent } from '../data/components';
 import { useRole } from '../lib/useRole';
 import { foundations } from '../data/foundations';
 import { roles } from '../data/roles';
+import { patterns } from '../patterns';
 import { cx } from '../ui';
 import { Search } from './Search';
 import { tools, toolPath } from '../data/tools';
@@ -85,8 +86,9 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const currentGroups = new Set<string>();
   if (pathname.startsWith('/roles')) currentGroups.add('roles');
   if (pathname.startsWith('/foundations')) currentGroups.add('foundations');
+  if (pathname.startsWith('/patterns')) currentGroups.add('patterns');
   if (pathname.startsWith('/tools')) currentGroups.add('tools');
-  if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog', '/resources'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
+  if (['/fixes', '/checklist', '/progress', '/examples', '/glossary', '/changelog', '/resources', '/process'].some((p) => pathname.startsWith(p))) currentGroups.add('reference');
   if (pathname.startsWith('/components')) {
     currentGroups.add('components');
     const c = findComponent(pathname.split('/')[2] ?? '');
@@ -110,7 +112,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
     <li key={to}>
       <NavLink
         to={to}
-        end={to === '/' || to === '/components' || to === '/tools'}
+        end={to === '/' || to === '/components' || to === '/tools' || to === '/patterns'}
         onClick={onNavigate}
         className={({ isActive }) =>
           cx(
@@ -133,10 +135,12 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
     ['/examples', 'Page examples'],
     ['/glossary', 'Glossary'],
     ['/resources', 'Keep learning: courses and certifications'],
+    ['/process', 'How we build the hub'],
     ['/changelog', 'What’s new'],
   ];
   const referenceItems = reference.filter(([, l]) => match(l));
   const foundationItems = foundations.filter((f) => match(f.name));
+  const patternItems = patterns.filter((p) => match(p.name));
   const roleItems = roles.filter((r) => match(`${r.name} guide`));
   const toolItems = tools.filter((t) => match(t.name));
   const componentGroups = categories.map((cat) => [cat, byCategory(cat).filter((c) => match(c.name))] as const).filter(([, list]) => list.length);
@@ -184,6 +188,14 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
                 </NavGroup>
               </li>
             ))}
+          </ul>
+        </NavGroup>
+      )}
+      {patternItems.length > 0 && (
+        <NavGroup id="patterns" title="Patterns" count={patternItems.length} open={isOpen('patterns')} onToggle={() => toggle('patterns')}>
+          <ul className="space-y-0.5">
+            {!q && item('/patterns', 'All patterns')}
+            {patternItems.map((p) => item(`/patterns/${p.slug}`, p.name))}
           </ul>
         </NavGroup>
       )}
@@ -292,7 +304,6 @@ export function Layout() {
             <Logo />
             <span className="whitespace-nowrap text-base font-bold tracking-tight sm:text-lg">A11y Hub</span>
           </NavLink>
-          <span className="chip hidden bg-gray-100 text-gray-700 xl:inline-flex dark:bg-gray-800 dark:text-gray-200">Styled with Fluid UI</span>
           <nav aria-label="Primary" className="ml-auto hidden items-center gap-1 lg:flex">
             {[
               ['/basics', 'Basics', '/basics'],
@@ -344,6 +355,10 @@ export function Layout() {
         A11y Hub ·{' '}
         <NavLink className="link" to="/changelog">
           What’s new
+        </NavLink>{' '}
+        ·{' '}
+        <NavLink className="link" to="/process">
+          How we build the hub
         </NavLink>{' '}
         · Built with React, Vite and{' '}
         <a className="link" href="https://fluid-design.io/" target="_blank" rel="noreferrer">

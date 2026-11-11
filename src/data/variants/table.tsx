@@ -54,17 +54,6 @@ export const tableVariants: Variant[] = [
     <tr><th scope="row">Alan Turing</th><td>Researcher</td><td>2020-11-30</td></tr>
   </tbody>
 </table>`,
-    code: `<table>
-  <caption>Team members</caption>
-  <thead>
-    <tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Start date</th></tr>
-  </thead>
-  <tbody>
-    {rows.map((r) => (
-      <tr key={r.name}><th scope="row">{r.name}</th><td>{r.role}</td><td>{r.start}</td></tr>
-    ))}
-  </tbody>
-</table>`,
   },
   {
     id: 'sortable',
@@ -72,6 +61,5 @@ export const tableVariants: Variant[] = [
     description: 'Each header holds a button, and aria-sort on the active column announces the sort direction.',
     Demo: table.Demo,
     html: htmlExamples.table,
-    code: table.code,
   },
 ];

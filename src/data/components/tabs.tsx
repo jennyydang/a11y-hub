@@ -55,20 +55,4 @@ export const tabs: ComponentSpec = {
     'Confirm aria-selected and the “x of y” position are announced.',
   ],
   Demo,
-  code: `import { Tab } from '@fluid-design/fluid-ui';
-
-<Tab
-  tabs={[
-    { title: 'Overview', content: <Overview /> },
-    { title: 'Specs', content: <Specs /> },
-  ]}
-/>`,
-  fluid: {
-    source: 'Fluid UI component',
-    notes: [
-      'Fluid UI’s Tab is built on Headless UI’s Tab, which renders the full tablist pattern with roving tabindex and arrow keys.',
-      'Pass manual to switch to manual activation, and vertical for a vertical list.',
-      'The selected tab is shown with a raised white surface and shadow, so it doesn’t rely on color alone.',
-    ],
-  },
 };

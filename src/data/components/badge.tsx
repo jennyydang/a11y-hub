@@ -93,10 +93,6 @@ export const badgeVariants: Variant[] = [
     Overdue
   </span>
 </td>`,
-    code: `<span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 text-xs font-semibold text-red-900 ring-1 ring-red-700/40">
-  <WarningIcon aria-hidden="true" />
-  Overdue
-</span>`,
   },
   {
     id: 'count',
@@ -109,15 +105,6 @@ export const badgeVariants: Variant[] = [
   <span class="sr-only">Notifications, 3 unread</span>
   <!-- The visual badge is hidden so it isn't read twice -->
   <span class="badge-count" aria-hidden="true">3</span>
-</button>`,
-    code: `<button type="button" className="relative rounded-full p-2">
-  <BellIcon aria-hidden="true" />
-  <span className="sr-only">Notifications{count ? \`, \${count} unread\` : ''}</span>
-  {count > 0 && (
-    <span aria-hidden="true" className="absolute -right-1 -top-1 rounded-full bg-red-700 px-1 text-xs text-white">
-      {count}
-    </span>
-  )}
 </button>`,
   },
 ];
@@ -155,12 +142,4 @@ export const badge: ComponentSpec = {
     'Zoom to 200% and confirm badges wrap rather than overlap text.',
   ],
   Demo: StatusDemo,
-  code: badgeVariants[0].code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI doesn’t ship a badge, so this uses a styled <span> with Fluid’s color tokens.',
-      'Each status uses the 100 background with 900 text, which passes 4.5:1 in light and dark themes.',
-    ],
-  },
 };

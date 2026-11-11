@@ -26,7 +26,7 @@ const GROUPS: { title: string; intro: string; patterns: Pattern[] }[] = [
     patterns: [
       { name: 'Destination', formula: '[Name of the page or thing]', examples: ['Accessibility statement', 'Read the 2026 report'], avoid: 'Click here, Read more, Learn more' },
       { name: 'Download', formula: '[Name] ([type], [size])', examples: ['Annual report (PDF, 2.4 MB)'] },
-      { name: 'New tab', formula: '[Name] (opens in a new tab)', examples: ['Fluid UI docs (opens in a new tab)'] },
+      { name: 'New tab', formula: '[Name] (opens in a new tab)', examples: ['Accessibility statement (opens in a new tab)'] },
     ],
   },
   {

@@ -86,20 +86,4 @@ export const table: ComponentSpec = {
     'View at 320px wide and confirm the table scrolls without the page scrolling sideways.',
   ],
   Demo,
-  code: `<table>
-  <caption>Team members</caption>
-  <thead>
-    <tr>
-      <th scope="col" aria-sort="ascending"><button>Name</button></th>
-      <th scope="col"><button>Role</button></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><th scope="row">Ada Lovelace</th><td>Engineer</td></tr>
-  </tbody>
-</table>`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI has no table component. Native table markup gives screen readers header/cell relationships for free.'],
-  },
 };

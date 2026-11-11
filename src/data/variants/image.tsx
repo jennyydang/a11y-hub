@@ -24,7 +24,6 @@ export const imageVariants: Variant[] = [
       </figure>
     ),
     html: `<img src="hills.jpg" alt="Green hills under a clear sky with the sun in the top right">`,
-    code: `<img src="hills.jpg" alt="Green hills under a clear sky with the sun in the top right" />`,
   },
   {
     id: 'decorative',
@@ -42,8 +41,6 @@ export const imageVariants: Variant[] = [
 
 <!-- Decorative inline icon next to text -->
 <span><svg aria-hidden="true" focusable="false">…</svg> Favorite projects</span>`,
-    code: `<img src="divider.svg" alt="" />
-<span><StarIcon aria-hidden="true" /> Favorite projects</span>`,
   },
   {
     id: 'complex',
@@ -69,11 +66,6 @@ export const imageVariants: Variant[] = [
   </svg>
   <figcaption>Monthly signups, January to April</figcaption>
 </figure>`,
-    code: `<svg role="img" aria-labelledby="chart-title chart-desc">
-  <title id="chart-title">Monthly signups</title>
-  <desc id="chart-desc">Signups rose from 120 in January to 310 in April.</desc>
-  …
-</svg>`,
   },
   {
     id: 'link',
@@ -89,6 +81,5 @@ export const imageVariants: Variant[] = [
       </a>
     ),
     html: `<a href="/"><img src="logo.svg" alt="A11y Hub home"></a>`,
-    code: `<a href="/"><img src="logo.svg" alt="A11y Hub home" /></a>`,
   },
 ];

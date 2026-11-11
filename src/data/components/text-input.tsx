@@ -95,25 +95,4 @@ export const textInput: ComponentSpec = {
     'Zoom to 400% (or 320px wide) and confirm nothing is cut off.',
   ],
   Demo,
-  code: `const id = useId();
-
-<label htmlFor={id}>Email address</label>
-<p id={\`\${id}-hint\`}>We'll only use this to send your receipt.</p>
-<input
-  id={id}
-  type="email"
-  autoComplete="email"
-  required
-  aria-invalid={error ? true : undefined}
-  aria-describedby={\`\${id}-hint \${error ? \`\${id}-error\` : ''}\`}
-/>
-{error && <p id={\`\${id}-error\`}>{error}</p>}`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI’s Input renders <label for={name}> but does not set a matching id on the input, so the label is not linked. Pass id={name} if you use it.',
-      'It also swaps the label text for the error message, which means the field’s name changes when it is invalid. This site uses its own TextField with Fluid’s form styling that keeps the label and links the error with aria-describedby.',
-      'Fluid’s input background (gray-100 at 30% opacity) has no visible border, so we added a 3:1 outline ring.',
-    ],
-  },
 };

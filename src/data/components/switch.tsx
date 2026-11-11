@@ -54,17 +54,4 @@ export const switchSpec: ComponentSpec = {
     'View with the color-blindness simulation and check that the state is still clear.',
   ],
   Demo,
-  code: `import { Form, Switch } from '@fluid-design/fluid-ui';
-
-<Form initialValues={{ wifi: true }} onSubmit={save}>
-  <Switch name="wifi" label="Wi-Fi" />
-</Form>`,
-  fluid: {
-    source: 'Fluid UI component',
-    notes: [
-      'Fluid UI’s Switch is built on Headless UI’s Switch, which renders role="switch" with aria-checked and links the label.',
-      'It must be placed inside Fluid’s Form component (a Formik wrapper), because it reads its value from the form state.',
-      'The off-state track (gray-200 on white) is below 3:1 contrast. Consider overriding toggleInactiveClassName with a darker gray.',
-    ],
-  },
 };

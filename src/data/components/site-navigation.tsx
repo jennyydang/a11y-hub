@@ -129,22 +129,4 @@ export const siteNavigation: ComponentSpec = {
     'Confirm hidden links are not reachable with Tab.',
   ],
   Demo,
-  code: `<nav aria-label="Main">
-  <ul>
-    <li><a href="/" aria-current="page">Home</a></li>
-    <li>
-      <button aria-expanded="false" aria-controls="products">Products</button>
-      <ul id="products" hidden>
-        <li><a href="/analytics">Analytics</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav>`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI’s Menu renders role="menu", which suits action menus but not site navigation.',
-      'This example uses buttons and plain link lists (the disclosure pattern) with Fluid’s popover-panel styling.',
-    ],
-  },
 };

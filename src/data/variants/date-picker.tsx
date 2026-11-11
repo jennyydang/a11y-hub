@@ -45,7 +45,6 @@ export const datePickerVariants: Variant[] = [
       : '';
   });
 </script>`,
-    code: datePicker.code,
   },
   {
     id: 'memorable',
@@ -61,13 +60,6 @@ export const datePickerVariants: Variant[] = [
   <input id="dob-month" inputmode="numeric" autocomplete="bday-month" size="2">
   <label for="dob-year">Year</label>
   <input id="dob-year" inputmode="numeric" autocomplete="bday-year" size="4">
-</fieldset>`,
-    code: `<fieldset aria-describedby="dob-hint">
-  <legend>Date of birth</legend>
-  <p id="dob-hint">For example, 27 3 1990</p>
-  <label htmlFor="dob-day">Day</label>
-  <input id="dob-day" inputMode="numeric" autoComplete="bday-day" />
-  {/* …month and year the same way */}
 </fieldset>`,
   },
 ];

@@ -24,7 +24,6 @@ export const progressVariants: Variant[] = [
     }
   }, 500);
 </script>`,
-    code: progress.code,
   },
   {
     id: 'indeterminate',
@@ -33,7 +32,6 @@ export const progressVariants: Variant[] = [
     Demo: () => <ProgressBar className="w-full max-w-sm" label="Preparing your export" />,
     html: `<label for="export">Preparing your export</label>
 <progress id="export"></progress> <!-- no value = indeterminate -->`,
-    code: `<ProgressBar label="Preparing your export" />  {/* no value */}`,
   },
   {
     id: 'spinner',
@@ -48,6 +46,5 @@ export const progressVariants: Variant[] = [
 <style>
   @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
 </style>`,
-    code: `<Spinner label="Loading comments" />`,
   },
 ];

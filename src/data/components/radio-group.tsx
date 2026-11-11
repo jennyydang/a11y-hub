@@ -66,22 +66,4 @@ export const radioGroup: ComponentSpec = {
     'Confirm the legend, option label, position (“1 of 3”) and description are announced.',
   ],
   Demo,
-  code: `<fieldset>
-  <legend>Delivery speed</legend>
-  <label>
-    <input type="radio" name="speed" value="standard" defaultChecked />
-    Standard
-  </label>
-  <label>
-    <input type="radio" name="speed" value="express" />
-    Express
-  </label>
-</fieldset>`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI has no radio component. Native radios give arrow-key navigation and grouping for free.',
-      'The selected card uses a 2px primary ring plus a filled radio, so the state doesn’t depend on color alone.',
-    ],
-  },
 };

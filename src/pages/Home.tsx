@@ -15,7 +15,7 @@ const principles = [
 ];
 
 const features = [
-  { title: 'Live, keyboard-ready examples', body: 'Every component runs on Fluid UI and can be tried with a keyboard right on the page.' },
+  { title: 'Live, keyboard-ready examples', body: 'Every component can be tried with a keyboard and screen reader right on the page.' },
   { title: 'Screen reader inspector', body: 'See the role, name, states and live announcements of whatever you focus, as you go.' },
   { title: 'Vision simulations', body: 'Preview each example with protanopia, deuteranopia, tritanopia, no color or blur.' },
   { title: 'Saved testing checklists', body: 'Work through manual checks per component. Your progress stays in this browser.' },

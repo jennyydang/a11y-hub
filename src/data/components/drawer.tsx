@@ -148,22 +148,6 @@ export const drawerVariants: Variant[] = [
   drawer.addEventListener('click', (e) => e.target === drawer && drawer.close());
   drawer.addEventListener('close', () => openBtn.focus());
 </script>`,
-    code: `const ref = useRef<HTMLDialogElement>(null);
-const triggerRef = useRef<HTMLButtonElement>(null);
-
-<Button ref={triggerRef} onClick={() => ref.current?.showModal()}>Open menu</Button>
-<dialog
-  ref={ref}
-  aria-labelledby="menu-title"
-  onClose={() => triggerRef.current?.focus()}
-  className="m-0 ml-auto h-full max-h-none w-80 backdrop:bg-gray-900/50"
->
-  <h2 id="menu-title">Menu</h2>
-  <button onClick={() => ref.current?.close()}>
-    <CloseIcon aria-hidden="true" /><span className="sr-only">Close menu</span>
-  </button>
-  <nav aria-label="Drawer">…</nav>
-</dialog>`,
   },
   {
     id: 'non-modal',
@@ -198,17 +182,6 @@ const triggerRef = useRef<HTMLButtonElement>(null);
   panel.querySelector('.close').addEventListener('click', () => set(false));
   panel.addEventListener('keydown', (e) => e.key === 'Escape' && set(false));
 </script>`,
-    code: `const [open, setOpen] = useState(false);
-const headingRef = useRef<HTMLHeadingElement>(null);
-useEffect(() => { if (open) headingRef.current?.focus(); }, [open]);
-
-<Button aria-expanded={open} aria-controls="filters" onClick={() => setOpen(!open)}>Filters</Button>
-<aside id="filters" hidden={!open} aria-labelledby="filters-title"
-       onKeyDown={(e) => e.key === 'Escape' && close()}>
-  <h2 ref={headingRef} id="filters-title" tabIndex={-1}>Filters</h2>
-  <button onClick={close}><span className="sr-only">Close filters</span>…</button>
-  …
-</aside>`,
   },
 ];
 
@@ -257,13 +230,4 @@ export const drawer: ComponentSpec = {
     'At 320px wide, confirm the drawer fits and can be closed.',
   ],
   Demo: ModalDemo,
-  code: drawerVariants[0].code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI doesn’t ship a drawer. The modal version uses the native <dialog> element, which gives focus containment, an inert background and Escape.',
-      'You could also use Fluid’s Dialog with side-sheet styles, but remember to return focus to the trigger as shown on the Dialog page.',
-      'The slide animation only runs when the user hasn’t asked for reduced motion.',
-    ],
-  },
 };
