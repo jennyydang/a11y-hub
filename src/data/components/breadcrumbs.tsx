@@ -67,12 +67,4 @@ export const breadcrumbs: ComponentSpec = {
     'Confirm the current page is announced as current.',
   ],
   Demo,
-  code: `<nav aria-label="Breadcrumb">
-  <ol>
-    <li><a href="/">Home</a></li>
-    <li><a href="/components">Components</a></li>
-    <li><a href="/components/breadcrumbs" aria-current="page">Breadcrumbs</a></li>
-  </ol>
-</nav>`,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['Fluid UI has no breadcrumb component. This uses Fluid’s link colors and a decorative chevron hidden from assistive tech.'] },
 };

@@ -125,20 +125,6 @@ export const carouselVariants: Variant[] = [
     description: 'Slides change only when people press Previous or Next. The new slide is announced politely. This is the safer default.',
     Demo: () => <Carousel />,
     html: manualHtml,
-    code: `<section aria-roledescription="carousel" aria-label="Featured guides">
-  <button aria-controls="slides" onClick={() => go(-1)}><span className="sr-only">Previous slide</span>…</button>
-  <button aria-controls="slides" onClick={() => go(1)}><span className="sr-only">Next slide</span>…</button>
-  <div id="slides" aria-live="polite">
-    {slides.map((s, i) => (
-      <div key={s.id} role="group" aria-roledescription="slide"
-           aria-label={\`\${i + 1} of \${slides.length}\`} hidden={i !== index}>
-        <img src={s.src} alt={s.alt} />
-        <h3>{s.title}</h3>
-        …
-      </div>
-    ))}
-  </div>
-</section>`,
   },
   {
     id: 'auto',
@@ -151,25 +137,6 @@ export const carouselVariants: Variant[] = [
         '  <!-- First control: lets people stop the movement -->\n  <button type="button">\n    <svg aria-hidden="true" focusable="false">…</svg><span class="sr-only">Stop slide rotation</span>\n  </button>\n  <button type="button" aria-controls="slides">\n    <svg aria-hidden="true" focusable="false">…</svg><span class="sr-only">Previous',
       )
       .replace('<!-- polite: the new slide is read when people press Previous or Next -->\n  <div id="slides" aria-live="polite">', '<!-- off while rotating, so it doesn\'t interrupt; polite once stopped -->\n  <div id="slides" aria-live="off">'),
-    code: `const [playing, setPlaying] = useState(!prefersReducedMotion());
-const [paused, setPaused] = useState(false); // hover or focus inside
-const rotating = playing && !paused;
-
-useEffect(() => {
-  if (!rotating) return;
-  const t = setInterval(() => go(1), 5000);
-  return () => clearInterval(t);
-}, [rotating]);
-
-<section aria-roledescription="carousel" aria-label="Featured guides"
-  onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
-  onFocus={() => setPaused(true)} onBlur={…}>
-  <button onClick={() => setPlaying(!playing)}>
-    <span className="sr-only">{playing ? 'Stop slide rotation' : 'Start slide rotation'}</span>
-  </button>
-  …
-  <div id="slides" aria-live={rotating ? 'off' : 'polite'}>…</div>
-</section>`,
   },
 ];
 
@@ -218,12 +185,4 @@ export const carousel: ComponentSpec = {
     'At 320px wide, confirm the controls are at least 24×24px and nothing is cut off.',
   ],
   Demo: () => <Carousel />,
-  code: carouselVariants[0].code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI doesn’t ship a carousel. This follows the WAI-ARIA carousel pattern with plain buttons.',
-      'Slides switch instantly with hidden rather than sliding, which avoids motion and keeps hidden slides out of the tab order.',
-    ],
-  },
 };

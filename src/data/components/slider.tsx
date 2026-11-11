@@ -70,12 +70,4 @@ export const slider: ComponentSpec = {
     'Click on the track and confirm the value jumps there, with no drag needed.',
   ],
   Demo,
-  code: `<label for="temp">Thermostat</label>
-<output for="temp">21°C</output>
-<input id="temp" type="range" min="16" max="28" step="0.5" value="21"
-       aria-valuetext="21 degrees Celsius, comfortable" />`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI has no slider. A native range input gives full keyboard support; accent-color applies Fluid’s primary color.'],
-  },
 };

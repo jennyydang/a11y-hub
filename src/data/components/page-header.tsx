@@ -47,22 +47,6 @@ function Demo() {
   );
 }
 
-const code = `<a href="#main" className="skip-link">Skip to main content</a>
-<header>
-  <a href="/">
-    <Logo aria-hidden="true" />
-    Trailmate<span className="sr-only"> home</span>
-  </a>
-  <nav aria-label="Main">
-    <ul>
-      <li><a href="/trails" aria-current="page">Trails</a></li>
-      <li><a href="/guides">Guides</a></li>
-      <li><a href="/community">Community</a></li>
-    </ul>
-  </nav>
-  <a href="/sign-in">Sign in</a>
-</header>
-<main id="main" tabIndex={-1}>…</main>`;
 
 export const pageHeader: ComponentSpec = {
   slug: 'header',
@@ -97,6 +81,4 @@ export const pageHeader: ComponentSpec = {
     'With a sticky header, tab down the page and confirm focus is never hidden under it.',
   ],
   Demo,
-  code,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['This site’s own header is built the same way: a top-level header, a skip link before it, and a labelled navigation.'] },
 };

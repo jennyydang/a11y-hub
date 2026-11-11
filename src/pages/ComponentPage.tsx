@@ -1,5 +1,4 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { Tab } from '@fluid-design/fluid-ui';
 import { CodeBlock } from '../components/CodeBlock';
 import { Checklist } from '../components/Checklist';
 import { DemoStage } from '../components/DemoStage';
@@ -19,7 +18,8 @@ import { Sources } from '../components/Sources';
 import { showsSection, type SectionKey } from '../data/roleSections';
 import { findRole } from '../data/roles';
 import { useRole } from '../lib/useRole';
-import type { ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { scrollToSection } from '../lib/scrollToSection';
 import { cx } from '../ui';
 import { AriaTable, KeyboardTable, WcagList } from '../components/Tables';
 import { components, findComponent } from '../data/components';
@@ -47,10 +47,32 @@ interface PageSection {
   node: ReactNode;
 }
 
+/** One bar that glides between items in the “On this page” menu, instead of each item's border switching on and off. */
+function TocMarker({ container, active }: { container: RefObject<HTMLDivElement>; active: string | null }) {
+  const [box, setBox] = useState<{ top: number; height: number } | null>(null);
+  useLayoutEffect(() => {
+    const link = container.current?.querySelector<HTMLElement>('a[aria-current="location"]');
+    const root = container.current;
+    if (!link || !root) return setBox(null);
+    const a = link.getBoundingClientRect();
+    const r = root.getBoundingClientRect();
+    setBox({ top: a.top - r.top, height: a.height });
+  }, [container, active]);
+  if (!box) return null;
+  return (
+    <span
+      aria-hidden="true"
+      className="toc-marker pointer-events-none absolute left-0 top-0 z-10 w-0.5 rounded-full bg-primary-700 dark:bg-primary-300"
+      style={{ transform: `translateY(${box.top}px)`, height: box.height }}
+    />
+  );
+}
+
 export function ComponentPage() {
   const { slug = '' } = useParams();
   const [params, setParams] = useSearchParams();
   const [role] = useRole();
+  const tocRef = useRef<HTMLDivElement>(null);
   const spec = findComponent(slug);
   usePageTitle(spec ? spec.name : 'Not found');
 
@@ -68,30 +90,11 @@ export function ComponentPage() {
   if (spec) {
     const Demo = variant?.Demo ?? spec.Demo;
     const html = variant?.html ?? htmlExamples[spec.slug] ?? '';
-    const code = variant?.code ?? spec.code;
     const codeTabs = (
-      <Tab
-        className="mt-2"
-        tabs={[
-          {
-            title: 'HTML',
-            content: (
-              <div className="space-y-2 pt-3">
-                <p className="text-sm text-muted">Plain HTML with the ARIA it needs, plus the minimum JavaScript where behavior requires it. No framework needed.</p>
-                <CodeBlock code={html} language="html" title={variant ? `HTML · ${variant.label}` : 'HTML'} />
-              </div>
-            ),
-          },
-          {
-            title: 'React + Fluid UI',
-            content: (
-              <div className="pt-3">
-                <CodeBlock code={code} title={variant ? `React · ${variant.label}` : 'React (tsx)'} />
-              </div>
-            ),
-          },
-        ]}
-      />
+      <div className="space-y-2">
+        <p className="text-sm text-muted">Plain HTML with the ARIA it needs, plus the minimum JavaScript where behavior requires it. Works with any framework or design system.</p>
+        <CodeBlock code={html} language="html" title={variant ? `HTML · ${variant.label}` : 'HTML'} />
+      </div>
     );
 
     parts.push(
@@ -164,7 +167,7 @@ export function ComponentPage() {
       },
       {
         title: 'Guidance',
-        description: 'Where it goes, what good looks like, the standards it must meet, and how it’s built with Fluid UI.',
+        description: 'Where it goes, what good looks like, the standards it must meet.',
         sections: [
           {
             key: 'placement',
@@ -185,16 +188,6 @@ export function ComponentPage() {
           },
           ...(spec.tool ? [{ key: 'tool' as const, title: spec.tool.title, intro: <p>{spec.tool.intro}</p>, node: <spec.tool.Tool /> }] : []),
           { key: 'wcag', title: 'WCAG criteria', node: <WcagList refs={spec.wcag} /> },
-          {
-            key: 'fluid',
-            title: 'Fluid UI notes',
-            intro: <p>How this component is built with Fluid UI, and any accessibility gaps we patched.</p>,
-            node: (
-              <div className="surface p-5">
-                <Bullets items={spec.fluid.notes} />
-              </div>
-            ),
-          },
         ],
       },
       {
@@ -242,7 +235,7 @@ export function ComponentPage() {
     ['Overview', ['At a glance', ...(role ? ['Your part'] : [])]],
     ...visible.map((p) => [p.title, p.sections.map((s) => s.title)] as [string, string[]]),
   ];
-  const active = useScrollSpy(sections.flatMap(([, items]) => items.map(slugify)));
+  const [active, pin] = useScrollSpy(sections.flatMap(([, items]) => items.map(slugify)));
   if (!spec) return <NotFound />;
 
   const idx = components.indexOf(spec);
@@ -262,7 +255,6 @@ export function ComponentPage() {
           meta={
             <div className="flex flex-wrap items-center gap-2 pt-1 text-sm">
               <span className="chip bg-gray-100 font-mono text-gray-800 dark:bg-gray-800 dark:text-gray-100">{spec.semantics}</span>
-              <span className="chip bg-primary-50 text-primary-800 dark:bg-primary-900/50 dark:text-primary-100">{spec.fluid.source}</span>
               {spec.apgPattern && (
                 <a className="link ml-1" href={spec.apgPattern} target="_blank" rel="noreferrer">
                   ARIA pattern<span className="sr-only"> for {spec.name} (opens in a new tab)</span>
@@ -315,7 +307,8 @@ export function ComponentPage() {
       <aside className="sticky top-24 hidden h-fit w-52 flex-none xl:block">
         <nav aria-label="On this page">
           <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300">On this page</h2>
-          <div className="space-y-4 text-sm">
+          <div ref={tocRef} className="relative space-y-4 text-sm">
+            <TocMarker container={tocRef} active={active} />
             {sections.map(([part, items]) => (
               <div key={part}>
                 <p
@@ -333,17 +326,15 @@ export function ComponentPage() {
                         href={`#${slugify(t)}`}
                         onClick={(e) => {
                           e.preventDefault();
-                          const el = document.getElementById(slugify(t));
-                          el?.scrollIntoView();
-                          el?.setAttribute('tabindex', '-1');
-                          el?.focus({ preventScroll: true });
+                          const target = slugify(t);
+                          pin(target, scrollToSection(target));
                         }}
                         aria-current={slugify(t) === active ? 'location' : undefined}
                         className={cx(
-                          '-ml-px block border-l-2 py-1 pl-3 pr-2 transition-colors focus-ring',
+                          '-ml-px block rounded-r-md border-l-2 border-transparent py-1 pl-3 pr-2 transition-colors duration-200 focus-ring',
                           slugify(t) === active
-                            ? 'border-primary-700 bg-primary-50 font-semibold text-primary-800 dark:border-primary-300 dark:bg-primary-900/30 dark:text-primary-100'
-                            : 'border-transparent text-gray-700 hover:border-gray-400 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white',
+                            ? 'bg-primary-50 font-semibold text-primary-800 dark:bg-primary-900/30 dark:text-primary-100'
+                            : 'text-gray-700 hover:border-gray-400 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white',
                         )}
                       >
                         {t}

@@ -39,22 +39,6 @@ function Demo() {
   );
 }
 
-const code = `<footer>
-  <nav aria-label="Footer">
-    <h2>Explore</h2>
-    <ul>
-      <li><a href="/trails">Trails</a></li>
-      …
-    </ul>
-    <h2>Help</h2>
-    <ul>
-      <li><a href="/contact">Contact us</a></li>
-      <li><a href="/accessibility">Accessibility statement</a></li>
-      <li><a href="/cookies">Cookies</a></li>
-    </ul>
-  </nav>
-  <p>© 2026 Trailmate</p>
-</footer>`;
 
 export const pageFooter: ComponentSpec = {
   slug: 'footer',
@@ -83,6 +67,4 @@ export const pageFooter: ComponentSpec = {
     'Check text contrast against the footer background.',
   ],
   Demo,
-  code,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['Plain links grouped under headings in a labelled nav.'] },
 };

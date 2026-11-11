@@ -52,16 +52,6 @@ function Demo() {
   );
 }
 
-const code = `const left = limit - value.length;
-const message = left >= 0 ? \`You have \${left} characters remaining\` : \`You have \${-left} characters too many\`;
-const announced = useDebounced(message, 1000);
-
-<label htmlFor="details">Describe the problem</label>
-<p id="details-hint">You can enter up to {limit} characters.</p>
-<textarea id="details" value={value} onChange={…}
-  aria-describedby="details-hint details-count" aria-invalid={left < 0 || undefined} />
-<p id="details-count" aria-hidden="true">{message}</p>
-<p role="status" className="sr-only">{announced}</p>`;
 
 export const characterCount: ComponentSpec = {
   slug: 'character-count',
@@ -92,9 +82,4 @@ export const characterCount: ComponentSpec = {
     'Check the over-limit state in grayscale.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI doesn’t ship a character count. This uses a native textarea with Fluid’s form tokens.', 'The error state uses a thicker border and an “Error:” prefix, not only red.'],
-  },
 };

@@ -35,12 +35,6 @@ function Demo() {
   );
 }
 
-const code = `<button type="button" onClick={save} aria-disabled={saving || undefined}>
-  {saving && <Spinner aria-hidden="true" className="motion-safe:animate-spin" />}
-  {saving ? 'Saving…' : 'Save route'}
-</button>
-{/* In the page from the start, so changes are announced */}
-<p role="status">{saving ? 'Saving your route' : saved ? 'Route saved' : ''}</p>`;
 
 export const spinner: ComponentSpec = {
   slug: 'spinner',
@@ -70,6 +64,4 @@ export const spinner: ComponentSpec = {
     'Make the request fail and confirm an error message appears.',
   ],
   Demo,
-  code,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['Uses the bold primary button style with an inline SVG spinner and Tailwind’s motion-safe variant.'] },
 };

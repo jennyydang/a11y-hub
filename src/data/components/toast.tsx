@@ -53,22 +53,4 @@ export const toast: ComponentSpec = {
     'Confirm errors persist until dismissed.',
   ],
   Demo,
-  code: `import { Button, useToast } from '@fluid-design/fluid-ui';
-
-const [present] = useToast();
-
-<Button onClick={() => present({
-  title: 'Changes saved',
-  message: 'Your profile is up to date.',
-  role: 'success',
-  duration: 6000,
-})}>Save profile</Button>`,
-  fluid: {
-    source: 'Fluid UI component',
-    notes: [
-      'Fluid UI renders all toasts into a single, always-present live region, which is the right setup for reliable announcements.',
-      'That region is aria-live="assertive" for every toast, so success messages interrupt too. For a stricter setup, mirror confirmations into your own role="status" region.',
-      'Default timeouts are 2s for success and 3s for default, which is short. Pass a longer duration. Errors stay until dismissed, which is good.',
-    ],
-  },
 };

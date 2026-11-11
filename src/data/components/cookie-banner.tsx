@@ -58,23 +58,6 @@ function Demo() {
   );
 }
 
-const code = `<div role="region" aria-labelledby="cookie-title">
-  {choice ? (
-    <>
-      {/* Focus moves here after a choice, so people hear the result */}
-      <p ref={msgRef} tabIndex={-1}>You’ve {choice} additional cookies. …</p>
-      <Button onClick={hide}>Hide cookie message</Button>
-    </>
-  ) : (
-    <>
-      <h2 id="cookie-title">Cookies on Trailmate</h2>
-      <p>We use some essential cookies…</p>
-      <Button onClick={() => setChoice('accepted')}>Accept analytics cookies</Button>
-      <Button onClick={() => setChoice('rejected')}>Reject analytics cookies</Button>
-      <a href="/cookies">View cookies</a>
-    </>
-  )}
-</div>`;
 
 export const cookieBanner: ComponentSpec = {
   slug: 'cookie-banner',
@@ -108,9 +91,4 @@ export const cookieBanner: ComponentSpec = {
     'Reload and confirm the banner doesn’t return.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI doesn’t ship a cookie banner. This is a region with Fluid buttons; both choices use the same style so neither is nudged.'],
-  },
 };

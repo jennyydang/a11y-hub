@@ -41,16 +41,6 @@ function Demo() {
   );
 }
 
-const code = `<ul>{first3.map(...)}</ul>
-<ul id="more-trails" hidden={!open}>
-  <li><a ref={firstNew} href="/trails/heron-marsh">Heron marsh</a></li>
-  …
-</ul>
-<button type="button" aria-expanded={open} aria-controls="more-trails"
-        onClick={() => { setOpen(!open); if (!open) focusNext(firstNew); }}>
-  <Chevron aria-hidden="true" />
-  {open ? 'Show fewer trails' : 'Show 3 more trails'}
-</button>`;
 
 export const disclosure: ComponentSpec = {
   slug: 'disclosure',
@@ -81,6 +71,4 @@ export const disclosure: ComponentSpec = {
     'Confirm hidden items can’t be reached with Tab while closed.',
   ],
   Demo,
-  code,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['A native button with aria-expanded; the accordion page covers grouped sections and details/summary.'] },
 };

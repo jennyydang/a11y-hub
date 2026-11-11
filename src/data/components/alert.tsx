@@ -56,16 +56,4 @@ export const alert: ComponentSpec = {
     'Check text contrast is at least 4.5:1 against the tinted background.',
   ],
   Demo,
-  code: `{/* Static: just content */}
-<div className="alert-warning">
-  <WarningIcon aria-hidden="true" />
-  <p><span className="sr-only">Warning: </span>Scheduled maintenance</p>
-</div>
-
-{/* Dynamic: announced on insert */}
-{error && <div role="alert">Payment declined…</div>}`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI has no inline alert. This one uses Fluid’s palette with dark text on tinted backgrounds that meet 4.5:1.'],
-  },
 };

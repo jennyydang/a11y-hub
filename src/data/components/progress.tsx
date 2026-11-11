@@ -69,13 +69,4 @@ export const progress: ComponentSpec = {
   wcag: [WCAG.statusMessages, WCAG.nameRoleValue, WCAG.pause, WCAG.nonTextContrast],
   testing: ['Navigate to the bar and confirm its name and value are read.', 'Confirm completion is announced once.', 'Turn on reduced motion in your OS and check the animation stops.'],
   Demo,
-  code: `<span id="upload-label">Uploading vacation.zip</span>
-<div role="progressbar" aria-labelledby="upload-label"
-     aria-valuemin={0} aria-valuemax={100} aria-valuenow={60} />
-
-<p role="status">{done ? 'Upload complete.' : ''}</p>`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI’s spinner is only used inside its Button (isLoading). These indicators use Fluid’s primary color with a reduced-motion fallback.'],
-  },
 };

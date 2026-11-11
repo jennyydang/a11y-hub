@@ -18,7 +18,6 @@ export type SectionKey =
   | 'goodbad'
   | 'tool'
   | 'wcag'
-  | 'fluid'
   | 'owners'
   | 'worksheet'
   | 'testing'
@@ -27,7 +26,7 @@ export type SectionKey =
 export const roleSections: Record<RoleId, SectionKey[]> = {
   content: ['live', 'when', 'placement', 'practices', 'goodbad', 'tool', 'worksheet', 'sources'],
   design: ['live', 'when', 'anatomy', 'keyboard', 'focus', 'placement', 'practices', 'goodbad', 'tool', 'wcag', 'worksheet', 'sources'],
-  frontend: ['live', 'code', 'when', 'anatomy', 'keyboard', 'aria', 'focus', 'practices', 'goodbad', 'tool', 'wcag', 'fluid', 'worksheet', 'testing', 'sources'],
+  frontend: ['live', 'code', 'when', 'anatomy', 'keyboard', 'aria', 'focus', 'practices', 'goodbad', 'tool', 'wcag', 'worksheet', 'testing', 'sources'],
   qa: ['live', 'anatomy', 'keyboard', 'aria', 'focus', 'goodbad', 'tool', 'wcag', 'worksheet', 'testing', 'sources'],
 };
 

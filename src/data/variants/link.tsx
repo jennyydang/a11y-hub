@@ -18,9 +18,6 @@ export const linkVariants: Variant[] = [
       </p>
     ),
     html: `<p>Read the <a href="/guidelines/color">color and contrast guidelines</a> before picking brand colors.</p>`,
-    code: `<p>
-  Read the <a className="link" href="/guidelines/color">color and contrast guidelines</a> before picking brand colors.
-</p>`,
   },
   {
     id: 'external',
@@ -38,11 +35,6 @@ export const linkVariants: Variant[] = [
   <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20">…</svg>
   <span class="sr-only">(opens in a new tab)</span>
 </a>`,
-    code: `<a className="link" href="https://www.w3.org/WAI/…" target="_blank" rel="noreferrer">
-  WCAG overview
-  <ExternalIcon aria-hidden="true" />
-  <span className="sr-only"> (opens in a new tab)</span>
-</a>`,
   },
   {
     id: 'download',
@@ -55,8 +47,6 @@ export const linkVariants: Variant[] = [
       </p>
     ),
     html: `<a href="/q3-results.pdf" aria-describedby="dl-meta">Download Q3 results</a>
-<span id="dl-meta">PDF, 2 MB</span>`,
-    code: `<a className="link" href="/q3-results.pdf" aria-describedby="dl-meta">Download Q3 results</a>
 <span id="dl-meta">PDF, 2 MB</span>`,
   },
 ];

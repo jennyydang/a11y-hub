@@ -61,7 +61,7 @@ export const foundations: FoundationSpec[] = [
         heading: 'Visible focus indicators',
         body: [
           'Every focusable element needs a clearly visible focus style. A good default is a 2px outline in a color with at least 3:1 contrast against the surrounding background, offset slightly from the element.',
-          'Use :focus-visible to show the ring for keyboard users without showing it on every mouse click. Fluid UI’s components use focus-visible rings throughout.',
+          'Use :focus-visible to show the ring for keyboard users without showing it on every mouse click.',
         ],
         bullets: ['Never remove outlines with outline: none unless you replace them with something equally visible.', 'Make sure sticky headers and footers never cover the focused element.'],
       },
@@ -99,13 +99,6 @@ export const foundations: FoundationSpec[] = [
           'Large text (24px regular, or 18.66px bold and up): at least 3:1.',
           'Icons, input borders, focus rings and chart elements: at least 3:1 against what’s next to them.',
           'Disabled controls and pure decoration are exempt, but should still be legible.',
-        ],
-      },
-      {
-        heading: 'Working with the Fluid palette',
-        body: [
-          'In this site’s Fluid UI theme, the primary 600 and darker steps pass 4.5:1 on white. On the dark background, primary 300 and lighter pass. For gray text on white, use gray 600 or darker. Gray 500 just passes at about 4.8:1, and gray 400 fails at about 3.4:1.',
-          'Fluid UI also ships a contrast variant that applies when the user asks for more contrast (prefers-contrast: more). Many of its components already use it.',
         ],
       },
       {
@@ -177,7 +170,7 @@ export const foundations: FoundationSpec[] = [
         heading: 'Respect prefers-reduced-motion',
         body: [
           'Operating systems let people ask for less motion. Read the prefers-reduced-motion media query and replace large movement, parallax and zooms with simple fades, or remove them.',
-          'Fluid UI uses framer-motion’s useReducedMotion in its Dialog, Toast and Tab components, so large transforms are skipped automatically. This site also shortens all CSS transitions when reduced motion is on.',
+          'This site turns off its own transitions and animations when reduced motion is on. Check that your component library does the same.',
         ],
       },
       {
@@ -214,7 +207,7 @@ export const foundations: FoundationSpec[] = [
       },
       {
         heading: 'Target size',
-        body: ['Interactive targets should be at least 24×24 CSS pixels, or have enough spacing around them. Fluid UI’s md buttons are 40px tall.'],
+        body: ['Interactive targets should be at least 24×24 CSS pixels, or have enough spacing around them.'],
       },
     ],
   },

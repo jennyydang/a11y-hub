@@ -79,17 +79,4 @@ export const checkbox: ComponentSpec = {
     'Check the checked, unchecked and mixed states are announced.',
   ],
   Demo,
-  code: `<fieldset>
-  <legend>Pizza toppings</legend>
-  <input type="checkbox" id="all" ref={el => el && (el.indeterminate = some)} />
-  <label htmlFor="all">All toppings</label>
-  {/* …one input + label per option */}
-</fieldset>`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI has no checkbox component, only a .checkbox utility class in its stylesheet.',
-      'We style the native input with accent-color set to Fluid’s primary color, so it keeps built-in keyboard and screen reader support.',
-    ],
-  },
 };

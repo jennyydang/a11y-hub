@@ -69,16 +69,6 @@ function Demo() {
   );
 }
 
-const code = `<form role="search" aria-label="Site" onSubmit={search}>
-  <label htmlFor="q" className="sr-only">Search this site</label>
-  <input id="q" type="search" placeholder="Search this site" />
-  <button type="submit">
-    <SearchIcon aria-hidden="true" /><span className="sr-only">Search</span>
-  </button>
-</form>
-
-{/* After searching, focus the results heading so people hear the count */}
-<h2 ref={headingRef} tabIndex={-1}>{results.length} results for “{query}”</h2>`;
 
 export const searchField: ComponentSpec = {
   slug: 'search-field',
@@ -113,9 +103,4 @@ export const searchField: ComponentSpec = {
     'Search for nothing and confirm the empty state helps.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI’s input tokens styled on a native search input. The button uses Fluid’s primary color.'],
-  },
 };

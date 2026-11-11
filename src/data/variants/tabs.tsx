@@ -46,7 +46,6 @@ export const tabsVariants: Variant[] = [
     });
   });
 </script>`,
-    code: tabs.code,
   },
   {
     id: 'manual',
@@ -79,7 +78,6 @@ export const tabsVariants: Variant[] = [
     });
   });
 </script>`,
-    code: `<Tab manual tabs={[…]} />`,
   },
   {
     id: 'vertical',
@@ -114,6 +112,5 @@ export const tabsVariants: Variant[] = [
     });
   });
 </script>`,
-    code: `<Tab vertical tabs={[…]} />`,
   },
 ];

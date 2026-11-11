@@ -75,11 +75,4 @@ export const datePicker: ComponentSpec = {
     'With a screen reader, confirm the label, hint and chosen date are announced.',
   ],
   Demo,
-  code: `<label for="checkin">Check-in date</label>
-<p id="checkin-hint">Pick today or a later date.</p>
-<input id="checkin" type="date" min="2026-11-04" aria-describedby="checkin-hint" />`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI has no date picker. The native input is the most robust choice, styled here with Fluid’s form colors.'],
-  },
 };

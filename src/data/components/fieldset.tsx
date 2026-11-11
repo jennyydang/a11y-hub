@@ -40,17 +40,6 @@ function Demo() {
   );
 }
 
-const code = `<fieldset>
-  <legend><h1>What is your address?</h1></legend>
-  <label htmlFor="line1">Address line 1</label>
-  <input id="line1" autoComplete="address-line1" />
-  <label htmlFor="line2">Address line 2 (optional)</label>
-  <input id="line2" autoComplete="address-line2" />
-  <label htmlFor="town">Town or city</label>
-  <input id="town" autoComplete="address-level2" />
-  <label htmlFor="postcode">Postcode</label>
-  <input id="postcode" autoComplete="postal-code" />
-</fieldset>`;
 
 export const fieldsetSpec: ComponentSpec = {
   slug: 'fieldset',
@@ -81,6 +70,4 @@ export const fieldsetSpec: ComponentSpec = {
     'Confirm related fields don’t make sense without the legend, and that it’s visible.',
   ],
   Demo,
-  code,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['Native fieldset and legend with the browser border removed. The group role comes for free.'] },
 };

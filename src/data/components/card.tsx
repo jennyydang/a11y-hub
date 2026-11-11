@@ -81,13 +81,6 @@ export const cardVariants: Variant[] = [
   .card-link::after { content: ""; position: absolute; inset: 0; }
   .card:focus-within { outline: 2px solid; }
 </style>`,
-    code: `<li className="relative rounded-xl ring-1 focus-within:ring-2">
-  <img src={guide.img} alt="" />
-  <h3>
-    <a href={guide.url} className="after:absolute after:inset-0">{guide.title}</a>
-  </h3>
-  <p>{guide.summary}</p>
-</li>`,
   },
   {
     id: 'actions',
@@ -100,13 +93,6 @@ export const cardVariants: Variant[] = [
   <p>Twelve walks under two hours, all step-free.</p>
   <a href="/guides/spring" class="button">Read<span class="sr-only"> Spring trail guide</span></a>
   <button type="button">Save<span class="sr-only"> Spring trail guide</span></button>
-</li>`,
-    code: `<li className="rounded-xl ring-1">
-  <img src={guide.img} alt="" />
-  <h3>{guide.title}</h3>
-  <p>{guide.summary}</p>
-  <Button>Read<span className="sr-only"> {guide.title}</span></Button>
-  <Button weight="light">Save<span className="sr-only"> {guide.title}</span></Button>
 </li>`,
   },
 ];
@@ -149,9 +135,4 @@ export const card: ComponentSpec = {
     'Zoom to 400% and confirm cards stack into one column.',
   ],
   Demo: LinkCardDemo,
-  code: cardVariants[0].code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI doesn’t ship a card. This is a list item with Fluid’s surface colors and ring utilities.', 'The stretched link uses Tailwind’s after: variant, so no extra wrapper elements are needed.'],
-  },
 };

@@ -304,7 +304,6 @@ export function Layout() {
             <Logo />
             <span className="whitespace-nowrap text-base font-bold tracking-tight sm:text-lg">A11y Hub</span>
           </NavLink>
-          <span className="chip hidden bg-gray-100 text-gray-700 xl:inline-flex dark:bg-gray-800 dark:text-gray-200">Styled with Fluid UI</span>
           <nav aria-label="Primary" className="ml-auto hidden items-center gap-1 lg:flex">
             {[
               ['/basics', 'Basics', '/basics'],

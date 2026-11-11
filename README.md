@@ -3,14 +3,12 @@
 A documentation site and interactive component library focused on the accessibility of common web components. Each component page covers:
 
 - **Variations** (for 14 components): a switcher above the live example changes the demo, the HTML and the React code together. Each variation has its own link (`?variant=`).
-- **HTML code** for every component: semantic markup, ARIA and minimal vanilla JavaScript, so you don't need React or Fluid UI to use it. React + Fluid UI code is in a second tab.
-- **HTML code** with the ARIA it needs and minimal vanilla JavaScript, so readers don't need React or Fluid UI. React + Fluid UI code is in a second tab.
-- **Live example** built with [Fluid UI](https://fluid-design.io/), with a vision simulator (protanopia, deuteranopia, tritanopia, achromatopsia, blur) and a **screen reader inspector**. The inspector shows the focused element's role, accessible name, states and approximate live-region announcements.
+- **HTML code** with the ARIA it needs and minimal vanilla JavaScript, so it works with any framework or design system.
+- **Live example**, styled with [Fluid UI](https://fluid-design.io/) for demo purposes, with a vision simulator (protanopia, deuteranopia, tritanopia, achromatopsia, blur) and a **screen reader inspector**. The inspector shows the focused element's role, accessible name, states and approximate live-region announcements.
 - **Usage**: when to use it and when to use something else
 - **Keyboard interactions** and **ARIA** reference tables
 - **Focus and screen reader** behavior
 - **Do / Don't** guidance
-- **Fluid UI notes**: how the component is built with Fluid UI and which accessibility gaps were patched
 - **WCAG 2.2 criteria**, linked to the W3C Understanding docs
 - **Testing checklist**, with progress saved in `localStorage`
 

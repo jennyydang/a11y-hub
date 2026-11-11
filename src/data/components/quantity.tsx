@@ -63,17 +63,6 @@ function Demo() {
   );
 }
 
-const code = `<label htmlFor="tickets">Number of tickets</label>
-<p id="tickets-hint">Up to 10 per order.</p>
-<button type="button" aria-controls="tickets" onClick={() => set(n - 1)}>
-  <span aria-hidden="true">−</span><span className="sr-only">Decrease number of tickets</span>
-</button>
-<input id="tickets" inputMode="numeric" pattern="[0-9]*" value={value}
-       onChange={(e) => setValue(e.target.value)} aria-describedby="tickets-hint" />
-<button type="button" aria-controls="tickets" onClick={() => set(n + 1)}>
-  <span aria-hidden="true">+</span><span className="sr-only">Increase number of tickets</span>
-</button>
-<p role="status" className="sr-only">{message}</p>`;
 
 export const quantity: ComponentSpec = {
   slug: 'quantity',
@@ -104,6 +93,4 @@ export const quantity: ComponentSpec = {
   wcag: [WCAG.nameRoleValue, WCAG.labels, WCAG.statusMessages, WCAG.targetSize, WCAG.errorId],
   testing: ['Press + and − with the keyboard and confirm the new value is announced.', 'Type a value directly, including an invalid one, and check the error.', 'At the maximum, confirm focus stays on +.', 'On a phone, confirm a number keypad appears.'],
   Demo,
-  code,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['Fluid UI doesn’t ship a stepper. This uses a native input and buttons with Fluid’s form tokens.'] },
 };

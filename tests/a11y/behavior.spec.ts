@@ -122,3 +122,14 @@ test('patterns: main navigation submenus and the buy box error', async ({ page }
   await page.getByRole('button', { name: 'Add to bag' }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Added 1' })).toContainText('size 8');
 });
+
+test('"On this page" jumps to the section, marks it current and focuses its heading', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await go(page, '/components/button');
+  const toc = page.getByRole('navigation', { name: 'On this page' });
+  const link = toc.getByRole('link', { name: 'WCAG criteria' });
+  await link.click();
+  await expect(link).toHaveAttribute('aria-current', 'location');
+  await expect(page.locator('#wcag-criteria')).toBeFocused();
+  await expect(page.getByRole('heading', { name: 'Fluid UI notes' })).toHaveCount(0);
+});

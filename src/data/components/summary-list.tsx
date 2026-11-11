@@ -26,19 +26,6 @@ function Demo() {
   );
 }
 
-const code = `<dl>
-  {rows.map(([key, value]) => (
-    <div key={key}>
-      <dt>{key}</dt>
-      <dd>{value}</dd>
-      <dd>
-        <a href={\`/details/\${slug(key)}\`}>
-          Change<span className="sr-only"> {key.toLowerCase()}</span>
-        </a>
-      </dd>
-    </div>
-  ))}
-</dl>`;
 
 export const summaryList: ComponentSpec = {
   slug: 'summary-list',
@@ -67,6 +54,4 @@ export const summaryList: ComponentSpec = {
     'Change an answer and confirm you return to the summary.',
   ],
   Demo,
-  code,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['A native description list with a grid layout on wider screens.'] },
 };

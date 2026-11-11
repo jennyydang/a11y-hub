@@ -95,12 +95,6 @@ export const emptyStateVariants: Variant[] = [
   <p>Projects keep your files, tasks and people together. Create one to get started.</p>
   <a class="button" href="/projects/new">Create a project</a>
 </section>`,
-    code: `<section aria-labelledby="empty-title" className="flex flex-col items-center gap-3 text-center">
-  <Illustration aria-hidden="true" />
-  <h2 id="empty-title">No projects yet</h2>
-  <p>Projects keep your files, tasks and people together. Create one to get started.</p>
-  <Button className="btn-bold-primary">Create a project</Button>
-</section>`,
   },
   {
     id: 'no-results',
@@ -116,13 +110,6 @@ export const emptyStateVariants: Variant[] = [
   <p>Check the spelling or try a shorter word.</p>
   <button type="button">Clear filter</button>
 </div>`,
-    code: `{results.length === 0 && (
-  <div>
-    <p role="status" className="font-semibold">No projects match “{query}”</p>
-    <p>Check the spelling or try a shorter word.</p>
-    <Button onClick={() => { setQuery(''); inputRef.current?.focus(); }}>Clear filter</Button>
-  </div>
-)}`,
   },
 ];
 
@@ -158,12 +145,4 @@ export const emptyState: ComponentSpec = {
     'Activate Clear filter and confirm focus returns to the search field.',
   ],
   Demo: FirstUseDemo,
-  code: emptyStateVariants[0].code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI doesn’t ship an empty state. This combines a heading, text and a Fluid Button.',
-      'The illustration uses Fluid’s primary color tokens, so it matches both themes.',
-    ],
-  },
 };

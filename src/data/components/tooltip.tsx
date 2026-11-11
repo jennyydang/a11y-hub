@@ -67,18 +67,4 @@ export const tooltip: ComponentSpec = {
     'Confirm the screen reader reads it as the name or description.',
   ],
   Demo,
-  code: `<Tooltip content="Copy link" relationship="label">
-  <Button iconOnly icon={CopyIcon} />
-</Tooltip>
-
-{/* Renders: */}
-<button aria-labelledby="tip-1">…</button>
-<span role="tooltip" id="tip-1">Copy link</span>`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI’s tooltip plugin draws tooltips with CSS ::before/::after from a data-tooltip attribute. That text isn’t reliably exposed to screen readers and can’t be dismissed with Escape.',
-      'This site uses a small React Tooltip with role="tooltip", proper ARIA linking, focus support and Escape to dismiss.',
-    ],
-  },
 };

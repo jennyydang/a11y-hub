@@ -84,23 +84,4 @@ export const menu: ComponentSpec = {
     'Confirm aria-expanded flips between true and false.',
   ],
   Demo,
-  code: `import { Menu } from '@fluid-design/fluid-ui';
-
-<Menu
-  label="Document actions"
-  menuPositionY="bottom"
-  menus={[
-    { label: 'Rename', onClick: rename },
-    { label: 'Duplicate', onClick: duplicate },
-    { role: 'separator' },
-    { label: 'Delete', role: 'destructive', onClick: remove },
-  ]}
-/>`,
-  fluid: {
-    source: 'Fluid UI component',
-    notes: [
-      'Fluid UI’s Menu wraps Headless UI’s Menu, so it handles roving focus, typeahead, Escape and focus return.',
-      'The role prop on items (destructive, info…) only changes color. Make sure the label alone explains the risk.',
-    ],
-  },
 };

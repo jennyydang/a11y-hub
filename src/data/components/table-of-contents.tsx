@@ -45,16 +45,6 @@ function Demo() {
   );
 }
 
-const code = `<nav aria-labelledby="toc-title">
-  <h2 id="toc-title">Contents</h2>
-  <ol>
-    <li><a href="#getting-there">Getting there</a></li>
-    <li><a href="#the-route">The route</a></li>
-    <li><a href="#facilities">Facilities</a></li>
-  </ol>
-</nav>
-…
-<h2 id="getting-there" tabIndex={-1}>Getting there</h2>`;
 
 export const tableOfContents: ComponentSpec = {
   slug: 'table-of-contents',
@@ -88,6 +78,4 @@ export const tableOfContents: ComponentSpec = {
     'With a sticky header, confirm the heading isn’t hidden after a jump.',
   ],
   Demo,
-  code,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['This site’s “On this page” list is the same pattern, with aria-current on the section in view.'] },
 };

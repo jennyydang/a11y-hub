@@ -400,7 +400,7 @@ export function Worksheet({ spec, variant, defaultSheet }: { spec: ComponentSpec
           <Tab.Panel as={Fragment}>
             <div className="space-y-4 rounded-xl focus-ring">
               <Intro who="For frontend developers.">
-                What to build, including the exact text content handed over. Tick each item once it’s in the code. The HTML tab in the live
+                What to build, including the exact text content handed over. Tick each item once it’s in the code. The HTML example under the live
                 example shows the markup.
               </Intro>
               {waiting > 0 && (

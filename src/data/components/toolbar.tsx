@@ -74,18 +74,6 @@ function Demo() {
   );
 }
 
-const code = `<div role="toolbar" aria-label="Text formatting" aria-controls="editor" onKeyDown={onKeyDown}>
-  {buttons.map((b, i) => (
-    <button key={b.id} ref={(el) => (refs.current[i] = el)}
-      tabIndex={active === i ? 0 : -1}          // one tab stop
-      aria-pressed={b.toggle ? pressed[b.id] : undefined}
-      onClick={() => toggle(b.id)}>
-      <Icon aria-hidden="true" /><span className="sr-only">{b.label}</span>
-    </button>
-  ))}
-</div>
-
-// ← → move between buttons (wrapping), Home / End jump to the ends`;
 
 export const toolbar: ComponentSpec = {
   slug: 'toolbar',
@@ -124,9 +112,4 @@ export const toolbar: ComponentSpec = {
     'Confirm every button has a name, not just an icon.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI doesn’t ship a toolbar. These are native buttons with roving tabindex and Fluid’s primary tokens for the pressed state.', 'The title attribute gives sighted mouse users a tooltip; the hidden text is the accessible name.'],
-  },
 };

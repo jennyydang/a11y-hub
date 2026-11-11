@@ -70,10 +70,6 @@ export const buttonVariants: Variant[] = [
     Demo: Standard,
     html: `<button type="button">Save changes</button>
 <button type="button">Cancel</button>`,
-    code: `import { Button } from '@fluid-design/fluid-ui';
-
-<Button className="btn-bold-primary">Save changes</Button>
-<Button weight="outline" color="gray">Cancel</Button>`,
   },
   {
     id: 'toggle',
@@ -89,11 +85,6 @@ export const buttonVariants: Variant[] = [
     mute.setAttribute('aria-pressed', String(!pressed));
   });
 </script>`,
-    code: `const [muted, setMuted] = useState(false);
-
-<Button weight="light" aria-pressed={muted} onClick={() => setMuted(!muted)}>
-  Mute notifications
-</Button>`,
   },
   {
     id: 'icon-only',
@@ -104,7 +95,6 @@ export const buttonVariants: Variant[] = [
   <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20">…</svg>
   <span class="sr-only">Delete draft</span>
 </button>`,
-    code: `<Button iconOnly icon={TrashIcon} color="red" weight="light" sr="Delete draft" />`,
   },
   {
     id: 'loading',
@@ -126,15 +116,6 @@ export const buttonVariants: Variant[] = [
     // save.removeAttribute('aria-disabled'); save.textContent = 'Save changes'; status.textContent = 'Changes saved.';
   });
 </script>`,
-    code: `<Button
-  className="btn-bold-primary"
-  isLoading={saving}
-  aria-disabled={saving || undefined}
-  onClick={() => !saving && save()}
->
-  {saving ? 'Saving' : 'Save changes'}
-</Button>
-<p role="status">{saving ? 'Saving your changes…' : ''}</p>`,
   },
   {
     id: 'unavailable',
@@ -150,9 +131,5 @@ export const buttonVariants: Variant[] = [
     if (e.currentTarget.getAttribute('aria-disabled') === 'true') e.preventDefault();
   });
 </script>`,
-    code: `<Button aria-disabled="true" aria-describedby="publish-why" onClick={(e) => e.preventDefault()}>
-  Publish
-</Button>
-<p id="publish-why">Add a title before publishing.</p>`,
   },
 ];

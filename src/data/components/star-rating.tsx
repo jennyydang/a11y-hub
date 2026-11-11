@@ -39,19 +39,6 @@ function Demo() {
   );
 }
 
-const code = `<fieldset>
-  <legend>Rate Riverside loop</legend>
-  {[1, 2, 3, 4, 5].map((n) => (
-    <label key={n}>
-      <input type="radio" name="rating" value={n} checked={rating === n}
-             onChange={() => setRating(n)} className="peer sr-only" />
-      {/* Filled up to the rating; outlined after. Focus ring on the star. */}
-      <Star aria-hidden="true" className={n <= rating ? 'fill-amber-500' : 'fill-transparent'} />
-      <span className="sr-only">{n} {n === 1 ? 'star' : 'stars'}</span>
-    </label>
-  ))}
-</fieldset>
-<p aria-hidden="true">{rating ? \`\${rating} out of 5 stars\` : 'Not rated yet'}</p>`;
 
 export const starRating: ComponentSpec = {
   slug: 'star-rating',
@@ -86,6 +73,4 @@ export const starRating: ComponentSpec = {
     'Zoom to 200% and confirm the stars don’t overlap.',
   ],
   Demo,
-  code,
-  fluid: { source: 'Native HTML + Fluid styles', notes: ['Native radios, visually hidden with the peer pattern, the same build as the segmented control.'] },
 };

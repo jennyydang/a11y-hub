@@ -91,10 +91,6 @@ export const avatarVariants: Variant[] = [
   <img src="amara.jpg" alt="" class="avatar">
   <span>Amara Okafor</span>
 </li>`,
-    code: `<li className="flex items-center gap-3">
-  <img src={person.photo} alt="" className="h-10 w-10 rounded-full" />
-  <span>{person.name}</span>
-</li>`,
   },
   {
     id: 'alone',
@@ -107,11 +103,6 @@ export const avatarVariants: Variant[] = [
 <a href="/people/sam">
   <img src="sam.jpg" alt="Sam Patel’s profile" class="avatar">
 </a>`,
-    code: `<img src={assignee.photo} alt={assignee.name} className="h-10 w-10 rounded-full" />
-
-<a href={\`/people/\${user.id}\`}>
-  <img src={user.photo} alt={\`\${user.name}’s profile\`} className="h-10 w-10 rounded-full" />
-</a>`,
   },
   {
     id: 'initials',
@@ -122,10 +113,6 @@ export const avatarVariants: Variant[] = [
   <span class="avatar avatar-initials" aria-hidden="true">JL</span>
   <span>Jordan Lee</span>
 </li>`,
-    code: `<span aria-hidden="true" className="grid h-10 w-10 place-items-center rounded-full bg-sky-100 font-bold text-sky-900">
-  {initials(person.name)}
-</span>
-<span>{person.name}</span>`,
   },
   {
     id: 'group',
@@ -139,12 +126,6 @@ export const avatarVariants: Variant[] = [
   <li aria-hidden="true">+2</li>
 </ul>
 <p>5 editors</p>`,
-    code: `<ul aria-label={\`Editors: \${people.map((p) => p.name).join(', ')}\`} className="flex -space-x-2">
-  {people.slice(0, 3).map((p) => (
-    <li key={p.id}><img src={p.photo} alt="" className="h-10 w-10 rounded-full" /></li>
-  ))}
-  <li aria-hidden="true">+{people.length - 3}</li>
-</ul>`,
   },
 ];
 
@@ -183,12 +164,4 @@ export const avatar: ComponentSpec = {
     'Break the image (block images) and confirm people can still be identified.',
   ],
   Demo: WithNameDemo,
-  code: avatarVariants[0].code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI doesn’t ship an avatar. This uses a native <img> with Tailwind’s rounded-full and Fluid color tokens for initials.',
-      'The white ring around stacked avatars switches to the page color in dark mode, so the overlap stays visible.',
-    ],
-  },
 };

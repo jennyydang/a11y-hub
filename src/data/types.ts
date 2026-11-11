@@ -35,7 +35,6 @@ export interface Variant {
   description: string;
   Demo: ComponentType;
   html: string;
-  code: string;
 }
 
 export interface ComponentSpec {
@@ -56,16 +55,10 @@ export interface ComponentSpec {
   wcag: WcagRef[];
   testing: string[];
   Demo: ComponentType;
-  code: string;
   /** Optional decision tool shown under Guidance. */
   tool?: { title: string; intro: string; Tool: ComponentType };
   /** Optional variations. When present, the first one is shown by default. */
   variants?: Variant[];
-  /** How this site implements the component with Fluid UI, and any gaps we patched. */
-  fluid: {
-    source: 'Fluid UI component' | 'Fluid UI + a11y patch' | 'Headless UI + Fluid styles' | 'Native HTML + Fluid styles';
-    notes: string[];
-  };
 }
 
 export interface FoundationSection {

@@ -60,22 +60,6 @@ function Demo() {
   );
 }
 
-const code = `const [loading, setLoading] = useState(true);
-
-{/* Rendered on first paint, so updates are announced */}
-<p role="status" className="sr-only">
-  {loading ? 'Loading files' : \`\${files.length} files loaded\`}
-</p>
-
-<ul aria-busy={loading} aria-label="Recent files">
-  {loading
-    ? [1, 2, 3].map((i) => (
-        <li key={i} aria-hidden="true">
-          <span className="block h-3 w-3/4 rounded bg-gray-200 motion-safe:animate-pulse" />
-        </li>
-      ))
-    : files.map((f) => <li key={f.id}>{f.title}</li>)}
-</ul>`;
 
 export const skeleton: ComponentSpec = {
   slug: 'skeleton',
@@ -109,12 +93,4 @@ export const skeleton: ComponentSpec = {
     'Simulate a slow or failed request and confirm there’s a clear outcome.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI doesn’t ship a skeleton. These are spans with Tailwind’s animate-pulse, wrapped in motion-safe so the pulse only runs when people haven’t asked for reduced motion.',
-      'The status message reuses the sr-only utility used across this site.',
-    ],
-  },
 };

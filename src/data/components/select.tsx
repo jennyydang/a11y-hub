@@ -49,20 +49,4 @@ export const select: ComponentSpec = {
     'Confirm the label and current value are announced on the trigger.',
   ],
   Demo,
-  code: `import { Form, Select } from '@fluid-design/fluid-ui';
-
-<Form initialValues={{ size: 'Medium' }} onSubmit={save}>
-  <Select name="size" label="T-shirt size" list={['Small', 'Medium', 'Large']} />
-</Form>
-
-{/* Often the best choice: a native select */}
-<label htmlFor="size">T-shirt size</label>
-<select id="size">…</select>`,
-  fluid: {
-    source: 'Fluid UI component',
-    notes: [
-      'Fluid UI’s Select is built on Headless UI’s Listbox, which provides the listbox roles, typeahead and focus handling.',
-      'Its label and button are linked, so the trigger is announced with both the label and the current value.',
-    ],
-  },
 };

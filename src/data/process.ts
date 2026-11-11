@@ -41,7 +41,7 @@ export const stages: Stage[] = [
       lead: 'Triage the request, check for overlap, assign people.',
       design: 'Share where it appears in designs, with screenshots.',
       content: 'Note the words it needs: labels, messages, alt text.',
-      frontend: 'Check whether Fluid UI or Headless UI already provides it.',
+      frontend: 'Check whether native HTML already provides it, and whether an APG pattern exists.',
       qa: 'Flag known defects with similar patterns.',
     },
   },
@@ -74,7 +74,7 @@ export const stages: Stage[] = [
     steps: [
       'Design: anatomy, states, focus indicator, contrast, target size and placement.',
       'Content: when to use it, labels, messages and the handoff worksheet’s content fields, including screen reader only text that needs translating.',
-      'Frontend: semantics, keyboard map, ARIA table, the live demo, code and Fluid UI notes.',
+      'Frontend: semantics, keyboard map, ARIA table, the live demo and the HTML example.',
       'QA: the testing checklist and acceptance criteria, written so they can pass or fail.',
       'Write in plain language. Define new jargon in the glossary.',
     ],
@@ -82,7 +82,7 @@ export const stages: Stage[] = [
     roles: {
       design: 'Anatomy, states, focus, contrast, target size, placement, do and don’t.',
       content: 'When to use, worksheet content, error and status messages, plain language.',
-      frontend: 'Spec data, demo, code, keyboard and ARIA tables, Fluid notes.',
+      frontend: 'Spec data, demo, HTML example, keyboard and ARIA tables.',
       qa: 'Testing checklist and acceptance criteria.',
       lead: 'Answer questions and unblock decisions.',
     },

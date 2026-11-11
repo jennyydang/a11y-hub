@@ -41,14 +41,6 @@ export const toastVariants: Variant[] = [
     el.addEventListener('pointerleave', () => (timer = setTimeout(() => el.remove(), 6000)));
   });
 </script>`,
-    code: `const [present] = useToast();
-
-present({
-  title: 'Changes saved',
-  message: 'Your profile is up to date.',
-  role: 'success',
-  duration: 6000,
-});`,
   },
   {
     id: 'error',
@@ -72,10 +64,5 @@ present({
     document.getElementById('toast-assertive').append(el); // no auto-dismiss
   });
 </script>`,
-    code: `present({
-  title: 'Couldn’t upload photo',
-  message: 'The file is larger than 5 MB.',
-  role: 'error', // Fluid keeps errors until dismissed
-});`,
   },
 ];

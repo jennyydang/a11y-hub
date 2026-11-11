@@ -28,7 +28,6 @@ export const checkboxVariants: Variant[] = [
   kids.forEach((k) => k.addEventListener('change', sync));
   sync();
 </script>`,
-    code: checkbox.code,
   },
   {
     id: 'single',
@@ -38,8 +37,6 @@ export const checkboxVariants: Variant[] = [
     html: `<input type="checkbox" id="updates" aria-describedby="updates-desc">
 <label for="updates">Email me about new features</label>
 <p id="updates-desc">About once a month. Unsubscribe any time.</p>`,
-    code: `<Checkbox label="Email me about new features"
-  description="About once a month. Unsubscribe any time." />`,
   },
   {
     id: 'required',
@@ -48,6 +45,5 @@ export const checkboxVariants: Variant[] = [
     Demo: () => <Checkbox label="I agree to the terms of service (required)" required />,
     html: `<input type="checkbox" id="terms" required>
 <label for="terms">I agree to the terms of service (required)</label>`,
-    code: `<Checkbox label="I agree to the terms of service (required)" required />`,
   },
 ];

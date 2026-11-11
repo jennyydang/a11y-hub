@@ -167,16 +167,6 @@ export const listboxVariants: Variant[] = [
     e.preventDefault();
   });
 </script>`,
-    code: `<ul role="listbox" aria-multiselectable="true" tabIndex={0}
-    aria-labelledby="topics-label" aria-describedby="topics-hint"
-    aria-activedescendant={\`opt-\${active}\`} onKeyDown={onKeyDown}>
-  {topics.map((t, i) => (
-    <li key={t} id={\`opt-\${i}\`} role="option" aria-selected={selected.has(i)}
-        onClick={() => toggle(i)}>
-      <CheckIcon aria-hidden="true" /> {t}
-    </li>
-  ))}
-</ul>`,
   },
   {
     id: 'checkboxes',
@@ -190,12 +180,6 @@ export const listboxVariants: Variant[] = [
     <label><input type="checkbox" name="topics" value="ds"> Design systems</label>
     <label><input type="checkbox" name="topics" value="research"> Research</label>
   </div>
-</fieldset>`,
-    code: `<fieldset>
-  <legend>Topics you follow</legend>
-  {topics.map((t) => (
-    <Checkbox key={t} label={t} checked={selected.has(t)} onChange={() => toggle(t)} />
-  ))}
 </fieldset>`,
   },
 ];
@@ -247,12 +231,4 @@ export const listbox: ComponentSpec = {
     'Checkbox list: confirm the legend is read when entering the group.',
   ],
   Demo: ListboxDemo,
-  code: listboxVariants[0].code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Headless UI’s Listbox (used by Fluid UI) is a dropdown, not an always-visible list, so this builds the WAI-ARIA listbox pattern directly.',
-      'The checkbox list uses this site’s Checkbox, which wraps a native input with Fluid colors.',
-    ],
-  },
 };

@@ -46,19 +46,4 @@ export const accordion: ComponentSpec = {
   wcag: [WCAG.infoRel, WCAG.nameRoleValue, WCAG.keyboard, WCAG.headings],
   testing: ['Toggle each section with Enter and Space.', 'Navigate by headings (H key in NVDA/JAWS) and confirm each header is listed.', 'Confirm expanded/collapsed is announced.'],
   Demo,
-  code: `import { Disclosure } from '@headlessui/react';
-
-<Disclosure>
-  <h3>
-    <Disclosure.Button>What is your return policy?</Disclosure.Button>
-  </h3>
-  <Disclosure.Panel>Return unused items within 30 days…</Disclosure.Panel>
-</Disclosure>`,
-  fluid: {
-    source: 'Headless UI + Fluid styles',
-    notes: [
-      'Fluid UI’s Accordion has two issues: it puts aria-live="assertive" on each header button, and it doesn’t wrap headers in heading elements. It also places a <p> inside the <button>, which is invalid HTML.',
-      'This site rebuilds it on the same Headless UI Disclosure with Fluid’s accordion styles, adds a heading wrapper and drops the live region.',
-    ],
-  },
 };

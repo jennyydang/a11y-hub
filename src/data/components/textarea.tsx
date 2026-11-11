@@ -83,18 +83,4 @@ export const textarea: ComponentSpec = {
     'Confirm Enter adds a line and Tab leaves the field.',
   ],
   Demo,
-  code: `<label for="notes">Delivery instructions</label>
-<p id="notes-hint">Up to 200 characters.</p>
-<textarea id="notes" aria-describedby="notes-hint notes-count"></textarea>
-<p id="notes-count">200 characters remaining</p>
-
-{/* Debounced announcement, separate from the visible counter */}
-<p class="sr-only" aria-live="polite">{debouncedMessage}</p>`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI’s Textarea has the same label wiring as its Input: the label’s for points to the name, but the textarea gets no matching id. Pass id={name} if you use it.',
-      'This example uses a native textarea with Fluid’s form colors and a 3:1 border.',
-    ],
-  },
 };

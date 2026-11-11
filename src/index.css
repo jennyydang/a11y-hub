@@ -199,7 +199,23 @@ nav[aria-label='Documentation'] a:not([aria-current='page']):hover { transform: 
   animation: reveal 200ms var(--ease-out);
 }
 
+/* "On this page": the current-section bar glides to the new item. */
+.toc-marker { transition: transform 260ms var(--ease-out), height 260ms var(--ease-out); }
+
+/* A heading reached from "On this page" glows softly, then fades, so the eye finds where it landed. */
+.section-arrive { animation: section-arrive 1100ms var(--ease-out); border-radius: 0.375rem; }
+@keyframes section-arrive {
+  0%, 25% { background-color: rgb(204 251 241 / 0.9); box-shadow: 0 0 0 6px rgb(204 251 241 / 0.9); }
+  100% { background-color: transparent; box-shadow: 0 0 0 6px transparent; }
+}
+html.dark .section-arrive { animation-name: section-arrive-dark; }
+@keyframes section-arrive-dark {
+  0%, 25% { background-color: rgb(19 78 74 / 0.6); box-shadow: 0 0 0 6px rgb(19 78 74 / 0.6); }
+  100% { background-color: transparent; box-shadow: 0 0 0 6px transparent; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .toc-marker { transition: none; }
   a.surface:hover, a.surface:active,
   button:not(:disabled):active, [role='button']:active,
   nav[aria-label='Documentation'] a:hover,

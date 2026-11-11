@@ -26,7 +26,7 @@ The first time, run `npx playwright install chromium`.
 
 | What | Where | Who |
 |---|---|---|
-| Spec: summary, semantics, keyboard, ARIA, focus, dos and don'ts, WCAG, testing, demo, code, Fluid notes | `src/data/components/<slug>.tsx`, registered in `src/data/components/index.ts` | Frontend, with design, content and QA |
+| Spec: summary, semantics, keyboard, ARIA, focus, dos and don'ts, WCAG, testing, demo | `src/data/components/<slug>.tsx`, registered in `src/data/components/index.ts` | Frontend, with design, content and QA |
 | Variations | `src/data/variants/` | Frontend |
 | Anatomy | `src/data/anatomy.ts` | Design |
 | Placement | `src/data/placement.ts` | Design |

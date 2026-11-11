@@ -80,7 +80,7 @@ export function ContrastChecker() {
             Swap colors
           </Button>
           <div>
-            <p className="mb-2 text-sm font-semibold">Try a Fluid palette pair</p>
+            <p className="mb-2 text-sm font-semibold">Try a sample pair</p>
             <div className="flex flex-wrap gap-2">
               {PRESETS.map((p) => (
                 <Button

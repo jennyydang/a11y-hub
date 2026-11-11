@@ -127,16 +127,4 @@ export const fileUpload: ComponentSpec = {
     'Remove a file and confirm focus moves somewhere sensible and the removal is announced.',
   ],
   Demo,
-  code: `<label for="files">Attachments</label>
-<p id="files-hint">PDF or image, up to 5 MB each.</p>
-<input id="files" type="file" multiple accept=".pdf,image/*" aria-describedby="files-hint" />
-
-<ul aria-label="Selected files">
-  <li>report.pdf <button aria-label="Remove report.pdf">Remove</button></li>
-</ul>
-<p role="status" class="sr-only">1 file added.</p>`,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: ['Fluid UI has no file input. The native input’s button is styled with Fluid’s primary color through the file: variant, and the Remove buttons are Fluid Buttons.'],
-  },
 };

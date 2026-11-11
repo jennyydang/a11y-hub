@@ -168,24 +168,6 @@ function Demo() {
   );
 }
 
-const code = `// Flatten the visible items, then render one list with level and position
-const items = flatten(tree, open); // [{ node, level, setsize, posinset }]
-
-<ul role="tree" aria-labelledby="tree-label">
-  {items.map(({ node, level, setsize, posinset }) => (
-    <li key={node.id} role="treeitem"
-        aria-level={level} aria-setsize={setsize} aria-posinset={posinset}
-        aria-expanded={node.children ? open.has(node.id) : undefined}
-        aria-selected={selected === node.id}
-        tabIndex={active === node.id ? 0 : -1}
-        onKeyDown={onKeyDown}>
-      {node.label}
-    </li>
-  ))}
-</ul>
-
-// ↓ ↑ next/previous visible item, → open or go to first child,
-// ← close or go to parent, Home/End first/last, Enter selects.`;
 
 export const treeView: ComponentSpec = {
   slug: 'tree-view',
@@ -235,12 +217,4 @@ export const treeView: ComponentSpec = {
     'Check focus and selection look different in grayscale.',
   ],
   Demo,
-  code,
-  fluid: {
-    source: 'Native HTML + Fluid styles',
-    notes: [
-      'Fluid UI and Headless UI don’t ship a tree. This follows the WAI-ARIA tree pattern with list markup.',
-      'The chevron’s rotation is turned off for people who prefer reduced motion.',
-    ],
-  },
 };
